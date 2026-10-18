@@ -1,0 +1,337 @@
+{
+  "views": [
+    {
+      "title": "Living room",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "clock",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "weather-forecast",
+              "entity": "weather.forecast_home",
+              "forecast_type": "daily",
+              "grid_options": {
+                "columns": 24,
+                "rows": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "light",
+              "entity": "light.deckenlicht",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "thermostat",
+              "entity": "climate.wohnzimmer",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "cover.rollladen",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "media_player.lautsprecher",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "statistics-graph",
+              "title": "Energy",
+              "entities": [
+                "sensor.leistung"
+              ],
+              "period": "hour",
+              "days_to_show": 1,
+              "chart_type": "bar",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "switch.kaffeemaschine",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "entities",
+              "title": "Scenes",
+              "entities": [
+                "scene.filmabend",
+                "scene.essen",
+                "scene.alles_aus"
+              ],
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "lock.haustuer",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.raumluft_co2",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Catalog",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "title": "Lights & switches",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "tile",
+              "entity": "light.flur",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "light.led_leiste",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "fan.ventilator",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "input_boolean.gaestemodus",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "button.klingel_stumm",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "script.garten_giessen",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "title": "Climate & sensors",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "thermostat",
+              "entity": "climate.buero",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.aussen_temperatur",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.spannung",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "binary_sensor.terrassentuer",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "person.anna",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "weather.forecast_home",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "title": "Access & helpers",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "tile",
+              "entity": "cover.garagentor",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "alarm_control_panel.alarmanlage",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "media_player.fernseher",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "input_select.hausmodus",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "input_number.ziel_feuchte",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            },
+            {
+              "type": "tile",
+              "entity": "update.panel_firmware",
+              "grid_options": {
+                "columns": 12,
+                "rows": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "title": "Time & lists",
+          "cards": [
+            {
+              "type": "picture-entity",
+              "entity": "camera.einfahrt"
+            },
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "timer.kueche"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sun.sun"
+                }
+              ]
+            },
+            {
+              "type": "tile",
+              "entity": "todo.einkaufsliste"
+            },
+            {
+              "type": "tile",
+              "entity": "calendar.familie"
+            },
+            {
+              "type": "button",
+              "entity": "remote.fernseher"
+            },
+            {
+              "type": "entity",
+              "entity": "input_datetime.wecker"
+            },
+            {
+              "type": "tile",
+              "entity": "event.klingel_taste"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+# Builds the firmware on every push and pull request. Nothing is published:
+# releases are made by .github/workflows/release.yml.
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:v5.5.1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build the ESP32-C6 co-processor firmware
+        shell: bash
+        run: |
+          . $IDF_PATH/export.sh
+          platforms/esp32c6_coprocessor/build.sh
+
+      - name: Build the ESP32-P4 firmware
+        shell: bash
+        run: |
+          . $IDF_PATH/export.sh
+          cd platforms/esp32p4
+          idf.py build

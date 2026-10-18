@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dashboard Wohnzimmer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+.ov{-webkit-appearance:none;appearance:none;opacity:0;margin:0;cursor:pointer}
+.vov{-webkit-appearance:none;appearance:none;writing-mode:vertical-lr;direction:rtl;opacity:0;cursor:pointer;margin:0}
+.sc{scrollbar-width:none}
+.sc::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px 16px 0; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 12px">
+
+<div style="height: 64px; flex: none; display: flex; align-items: center; justify-content: space-between">
+<button aria-label="Ansicht wählen" onClick="{{ openViews }}" style="height: 64px; background: transparent; padding: 0 12px 0 4px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8px">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 28px; font-weight: 600; line-height: 1">Wohnzimmer<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span>
+<span style="display: flex; gap: 6px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #4A4842"></span><span style="width: 18px; height: 6px; border-radius: 3px; background: #ECE9E3"></span><span style="width: 6px; height: 6px; border-radius: 3px; background: #4A4842"></span><span style="width: 6px; height: 6px; border-radius: 3px; background: #4A4842"></span><span style="width: 6px; height: 6px; border-radius: 3px; background: #4A4842"></span></span>
+</button>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="height: 56px; padding: 0 16px; display: flex; align-items: center; gap: 8px; font-size: 22px; color: #A39F97"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7M5 10v10h14V10"></path></svg><span style="color: #ECE9E3">{{ inside }}</span></span>
+<button aria-label="Einstellungen" onClick="{{ openSettings }}" style="width: 64px; height: 64px; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center; color: #A39F97"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg></button>
+</div>
+</div>
+
+<div class="sc" style="flex: 1; min-height: 0; overflow-y: auto; scroll-snap-type: y mandatory; display: flex; flex-direction: column; gap: 12px; touch-action: pan-y">
+
+<div style="height: 308px; flex: none; box-sizing: border-box; border-radius: 24px; background: #141413; display: flex; scroll-snap-align: start">
+
+<div style="width: 280px; flex: none; box-sizing: border-box; padding: 18px 16px 16px 20px; display: flex; flex-direction: column">
+<span style="font-size: 96px; font-weight: 600; line-height: .9; letter-spacing: -0.045em">{{ time }}</span>
+<span style="font-size: 22px; color: #A39F97; margin-top: 8px">{{ date }}</span>
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; gap: 8px">
+<sc-for list="{{ timers }}" as="tm" hint-placeholder-count="1">
+<button aria-label="{{ tm.aria }}" onPointerDown="{{ tm.g.down }}" onPointerUp="{{ tm.g.up }}" onPointerLeave="{{ tm.g.cancel }}" style="flex: 1; min-width: 0; height: 64px; border-radius: 32px; padding: 0 16px 0 8px; display: flex; align-items: center; gap: 10px; background: {{ tm.bg }}">
+<span style="position: relative; width: 48px; height: 48px; flex: none">
+<svg width="48" height="48" viewBox="0 0 48 48" style="position: absolute; inset: 0"><circle cx="24" cy="24" r="20" fill="none" stroke="#2B2A27" stroke-width="4"></circle><circle cx="24" cy="24" r="20" fill="none" stroke="{{ tm.ring }}" stroke-width="4" stroke-linecap="round" stroke-dasharray="{{ tm.dash }}" transform="rotate(-90 24 24)"></circle></svg>
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: {{ tm.ring }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ tm.icon }}"></path></svg></span>
+</span>
+<span style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; min-width: 0"><span style="font-size: 22px; font-weight: 600; color: {{ tm.fg }}">{{ tm.time }}</span><span style="font-size: 18px; color: #A39F97; white-space: nowrap">{{ tm.label }}</span></span>
+</button>
+</sc-for>
+<sc-if value="{{ noTimer }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ openSheet }}" style="flex: 1; height: 64px; border-radius: 32px; background: #1F1E1C; display: flex; align-items: center; gap: 10px; padding: 0 18px; font-size: 22px; color: #A39F97"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM12 11v3M10 3h4"></path></svg>Timer</button>
+</sc-if>
+<sc-if value="{{ hasTimer }}" hint-placeholder-val="{{ true }}">
+<button aria-label="Weiteren Timer starten" onClick="{{ openSheet }}" style="width: 64px; height: 64px; flex: none; border-radius: 32px; background: #1F1E1C; display: flex; align-items: center; justify-content: center; color: #A39F97"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+</sc-if>
+</div>
+<button aria-label="{{ alarm.aria }}" onClick="{{ alarm.flip }}" style="height: 64px; border-radius: 32px; padding: 0 18px; display: flex; align-items: center; gap: 10px; background: #1F1E1C; color: {{ alarm.fg }}">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 10v4l2 2M5 3L2 6M19 3l3 3"></path></svg>
+<span style="font-size: 22px; font-weight: 600">06:30</span><span style="font-size: 18px; color: #A39F97">{{ alarm.sub }}</span>
+</button>
+</div>
+</div>
+
+<div style="width: 2px; flex: none; margin: 20px 0; background: #1F1E1C"></div>
+
+<button aria-label="Wetter" onClick="{{ openWeather }}" style="flex: 1; min-width: 0; background: transparent; padding: 20px 20px 18px 24px; display: flex; flex-direction: column; justify-content: space-between; text-align: left">
+<span style="display: flex; align-items: center; gap: 14px; width: 100%">
+<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D6B98A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+<span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1">16,7°</span>
+<span style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px"><span style="font-size: 22px">Sonnig</span><span style="font-size: 18px; color: #A39F97">22° / 13° · 77 %</span></span>
+</span>
+<span style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%">
+<sc-for list="{{ forecast }}" as="f" hint-placeholder-count="4">
+<span style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<span style="font-size: 18px; color: #A39F97">{{ f.day }}</span>
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#A39F97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ f.icon }}"></path></svg>
+<span style="display: flex; flex-direction: column; align-items: center; line-height: 1.2"><span style="font-size: 22px; font-weight: 600">{{ f.hi }}</span><span style="font-size: 18px; color: #8A857D">{{ f.lo }}</span></span>
+</span>
+</sc-for>
+</span>
+</button>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 308px; gap: 12px">
+
+<button aria-label="Deckenlicht" onPointerDown="{{ g.light.down }}" onPointerUp="{{ g.light.up }}" onPointerLeave="{{ g.light.cancel }}" style="border-radius: 24px; background: #141413; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transform: scale({{ t.light.sc }}); transition: transform .12s">
+<span style="width: 112px; height: 112px; border-radius: 56px; display: flex; align-items: center; justify-content: center; background: {{ t.light.bub }}; color: {{ t.light.ico }}"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"></path></svg></span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+<span style="font-size: 22px; font-weight: 600">Deckenlicht</span>
+<span style="font-size: 18px; color: #A39F97">{{ t.light.label }}</span>
+</span>
+</button>
+
+<div style="border-radius: 24px; background: #141413; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
+<button aria-label="Thermostat Details" onPointerDown="{{ g.clim.down }}" onPointerUp="{{ g.clim.up }}" onPointerLeave="{{ g.clim.cancel }}" style="flex: 1; min-height: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 4px">
+<span style="align-self: flex-start; font-size: 22px; font-weight: 600">Thermostat</span>
+<span style="position: relative; width: 164px; height: 164px">
+<svg width="164" height="164" viewBox="0 0 164 164" style="position: absolute; inset: 0">
+<circle cx="82" cy="82" r="70" fill="none" stroke="#1F1E1C" stroke-width="12" stroke-linecap="round" stroke-dasharray="329.9 439.8" transform="rotate(135 82 82)"></circle>
+<circle cx="82" cy="82" r="70" fill="none" stroke="{{ t.clim.arcCol }}" stroke-width="12" stroke-linecap="round" stroke-dasharray="{{ t.clim.dash }}" stroke-dashoffset="{{ t.clim.off }}" transform="rotate(135 82 82)" style="transition: all .2s"></circle>
+<circle cx="{{ t.clim.kx }}" cy="{{ t.clim.ky }}" r="11" fill="#ECE9E3" stroke="#141413" stroke-width="4" style="transition: all .2s"></circle>
+</svg>
+<span style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px">
+<span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1">{{ t.clim.main }}</span>
+<span style="font-size: 18px; color: {{ t.clim.subCol }}">{{ t.clim.sub }}</span>
+</span>
+</span>
+</button>
+<div style="height: 64px; flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+<button aria-label="Zieltemperatur senken" onClick="{{ climDown }}" style="border-radius: 20px; background: #1F1E1C; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+<button aria-label="Zieltemperatur erhöhen" onClick="{{ climUp }}" style="border-radius: 20px; background: #1F1E1C; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+</div>
+</div>
+
+<div style="border-radius: 24px; background: #141413; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+<button aria-label="Rollladen Details" onPointerDown="{{ g.cover.down }}" onPointerUp="{{ g.cover.up }}" onPointerLeave="{{ g.cover.cancel }}" style="flex: 1; min-height: 0; background: transparent; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 12px">
+<span style="align-self: flex-start; font-size: 22px; font-weight: 600">Rollladen</span>
+<span style="flex: 1; width: 120px; display: flex; flex-direction: column">
+<span style="flex: 1; position: relative; border: 7px solid #3A3833; border-bottom: 0; background: #10161A; overflow: hidden">
+<span style="position: absolute; top: 0; bottom: 0; left: 50%; width: 5px; margin-left: -2px; background: #3A3833"></span>
+<span style="position: absolute; left: 0; right: 0; top: 46%; height: 5px; background: #3A3833"></span>
+<span style="position: absolute; left: 0; right: 0; top: 0; height: {{ t.cover.shade }}; background: repeating-linear-gradient(180deg, #8A857D 0 12px, #5E5A54 12px 14px); transition: height .08s linear"></span>
+</span>
+<span style="height: 10px; margin: 0 -8px; border-radius: 2px; background: #3A3833"></span>
+</span>
+</button>
+<div style="height: 64px; flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+<button aria-label="{{ t.cover.upAria }}" onClick="{{ coverUp }}" style="border-radius: 20px; display: flex; align-items: center; justify-content: center; background: {{ t.cover.upBg }}"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.cover.upIcon }}"></path></svg></button>
+<button aria-label="{{ t.cover.downAria }}" onClick="{{ coverDown }}" style="border-radius: 20px; display: flex; align-items: center; justify-content: center; background: {{ t.cover.downBg }}"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.cover.downIcon }}"></path></svg></button>
+</div>
+</div>
+
+<div style="border-radius: 24px; background: #141413; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; scroll-snap-align: start">
+<button aria-label="Lautsprecher Details" onClick="{{ openMedia }}" style="flex: 1; min-height: 0; border-radius: 18px; background: #1F1E1C; display: flex; align-items: center; justify-content: center; color: #5E5A54"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path></svg></button>
+<div style="height: 64px; flex: none; display: flex; align-items: center; gap: 10px">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 22px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Lautsprecher</span>
+<span style="font-size: 18px; color: #A39F97; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ t.media.state }}</span>
+</span>
+<button aria-label="{{ t.media.playLabel }}" onClick="{{ mediaToggle }}" style="width: 64px; height: 64px; flex: none; border-radius: 32px; background: #ECE9E3; color: #000000; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{ t.media.playing }}" hint-placeholder-val="{{ true }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M8 5v14M16 5v14"></path></svg></sc-if>
+<sc-if value="{{ t.media.paused }}" hint-placeholder-val="{{ false }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l11 7-11 7z"></path></svg></sc-if>
+</button>
+</div>
+</div>
+
+<button aria-label="Energie Details" onClick="{{ openEnergy }}" style="border-radius: 24px; background: #141413; padding: 16px 16px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; text-align: left">
+<span style="font-size: 22px; font-weight: 600">Energie</span>
+<span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1">1,24 <span style="font-size: 22px; color: #A39F97">kW</span></span>
+<span style="flex: 1; width: 100%; display: flex; align-items: flex-end; gap: 3px">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="24">
+<span style="flex: 1; border-radius: 2px; height: {{ b.h }}; background: {{ b.c }}"></span>
+</sc-for>
+</span>
+</button>
+
+<button role="switch" aria-checked="{{ t.plug.aria }}" aria-label="Kaffeemaschine" onPointerDown="{{ g.plug.down }}" onPointerUp="{{ g.plug.up }}" onPointerLeave="{{ g.plug.cancel }}" style="border-radius: 24px; background: #141413; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transform: scale({{ t.plug.sc }}); transition: transform .12s">
+<span style="width: 112px; height: 112px; border-radius: 56px; display: flex; align-items: center; justify-content: center; background: {{ t.plug.bub }}; color: {{ t.plug.ico }}"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v4"></path></svg></span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+<span style="font-size: 22px; font-weight: 600">Kaffeemaschine</span>
+<span style="font-size: 18px; color: #A39F97">{{ t.plug.label }}</span>
+</span>
+</button>
+
+<div style="border-radius: 24px; background: #141413; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 22px; font-weight: 600; padding: 0 0 4px">Szenen</span>
+<sc-for list="{{ scenes }}" as="sc" hint-placeholder-count="3">
+<button onClick="{{ sc.pick }}" style="flex: 1; border-radius: 20px; padding: 0 16px; display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 600; text-align: left; background: {{ sc.bg }}">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ sc.ico }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ sc.icon }}"></path></svg>{{ sc.label }}</button>
+</sc-for>
+</div>
+
+<button aria-label="{{ t.lock.aria }}" onPointerDown="{{ lockDown }}" onPointerUp="{{ lockUp }}" onPointerLeave="{{ lockUp }}" style="border-radius: 24px; background: #141413; padding: 20px 16px; position: relative; overflow: hidden; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px">
+<span style="position: absolute; left: 0; bottom: 0; right: 0; height: {{ t.lock.prog }}; background: #2E271C"></span>
+<span style="position: relative; width: 112px; height: 112px; border-radius: 56px; display: flex; align-items: center; justify-content: center; background: {{ t.lock.bub }}; color: {{ t.lock.ico }}"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.lock.icon }}"></path></svg></span>
+<span style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px">
+<span style="font-size: 22px; font-weight: 600">Haustür</span>
+<span style="font-size: 18px; color: {{ t.lock.sc }}">{{ t.lock.label }}</span>
+</span>
+</button>
+
+<button aria-label="Raumluft" onClick="{{ airInfo }}" style="border-radius: 24px; background: #141413; padding: 16px 16px 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; text-align: left">
+<span style="font-size: 22px; font-weight: 600">Raumluft</span>
+<span style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1">640</span>
+<span style="font-size: 18px; color: #A39F97">ppm CO₂ · <span style="color: #8FA88A">gut</span></span>
+</span>
+</button>
+
+</div>
+</div>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; left: 50%; bottom: 32px; transform: translateX(-50%); background: #2B2A27; color: #ECE9E3; border-radius: 28px; padding: 14px 24px; font-size: 22px; white-space: nowrap; z-index: 30">{{ toast }}</div>
+</sc-if>
+
+<sc-if value="{{ sheet }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 24; background: rgba(0,0,0,.7); display: flex; flex-direction: column; justify-content: flex-end">
+<button aria-label="Schließen" onClick="{{ closeSheet }}" style="flex: 1; background: transparent"></button>
+<div style="background: #141413; border-radius: 32px 32px 0 0; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding-left: 8px">
+<span style="font-size: 28px; font-weight: 600">Timer starten</span>
+<button aria-label="Schließen" onClick="{{ closeSheet }}" style="width: 64px; height: 64px; border-radius: 20px; background: #1F1E1C; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ presets }}" as="p" hint-placeholder-count="6">
+<button onClick="{{ p.pick }}" style="height: 96px; border-radius: 22px; background: #1F1E1C; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px"><span style="font-size: 44px; font-weight: 600; line-height: 1">{{ p.m }}</span><span style="font-size: 18px; color: #A39F97">Min.</span></button>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ views }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 25; background: #000000; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+<div style="height: 64px; display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 28px; font-weight: 600; padding-left: 4px">Ansichten</span>
+<button aria-label="Schließen" onClick="{{ closeViews }}" style="width: 64px; height: 64px; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div style="flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 112px; gap: 12px">
+<sc-for list="{{ viewList }}" as="v" hint-placeholder-count="6">
+<button onClick="{{ v.pick }}" style="border-radius: 24px; padding: 20px; display: flex; align-items: center; gap: 16px; text-align: left; background: {{ v.bg }}">
+<span style="width: 64px; height: 64px; border-radius: 32px; background: #1F1E1C; display: flex; align-items: center; justify-content: center; color: {{ v.ico }}"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ v.icon }}"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 600">{{ v.label }}</span><span style="font-size: 18px; color: #A39F97">{{ v.sub }}</span></span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.light }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; inset: 0; z-index: 20"><dc-import name="LightDetail" entity="{{ light }}" on-change="{{ lightChange }}" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div></sc-if>
+<sc-if value="{{ show.climate }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; inset: 0; z-index: 20"><dc-import name="ClimateDetail" entity="{{ climate }}" on-change="{{ climChange }}" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div></sc-if>
+<sc-if value="{{ show.cover }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; inset: 0; z-index: 20"><dc-import name="CoverDetail" entity="{{ cover }}" on-change="{{ coverChange }}" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div></sc-if>
+<sc-if value="{{ show.media }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; inset: 0; z-index: 20"><dc-import name="MediaDetail" entity="{{ media }}" on-change="{{ mediaChange }}" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div></sc-if>
+<sc-if value="{{ show.energy }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; inset: 0; z-index: 20"><dc-import name="EnergyDetail" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div></sc-if>
+<sc-if value="{{ show.weather }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; inset: 0; z-index: 20"><dc-import name="WeatherDetail" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div></sc-if>
+<sc-if value="{{ show.settings }}" hint-placeholder-val="{{ false }}"><div style="position: absolute; inset: 0; z-index: 20"><dc-import name="Settings" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div></sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      light: { on: true, bri: 80, mode: 'ct', kelvin: 2700, hue: 30, sat: 70, supportsColor: true, label: 'Deckenlicht', room: 'Wohnzimmer' },
+      climate: { current: 20.6, low: 21, high: 24, target: 22, hvac: 'heat_cool', humidity: 46, preset: 'home', fan: 'auto' },
+      cover: { pos: 40, tilt: 50, moving: null },
+      media: { playing: true, vol: 35, group: ['Küche'], shuffle: false, repeat: false },
+      plug: { on: false },
+      lock: { locked: true, prog: 0 },
+      timers: [{ id: 1, label: 'Nudeln', total: 600, left: 272, running: true }],
+      alarmOn: true, sceneFlash: null,
+      detail: null, views: false, sheet: false, pressing: null, toast: null, now: new Date()
+    };
+    this._last = {};
+    this._tid = 2;
+  }
+  componentDidMount() {
+    this._tick = setInterval(() => {
+      this.setState((st) => ({ now: new Date(), timers: st.timers.map((t) => (t.running && t.left > 0 ? { ...t, left: t.left - 1 } : t)) }));
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this._tick); clearTimeout(this._ht); clearTimeout(this._tt); clearTimeout(this._toastT); clearInterval(this._mv); clearInterval(this._lk); clearTimeout(this._sf); }
+  say(msg) { clearTimeout(this._toastT); this.setState({ toast: msg }); this._toastT = setTimeout(() => this.setState({ toast: null }), 2000); }
+  patch(key, p) { this.setState((st) => ({ [key]: { ...st[key], ...p } })); }
+  gest(id, tap, hold, dbl) {
+    return {
+      down: () => { clearTimeout(this._ht); this._held = false; this.setState({ pressing: id }); this._ht = setTimeout(() => { this._held = true; this.setState({ pressing: null }); if (hold) hold(); }, 480); },
+      up: () => {
+        clearTimeout(this._ht);
+        if (this._held) { this._held = false; return; }
+        this.setState({ pressing: null });
+        const now = Date.now();
+        if (dbl) {
+          if (this._last[id] && now - this._last[id] < 300) { clearTimeout(this._tt); this._last[id] = 0; dbl(); }
+          else { this._last[id] = now; clearTimeout(this._tt); this._tt = setTimeout(() => { this._last[id] = 0; if (tap) tap(); }, 300); }
+        } else if (tap) tap();
+      },
+      cancel: () => { clearTimeout(this._ht); if (!this._held && this.state.pressing === id) this.setState({ pressing: null }); }
+    };
+  }
+  moveCover(target) {
+    clearInterval(this._mv);
+    if (target === this.state.cover.pos) return;
+    const dir = target > this.state.cover.pos ? 'up' : 'down';
+    this.patch('cover', { moving: dir });
+    this._mv = setInterval(() => {
+      const p = this.state.cover.pos;
+      const next = dir === 'up' ? Math.min(target, p + 2) : Math.max(target, p - 2);
+      if (next === target) { clearInterval(this._mv); this.patch('cover', { pos: next, moving: null }); } else this.patch('cover', { pos: next });
+    }, 70);
+  }
+  stopCover() { clearInterval(this._mv); this.patch('cover', { moving: null }); }
+  addTimer(min) {
+    const t = { id: this._tid++, label: min + ' Min.', total: min * 60, left: min * 60, running: true };
+    this.setState((st) => ({ sheet: false, timers: st.timers.concat([t]).slice(-1) }));
+    this.say('Timer ' + min + ' Min. gestartet');
+  }
+  domBound(c) {
+    if (c.current < c.low) return 'low';
+    if (c.current > c.high) return 'high';
+    return (c.current - c.low) <= (c.high - c.current) ? 'low' : 'high';
+  }
+  renderVals() {
+    const s = this.state;
+    const n = s.now;
+    const pad = (x) => (x < 10 ? '0' : '') + x;
+    const days = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'];
+    const months = ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sep.', 'Okt.', 'Nov.', 'Dez.'];
+    const fmt = (v) => v.toFixed(1).replace('.', ',') + '°';
+    const fmtT = (v) => (v % 1 === 0 ? v + '°' : v.toFixed(1).replace('.', ',') + '°');
+    const L = s.light, C = s.climate, V = s.cover;
+    const lightCol = L.mode === 'color' ? 'hsl(' + L.hue + ' ' + Math.round(L.sat * 0.6) + '% 66%)' : '#D6B98A';
+    const MIN = 7, MAX = 30, ARC = 329.9, CIRC = 439.8;
+    const fr = (v) => Math.max(0, Math.min(1, (v - MIN) / (MAX - MIN)));
+    const dual = C.hvac === 'heat_cool';
+    const dom = dual ? this.domBound(C) : null;
+    const domVal = dual ? C[dom] : C.target;
+    const lo = dual ? fr(C.low) : 0, hi = dual ? fr(C.high) : fr(C.target);
+    const kAng = (135 + 270 * fr(domVal)) * Math.PI / 180;
+    const heatC = '#CF9271', coolC = '#94AFC4';
+    let main, sub, subCol, arcCol;
+    if (C.hvac === 'off') { main = 'Aus'; sub = 'Thermostat aus'; subCol = '#8A857D'; arcCol = '#2B2A27'; }
+    else if (dual) {
+      main = fmtT(domVal);
+      if (dom === 'low') { sub = 'Kühlen ab ' + fmtT(C.high); subCol = '#A39F97'; arcCol = heatC; }
+      else { sub = 'Heizen unter ' + fmtT(C.low); subCol = '#A39F97'; arcCol = coolC; }
+    } else { main = fmtT(C.target); sub = C.hvac === 'heat' ? 'Heizen' : 'Kühlen'; subCol = '#A39F97'; arcCol = C.hvac === 'heat' ? heatC : coolC; }
+    const step = (d) => {
+      const c = this.state.climate;
+      if (c.hvac === 'heat_cool') {
+        const b = this.domBound(c);
+        if (b === 'low') this.patch('climate', { low: Math.max(MIN, Math.min(c.high - 1, c.low + d)) });
+        else this.patch('climate', { high: Math.min(MAX, Math.max(c.low + 1, c.high + d)) });
+      } else this.patch('climate', { target: Math.max(MIN, Math.min(MAX, c.target + d)) });
+    };
+    const power = [22, 18, 15, 14, 14, 16, 30, 52, 44, 38, 35, 41, 48, 62, 40, 36, 33, 45, 70, 82, 66, 50, 38, 58];
+    const sun = 'M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4';
+    const rain = 'M7 15a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A4 4 0 0 1 17 15zM8 18l-1 2M12 18l-1 2M16 18l-1 2';
+    const partly = 'M8 20a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A4 4 0 0 1 18 20zM9 3v1.5M3.5 8.5H5M5 4.5l1 1M14 6a4 4 0 0 0-7 2.5';
+    const views = [
+      ['Übersicht', 'Uhr, Wetter, Favoriten', 'M3 11l9-7 9 7M5 10v10h14V10'],
+      ['Wohnzimmer', '1 Licht an · 20,6°', 'M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zM8 21h8'],
+      ['Küche', 'Alles aus', 'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v4'],
+      ['Schlafzimmer', 'Rollladen zu', 'M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z'],
+      ['Energie', '1,24 kW', 'M13 3L5 14h6l-1 7 8-11h-6z'],
+      ['Sicherheit', 'Unscharf · Tür zu', 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z']
+    ];
+    const scenes = [
+      ['film', 'Filmabend', 'M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zM8 21h8'],
+      ['dinner', 'Essen', 'M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2v2M12 20v2M2 12h2M20 12h2'],
+      ['off', 'Alles aus', 'M12 3v9M6.3 6.3a8 8 0 1 0 11.4 0']
+    ];
+    const open = (d) => () => this.setState({ detail: d });
+    const lk = s.lock;
+    const up = 'M6 15l6-6 6 6', down = 'M6 9l6 6 6-6', stop = 'M7 7h10v10H7z';
+    return {
+      time: pad(n.getHours()) + ':' + pad(n.getMinutes()),
+      date: days[n.getDay()] + ' ' + n.getDate() + '. ' + months[n.getMonth()],
+      inside: fmt(C.current),
+      forecast: [['Mi', sun, '23°', '9°'], ['Do', rain, '16°', '9°'], ['Fr', rain, '12°', '7°'], ['Sa', partly, '15°', '12°']].map(([day, icon, hi2, lo2]) => ({ day, icon, hi: hi2, lo: lo2 })),
+      noTimer: s.timers.length === 0, hasTimer: s.timers.length > 0,
+      timers: s.timers.map((t) => {
+        const done = t.left === 0;
+        const C2 = 125.66;
+        return {
+          time: done ? '00:00' : pad(Math.floor(t.left / 60)) + ':' + pad(t.left % 60),
+          label: done ? 'Abgelaufen' : t.running ? t.label : 'Pausiert',
+          aria: 'Timer ' + t.label + (done ? ', abgelaufen, tippen zum Beenden' : ', tippen für Pause, halten zum Löschen'),
+          bg: done ? '#2A1D18' : '#1F1E1C', fg: done ? '#D98A73' : '#ECE9E3',
+          ring: done ? '#D98A73' : t.running ? '#D6B98A' : '#8A857D',
+          dash: (C2 * t.left / t.total).toFixed(1) + ' ' + C2,
+          icon: done ? 'M6 6l12 12M18 6L6 18' : t.running ? 'M9 6v12M15 6v12' : 'M8 5l11 7-11 7z',
+          g: this.gest('timer' + t.id,
+            () => { if (done) this.setState((st) => ({ timers: st.timers.filter((x) => x.id !== t.id) })); else this.setState((st) => ({ timers: st.timers.map((x) => (x.id === t.id ? { ...x, running: !x.running } : x)) })); },
+            () => { this.setState((st) => ({ timers: st.timers.filter((x) => x.id !== t.id) })); this.say('Timer gelöscht'); })
+        };
+      }),
+      alarm: { fg: s.alarmOn ? '#ECE9E3' : '#8A857D', sub: s.alarmOn ? 'Mi.' : 'aus', aria: 'Wecker 06:30 ' + (s.alarmOn ? 'an' : 'aus'), flip: () => { this.setState({ alarmOn: !s.alarmOn }); this.say(s.alarmOn ? 'Wecker 06:30 aus' : 'Wecker 06:30 an'); } },
+      sheet: s.sheet, openSheet: () => this.setState({ sheet: true }), closeSheet: () => this.setState({ sheet: false }),
+      presets: [1, 3, 5, 10, 15, 30].map((m) => ({ m, pick: () => this.addTimer(m) })),
+      bars: power.map((v, i) => ({ h: v + '%', c: i === power.length - 1 ? '#D6B98A' : '#34322E' })),
+      toast: s.toast, views: s.views,
+      openViews: () => this.setState({ views: true }), closeViews: () => this.setState({ views: false }),
+      viewList: views.map(([label, sub2, icon]) => ({ label, sub: sub2, icon, bg: label === 'Wohnzimmer' ? '#1F1E1C' : '#141413', ico: label === 'Wohnzimmer' ? '#D6B98A' : '#A39F97', pick: () => { this.setState({ views: false }); if (label !== 'Wohnzimmer') this.say('Ansicht „' + label + '“'); } })),
+      g: {
+        light: this.gest('light', () => this.patch('light', { on: !this.state.light.on }), open('light'), () => { this.patch('light', { on: true, bri: 100, mode: 'ct', kelvin: 4000 }); this.say('Deckenlicht · 100 % Neutralweiß'); }),
+        clim: this.gest('clim', open('climate'), open('climate')),
+        cover: this.gest('cover', open('cover'), open('cover')),
+        plug: this.gest('plug', () => this.patch('plug', { on: !this.state.plug.on }), () => this.say('Verbrauch heute: 0,3 kWh'))
+      },
+      t: {
+        light: { bub: L.on ? '#2E271C' : '#1F1E1C', ico: L.on ? lightCol : '#8A857D', label: L.on ? L.bri + ' %' : 'Aus', sc: s.pressing === 'light' ? 0.97 : 1 },
+        clim: { main, sub, subCol, arcCol, dash: (C.hvac === 'off' ? 0 : (hi - lo) * ARC).toFixed(1) + ' ' + CIRC, off: (-lo * ARC).toFixed(1), kx: (82 + 70 * Math.cos(kAng)).toFixed(1), ky: (82 + 70 * Math.sin(kAng)).toFixed(1) },
+        cover: {
+          shade: (100 - V.pos) + '%',
+          upBg: V.moving === 'up' ? '#2B2A27' : '#1F1E1C', downBg: V.moving === 'down' ? '#2B2A27' : '#1F1E1C',
+          upIcon: V.moving === 'up' ? stop : up, downIcon: V.moving === 'down' ? stop : down,
+          upAria: V.moving === 'up' ? 'Stopp' : 'Öffnen', downAria: V.moving === 'down' ? 'Stopp' : 'Schließen'
+        },
+        media: { playing: s.media.playing, paused: !s.media.playing, playLabel: s.media.playing ? 'Pause' : 'Abspielen', state: s.media.playing ? 'Spielt' : 'Pausiert' },
+        plug: { bub: s.plug.on ? '#2E271C' : '#1F1E1C', ico: s.plug.on ? '#D6B98A' : '#8A857D', label: s.plug.on ? 'An' : 'Aus', aria: s.plug.on ? 'true' : 'false', sc: s.pressing === 'plug' ? 0.97 : 1 },
+        lock: lk.locked
+          ? { bub: '#1F1E1C', ico: '#ECE9E3', icon: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V7a4 4 0 0 1 8 0v4', label: lk.prog > 0 ? 'Weiter halten …' : 'Verriegelt', sc: '#A39F97', prog: lk.prog + '%', aria: 'Haustür verriegelt, halten zum Öffnen' }
+          : { bub: '#2A1D18', ico: '#D98A73', icon: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V7a4 4 0 0 1 7.5-2', label: 'Offen · tippen zum Verriegeln', sc: '#D98A73', prog: '0%', aria: 'Haustür entriegelt, tippen zum Verriegeln' }
+      },
+      lockDown: () => {
+        if (!this.state.lock.locked) { this.patch('lock', { locked: true, prog: 0 }); this.say('Haustür verriegelt'); return; }
+        clearInterval(this._lk);
+        this._lk = setInterval(() => {
+          const p = Math.min(100, this.state.lock.prog + 5);
+          if (p >= 100) { clearInterval(this._lk); this.patch('lock', { locked: false, prog: 0 }); this.say('Haustür entriegelt'); } else this.patch('lock', { prog: p });
+        }, 50);
+      },
+      lockUp: () => { clearInterval(this._lk); if (this.state.lock.prog > 0) this.patch('lock', { prog: 0 }); },
+      scenes: scenes.map(([id, label, icon]) => ({ label, icon, bg: s.sceneFlash === id ? '#2B2A27' : '#1F1E1C', ico: s.sceneFlash === id ? '#D6B98A' : '#A39F97', pick: () => {
+        if (id === 'film') { this.patch('light', { on: true, bri: 20, mode: 'ct', kelvin: 2200 }); this.moveCover(0); }
+        if (id === 'dinner') this.patch('light', { on: true, bri: 70, mode: 'ct', kelvin: 2700 });
+        if (id === 'off') { this.patch('light', { on: false }); this.patch('plug', { on: false }); this.patch('media', { playing: false }); }
+        this.setState({ sceneFlash: id }); clearTimeout(this._sf); this._sf = setTimeout(() => this.setState({ sceneFlash: null }), 1500);
+        this.say('Szene „' + label + '“');
+      } })),
+      airInfo: () => this.say('CO₂ 640 ppm · Feuchte 46 %'),
+      climDown: () => step(-0.5), climUp: () => step(0.5),
+      coverUp: () => { if (this.state.cover.moving === 'up') this.stopCover(); else this.moveCover(100); },
+      coverDown: () => { if (this.state.cover.moving === 'down') this.stopCover(); else this.moveCover(0); },
+      mediaToggle: () => this.patch('media', { playing: !this.state.media.playing }),
+      openMedia: open('media'), openEnergy: open('energy'), openWeather: open('weather'), openSettings: open('settings'),
+      show: { light: s.detail === 'light', climate: s.detail === 'climate', cover: s.detail === 'cover', media: s.detail === 'media', energy: s.detail === 'energy', weather: s.detail === 'weather', settings: s.detail === 'settings' },
+      light: L, lightChange: (p) => this.patch('light', p),
+      climate: C, climChange: (p) => this.patch('climate', p),
+      media: s.media, mediaChange: (p) => this.patch('media', p),
+      cover: V, coverChange: (p) => { if (p.target != null) this.moveCover(p.target); else if (p.stop) this.stopCover(); else { if (p.pos != null) clearInterval(this._mv); this.patch('cover', p.pos != null ? { ...p, moving: null } : p); } },
+      close: () => this.setState({ detail: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

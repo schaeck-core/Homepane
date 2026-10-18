@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Alarmanlage</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 16px; overflow: hidden; position: relative">
+
+<div style="height: 72px; display: flex; align-items: center; gap: 16px">
+<button aria-label="Zurück" style="width: 64px; height: 64px; flex: none; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 28px; font-weight: 600">Alarmanlage</span>
+<span style="font-size: 18px; color: #A39F97">Ganzes Haus · 6 Sensoren bereit</span>
+</div>
+</div>
+
+<div style="flex: 1; min-height: 0; display: flex; gap: 16px">
+
+<div style="width: 280px; flex: none; display: flex; flex-direction: column; gap: 10px">
+<div style="flex: 1; border-radius: 24px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; background: {{ status.bg }}">
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="{{ status.ico }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>
+<span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 28px; font-weight: 600">{{ status.title }}</span><span style="font-size: 18px; color: #A39F97">{{ status.sub }}</span></span>
+</div>
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+<button onClick="{{ m.pick }}" style="height: 80px; flex: none; border-radius: 22px; padding: 0 20px; display: flex; align-items: center; gap: 14px; font-size: 22px; font-weight: 600; text-align: left; background: {{ m.bg }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A39F97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ m.icon }}"></path></svg>{{ m.label }}</button>
+</sc-for>
+</div>
+
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<div aria-live="polite" style="height: 64px; flex: none; border-radius: 22px; background: #141413; display: flex; align-items: center; justify-content: center; gap: 18px">
+<sc-for list="{{ dots }}" as="d" hint-placeholder-count="6">
+<span style="width: 16px; height: 16px; border-radius: 8px; background: {{ d.c }}"></span>
+</sc-for>
+</div>
+<div style="flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ keys }}" as="k" hint-placeholder-count="12">
+<button aria-label="{{ k.aria }}" onClick="{{ k.press }}" style="border-radius: 22px; background: {{ k.bg }}; color: {{ k.fg }}; font-size: {{ k.size }}; font-weight: 600; display: flex; align-items: center; justify-content: center">{{ k.label }}</button>
+</sc-for>
+</div>
+</div>
+
+</div>
+<sc-if value="{{ hint }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; left: 50%; top: 104px; transform: translateX(-50%); background: #2B2A27; border-radius: 28px; padding: 14px 24px; font-size: 22px; white-space: nowrap">{{ hint }}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { armed: null, code: '', hint: null }; }
+  componentWillUnmount() { clearTimeout(this._h); }
+  say(msg) { clearTimeout(this._h); this.setState({ hint: msg }); this._h = setTimeout(() => this.setState({ hint: null }), 2000); }
+  renderVals() {
+    const s = this.state;
+    const names = { home: 'Zuhause', away: 'Abwesend', night: 'Nacht' };
+    const icons = {
+      home: 'M3 11l9-7 9 7M5 10v10h14V10',
+      away: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V7a4 4 0 0 1 8 0v4',
+      night: 'M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z',
+      off: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V7a4 4 0 0 1 7.5-2'
+    };
+    const needCode = (fn) => () => { if (this.state.code.length < 4) { this.say('Bitte Code eingeben'); return; } fn(); this.setState({ code: '' }); };
+    const modes = s.armed ? [{ id: 'off', label: 'Unscharf' }] : ['home', 'away', 'night'].map((id) => ({ id, label: names[id] }));
+    const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'back'];
+    return {
+      hint: s.hint,
+      status: s.armed
+        ? { bg: '#2A1D18', ico: '#D98A73', title: 'Scharf', sub: names[s.armed] + ' · seit gerade' }
+        : { bg: '#141413', ico: '#A39F97', title: 'Unscharf', sub: 'Code eingeben, dann Modus wählen' },
+      modes: modes.map((m) => ({ label: m.label, icon: icons[m.id], bg: m.id === 'off' ? '#2B2A27' : '#141413', pick: needCode(() => this.setState({ armed: m.id === 'off' ? null : m.id })) })),
+      dots: [0, 1, 2, 3, 4, 5].map((i) => ({ c: i < s.code.length ? '#ECE9E3' : '#2B2A27' })),
+      keys: keys.map((k) => ({
+        label: k === 'clear' ? 'C' : k === 'back' ? '⌫' : k,
+        aria: k === 'clear' ? 'Eingabe löschen' : k === 'back' ? 'Letzte Ziffer löschen' : 'Ziffer ' + k,
+        bg: k === 'clear' || k === 'back' ? '#0B0B0A' : '#141413', fg: k === 'clear' || k === 'back' ? '#A39F97' : '#ECE9E3', size: k === 'clear' || k === 'back' ? '28px' : '44px',
+        press: () => {
+          const c = this.state.code;
+          if (k === 'clear') this.setState({ code: '' });
+          else if (k === 'back') this.setState({ code: c.slice(0, -1) });
+          else if (c.length < 6) this.setState({ code: c + k });
+        }
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

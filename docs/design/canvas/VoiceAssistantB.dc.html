@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Sprachassistent Variante B</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.vb button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+</style>
+</helmet>
+<div class="vb" style="width: 720px; height: 720px; position: relative; overflow: hidden; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; font-variant-numeric: tabular-nums">
+
+<span style="position: absolute; left: 28px; top: 24px; font-size: 22px; color: #A39F97">{{ clock }}</span>
+
+<sc-if value="{{ show.idle }}" hint-placeholder-val="{{ false }}">
+<svg width="720" height="720" viewBox="0 0 720 720" style="position: absolute; inset: 0">
+<defs>
+<linearGradient id="vbIdleG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{{ pal.a }}" stop-opacity="0"></stop><stop offset=".55" stop-color="{{ pal.b }}"></stop><stop offset="1" stop-color="{{ pal.d }}"></stop></linearGradient>
+<filter id="vbIdleF" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+</defs>
+<circle cx="360" cy="300" r="150" fill="none" stroke="#141625" stroke-width="2"></circle>
+<g transform="rotate({{ idle.rot }} 360 300)" filter="url(#vbIdleF)" opacity="{{ idle.op }}">
+<circle cx="360" cy="300" r="150" fill="none" stroke="url(#vbIdleG)" stroke-width="3" stroke-linecap="round" stroke-dasharray="330 612"></circle>
+</g>
+<circle cx="190" cy="300" r="2.5" fill="{{ pal.b }}" opacity="{{ idle.dot }}"></circle>
+</svg>
+</sc-if>
+
+<sc-if value="{{ show.wake }}" hint-placeholder-val="{{ false }}">
+<svg width="720" height="720" viewBox="0 0 720 720" style="position: absolute; inset: 0">
+<defs>
+<radialGradient id="vbWakeR"><stop offset="0" stop-color="{{ pal.a }}" stop-opacity=".0"></stop><stop offset=".45" stop-color="{{ pal.a }}" stop-opacity=".55"></stop><stop offset=".75" stop-color="{{ pal.b }}" stop-opacity=".25"></stop><stop offset="1" stop-color="{{ pal.b }}" stop-opacity="0"></stop></radialGradient>
+<filter id="vbWakeF" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+</defs>
+<circle cx="360" cy="300" r="{{ wake.r4 }}" fill="url(#vbWakeR)"></circle>
+<circle cx="360" cy="300" r="{{ wake.r3 }}" fill="none" stroke="{{ pal.b }}" stroke-width="1.5" opacity=".25"></circle>
+<circle cx="360" cy="300" r="{{ wake.r2 }}" fill="none" stroke="{{ pal.b }}" stroke-width="2" opacity=".45"></circle>
+<circle cx="360" cy="300" r="{{ wake.r1 }}" fill="none" stroke="{{ pal.core }}" stroke-width="7" filter="url(#vbWakeF)"></circle>
+</svg>
+</sc-if>
+
+<sc-if value="{{ show.waves }}" hint-placeholder-val="{{ true }}">
+<svg width="720" height="720" viewBox="0 0 720 720" style="position: absolute; inset: 0">
+<defs>
+<linearGradient id="vbWaveG" gradientUnits="userSpaceOnUse" x1="{{ wv.x0 }}" y1="0" x2="{{ wv.x1 }}" y2="0"><stop offset="0" stop-color="{{ pal.a }}"></stop><stop offset=".4" stop-color="{{ pal.b }}"></stop><stop offset=".7" stop-color="{{ pal.c }}"></stop><stop offset="1" stop-color="{{ wv.end }}"></stop></linearGradient>
+<linearGradient id="vbRingG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{{ pal.a }}"></stop><stop offset="1" stop-color="{{ pal.b }}"></stop></linearGradient>
+<filter id="vbWaveF" x="-10%" y="-60%" width="120%" height="220%"><feGaussianBlur stdDeviation="6" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+</defs>
+<circle cx="360" cy="300" r="190" fill="none" stroke="url(#vbRingG)" stroke-width="2" opacity="{{ wv.ring }}"></circle>
+<g filter="url(#vbWaveF)" style="mix-blend-mode: screen">
+<path d="{{ wv.f0 }}" fill="url(#vbWaveG)" opacity=".30"></path>
+<path d="{{ wv.f1 }}" fill="url(#vbWaveG)" opacity=".26"></path>
+<path d="{{ wv.f2 }}" fill="url(#vbWaveG)" opacity=".22"></path>
+<path d="{{ wv.f3 }}" fill="url(#vbWaveG)" opacity=".20"></path>
+<path d="{{ wv.f4 }}" fill="url(#vbWaveG)" opacity=".18"></path>
+<path d="{{ wv.l0 }}" fill="none" stroke="url(#vbWaveG)" stroke-width="2" opacity=".95"></path>
+<path d="{{ wv.l1 }}" fill="none" stroke="url(#vbWaveG)" stroke-width="1.5" opacity=".7"></path>
+<path d="{{ wv.l2 }}" fill="none" stroke="url(#vbWaveG)" stroke-width="1.5" opacity=".55"></path>
+<path d="{{ wv.l3 }}" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity=".35"></path>
+</g>
+</svg>
+</sc-if>
+
+<sc-if value="{{ show.particles }}" hint-placeholder-val="{{ false }}">
+<svg width="720" height="720" viewBox="0 0 720 720" style="position: absolute; inset: 0">
+<defs><filter id="vbPartF" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs>
+<g filter="url(#vbPartF)">
+<path d="{{ pt.p0 }}" fill="{{ pal.a }}"></path>
+<path d="{{ pt.p1 }}" fill="{{ pal.b }}"></path>
+<path d="{{ pt.p2 }}" fill="{{ pal.c }}"></path>
+<path d="{{ pt.p3 }}" fill="#DCE4FF" opacity=".8"></path>
+</g>
+</svg>
+</sc-if>
+
+<sc-if value="{{ show.done }}" hint-placeholder-val="{{ false }}">
+<svg width="720" height="720" viewBox="0 0 720 720" style="position: absolute; inset: 0">
+<defs>
+<linearGradient id="vbDoneG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{{ pal.a }}"></stop><stop offset=".6" stop-color="{{ pal.b }}"></stop><stop offset="1" stop-color="{{ pal.d }}"></stop></linearGradient>
+<filter id="vbDoneF" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+</defs>
+<circle cx="360" cy="300" r="150" fill="none" stroke="url(#vbDoneG)" stroke-width="3" filter="url(#vbDoneF)" stroke-dasharray="{{ done.ring }}" transform="rotate(-90 360 300)"></circle>
+<path d="M312 302 L348 338 L414 266" fill="none" stroke="#ECE9E3" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="190" stroke-dashoffset="{{ done.check }}"></path>
+</svg>
+</sc-if>
+
+<div style="position: absolute; left: 40px; right: 40px; top: 508px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+<span style="font-size: 22px; color: #A39F97; opacity: {{ text.labelOp }}">{{ text.label }}</span>
+<span aria-live="polite" style="font-size: 28px; font-weight: 600; line-height: 1.3; min-height: 37px">{{ text.main }}<span style="color: #6F6B66">{{ text.tail }}</span></span>
+</div>
+
+<button aria-label="{{ mic.aria }}" onClick="{{ restart }}" style="position: absolute; left: 324px; top: 620px; width: 72px; height: 72px; border-radius: 36px; background: #000000; box-shadow: inset 0 0 0 2px {{ mic.ring }}; display: flex; align-items: center; justify-content: center; color: {{ mic.fg }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3"></path></svg>
+</button>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"phase":{"editor":"enum","options":["auto","idle","wake","listening","processing","responding","done"],"default":"auto"},"palette":{"editor":"enum","options":["Aurora","Gedämpft"],"default":"Aurora"},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { t: 0 }; this._start = Date.now(); }
+  componentDidMount() { this._iv = setInterval(() => this.setState({ t: Date.now() - this._start }), 33); }
+  componentWillUnmount() { clearInterval(this._iv); }
+  wave(x0, x1, cy, A, k, ph, s) {
+    const top = [], bot = [];
+    for (let x = x0; x <= x1; x += 8) {
+      const u = (x - x0) / (x1 - x0);
+      const e = Math.pow(Math.sin(Math.PI * u), 2);
+      const v = Math.sin(k * x + ph) * (0.7 + 0.3 * Math.sin(k * 0.5 * x - ph * 0.6));
+      top.push(x + ' ' + (cy - A * s * e * v).toFixed(1));
+      bot.push(x + ' ' + (cy + A * s * e * v * 0.38).toFixed(1));
+    }
+    const line = 'M' + top.join(' L');
+    return { fill: line + ' L' + bot.reverse().join(' L') + ' Z', line };
+  }
+  dots(list) {
+    return list.map(([x, y, r]) => 'M' + (x - r).toFixed(1) + ' ' + y.toFixed(1) + ' a' + r + ' ' + r + ' 0 1 0 ' + (2 * r) + ' 0 a' + r + ' ' + r + ' 0 1 0 ' + (-2 * r) + ' 0').join(' ');
+  }
+  renderVals() {
+    const t = this.state.t;
+    const clamp = (x) => Math.max(0, Math.min(1, x));
+    const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+    const P = this.props.palette === 'Gedämpft'
+      ? { a: '#8FA7C4', b: '#A99BC6', c: '#C9A3B0', d: '#D6B98A', core: '#C9D3E6', end: '#D6B98A' }
+      : { a: '#3D6BFF', b: '#7B4DFF', c: '#D04DFF', d: '#FF7A8A', core: '#A9BEFF', end: '#FF8A5C' };
+    const fixed = this.props.phase && this.props.phase !== 'auto' ? this.props.phase : null;
+    let phase, lt = 0, p = 1;
+    if (fixed) { phase = fixed; lt = 99999; }
+    else {
+      const tt = t % 13000;
+      const seq = [['idle', 0, 1200], ['wake', 1200, 2000], ['listening', 2000, 6000], ['processing', 6000, 7600], ['responding', 7600, 10400], ['done', 10400, 11800], ['idle', 11800, 13000]];
+      for (const [ph, a, b] of seq) if (tt >= a && tt < b) { phase = ph; lt = tt - a; p = (tt - a) / (b - a); }
+    }
+    let amp = 0;
+    if (phase === 'listening') {
+      const env = fixed ? 1 : clamp((lt - 250) / 300) * clamp((3800 - lt) / 300);
+      amp = 0.12 + env * clamp(0.15 + 0.65 * Math.abs(Math.sin(t / 150)) * (0.55 + 0.45 * Math.sin(t / 47 + 1.1)));
+    } else if (phase === 'responding') {
+      const env = fixed ? 1 : clamp(lt / 300) * clamp((2800 - lt) / 300);
+      amp = 0.2 + env * (0.5 + 0.5 * Math.abs(Math.sin(t / 115)) * (0.6 + 0.4 * Math.sin(t / 39)));
+    }
+    const wide = phase === 'responding';
+    const x0 = wide ? 30 : 176, x1 = wide ? 690 : 544;
+    const A = wide ? 34 + amp * 70 : 14 + amp * 62;
+    const layers = [0, 1, 2, 3, 4].map((i) => this.wave(x0, x1, 300, A, 0.017 + i * 0.0045 - (wide ? 0.004 : 0), i * 1.35 + t * (0.0024 + i * 0.0007) * (i % 2 ? -1 : 1), [1, 0.82, 0.66, 0.5, 0.9][i]));
+    let pt = { p0: '', p1: '', p2: '', p3: '' };
+    if (phase === 'processing') {
+      const buckets = [[], [], [], []];
+      for (let i = 0; i < 84; i++) {
+        const a = (i / 84) * Math.PI * 2 + t * 0.0009;
+        const r = 150 + 16 * Math.sin(i * 1.7 + t / 260) + 6 * Math.sin(i * 0.9 - t / 140);
+        const s = 1.4 + 1.6 * (0.5 + 0.5 * Math.sin(i * 2.3 + t / 200));
+        buckets[i % 4].push([360 + r * Math.cos(a), 300 + r * Math.sin(a), +s.toFixed(1)]);
+      }
+      for (let i = 0; i < 44; i++) {
+        const a = (i / 44) * Math.PI * 2 - t * 0.0014;
+        const r = 108 + 10 * Math.sin(i * 2.1 - t / 210);
+        buckets[(i + 1) % 3].push([360 + r * Math.cos(a), 300 + r * Math.sin(a), 1.2]);
+      }
+      pt = { p0: this.dots(buckets[0]), p1: this.dots(buckets[1]), p2: this.dots(buckets[2]), p3: this.dots(buckets[3]) };
+    }
+    const we = easeOut(fixed ? 0.8 : p * 1.2);
+    const de = easeOut(fixed ? 1 : p * 1.6);
+    const words = 'Mach das Licht im Wohnzimmer auf 50 Prozent'.split(' ');
+    const shown = phase === 'listening' ? (fixed ? words.length : Math.floor(clamp((lt - 400) / 3000) * words.length)) : words.length;
+    const labels = { idle: '', wake: 'Ich höre zu …', listening: 'Ich höre zu …', processing: 'Ich denke nach …', responding: 'Ich antworte …', done: 'Erledigt' };
+    let main = '', tail = '';
+    if (phase === 'listening') { main = words.slice(0, Math.max(0, shown - 1)).join(' '); tail = shown > 0 ? (shown > 1 ? ' ' : '') + words[shown - 1] : ''; }
+    else if (phase === 'processing') { main = words.join(' '); }
+    else if (phase === 'responding' || phase === 'done') { main = 'Deckenlicht ist jetzt auf 50 %.'; }
+    const n = new Date();
+    const pad = (x) => (x < 10 ? '0' : '') + x;
+    const active = phase !== 'idle' && phase !== 'done';
+    return {
+      clock: pad(n.getHours()) + ':' + pad(n.getMinutes()),
+      pal: P,
+      show: { idle: phase === 'idle', wake: phase === 'wake', waves: phase === 'listening' || phase === 'responding', particles: phase === 'processing', done: phase === 'done' },
+      idle: { rot: ((t / 45) % 360).toFixed(1), op: (0.55 + 0.25 * Math.sin(t / 900)).toFixed(2), dot: (0.4 + 0.4 * Math.sin(t / 700)).toFixed(2) },
+      wake: { r1: (78 * we).toFixed(1), r2: (112 * we).toFixed(1), r3: (146 * we).toFixed(1), r4: (170 * we).toFixed(1) },
+      wv: {
+        x0, x1, end: wide ? P.end : P.c, ring: wide ? '0' : '.45',
+        f0: layers[0].fill, f1: layers[1].fill, f2: layers[2].fill, f3: layers[3].fill, f4: layers[4].fill,
+        l0: layers[0].line, l1: layers[1].line, l2: layers[2].line, l3: layers[4].line
+      },
+      pt,
+      done: { ring: (942.5 * de).toFixed(1) + ' 942.5', check: (190 * (1 - easeOut(fixed ? 1 : (p - 0.2) * 2))).toFixed(1) },
+      text: { label: labels[phase], labelOp: phase === 'idle' ? 0 : 1, main, tail },
+      mic: { ring: active ? P.b : '#2B2A27', fg: active ? '#ECE9E3' : '#8A857D', aria: 'Demo neu starten' },
+      restart: () => { this._start = Date.now(); this.setState({ t: 0 }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

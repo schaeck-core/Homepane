@@ -1,0 +1,1 @@
+{"timestamp":"2026-09-07 01:49:55","entity_id":"sensor.tasmota_energy_power","event":{"a":{"sensor.tasmota_energy_power":{"s":"unavailable","a":{"state_class":"measurement","unit_of_measurement":"W","device_class":"power","friendly_name":"Tasmota ENERGY Power"},"c":"01M0AY7CXTBEYRXXXM8N8S7MP1","lc":1787073639.354022}}}}

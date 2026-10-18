@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Türklingel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 16px; overflow: hidden">
+
+<div style="flex: 1; min-height: 0; border-radius: 24px; background: #141413; position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: #5E5A54">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h4l2-3h6l2 3h4v12H3zM12 9a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path></svg>
+<span style="font-size: 18px">[Kamerabild Haustür]</span>
+<span style="position: absolute; left: 16px; top: 16px; height: 44px; padding: 0 16px; border-radius: 22px; background: #000000; color: #ECE9E3; display: flex; align-items: center; gap: 8px; font-size: 18px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #D98A73"></span>Live · Haustür</span>
+</div>
+
+<div style="height: 64px; display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 0 4px">
+<span style="font-size: 28px; font-weight: 600">{{ title }}</span>
+<span style="font-size: 18px; color: #A39F97">{{ sub }}</span>
+</div>
+
+<div style="height: 112px; display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 10px">
+<button onClick="{{ dismiss }}" style="border-radius: 24px; background: #141413; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 18px; font-weight: 600"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>Schließen</button>
+<button onClick="{{ talk }}" aria-pressed="{{ talkAria }}" style="border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 18px; font-weight: 600; background: {{ talkBg }}"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3"></path></svg>{{ talkLabel }}</button>
+<button aria-label="Zum Öffnen halten" onPointerDown="{{ holdStart }}" onPointerUp="{{ holdEnd }}" onPointerLeave="{{ holdEnd }}" style="border-radius: 24px; background: #1F1E1C; position: relative; overflow: hidden; touch-action: none">
+<span style="position: absolute; left: 0; top: 0; bottom: 0; width: {{ prog }}; background: #D6B98A"></span>
+<span style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 18px; font-weight: 600; color: {{ openFg }}"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V7a4 4 0 0 1 7.5-2"></path></svg>{{ openLabel }}</span>
+</button>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { prog: 0, opened: false, talking: false }; }
+  componentWillUnmount() { clearInterval(this._iv); }
+  renderVals() {
+    const s = this.state;
+    return {
+      title: s.opened ? 'Tür geöffnet' : 'Es klingelt an der Haustür',
+      sub: s.opened ? 'Schließt automatisch in 5 s' : s.talking ? 'Gegensprechen aktiv' : 'vor 5 Sekunden',
+      prog: s.prog + '%',
+      openFg: s.prog > 55 ? '#000000' : '#ECE9E3',
+      openLabel: s.opened ? 'Geöffnet' : s.prog > 0 ? 'Halten …' : 'Halten zum Öffnen',
+      talkBg: s.talking ? '#2B2A27' : '#141413', talkAria: s.talking ? 'true' : 'false', talkLabel: s.talking ? 'Beenden' : 'Sprechen',
+      talk: () => this.setState({ talking: !s.talking }),
+      dismiss: () => this.setState({ prog: 0, opened: false, talking: false }),
+      holdStart: () => {
+        if (this.state.opened) return;
+        clearInterval(this._iv);
+        this._iv = setInterval(() => {
+          const p = Math.min(100, this.state.prog + 5);
+          if (p >= 100) { clearInterval(this._iv); this.setState({ prog: 100, opened: true }); } else this.setState({ prog: p });
+        }, 50);
+      },
+      holdEnd: () => { clearInterval(this._iv); if (!this.state.opened) this.setState({ prog: 0 }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

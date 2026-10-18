@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Design-Tokens</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 720px; height: 720px; box-sizing: border-box; padding: 40px; background: #0E0E0D; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 24px">
+
+<h1 style="margin: 0; font-size: 28px; font-weight: 600">Tokens für LVGL</h1>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 16px">
+<sc-for list="{{ colors }}" as="c" hint-placeholder-count="12">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 40px; height: 40px; flex: none; border-radius: 12px; background: {{ c.hex }}; box-shadow: 0 0 0 1px #34322E"></span>
+<span style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 16px">{{ c.name }}</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #A39F97">{{ c.hex }}</span></span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{ type }}" as="t" hint-placeholder-count="6">
+<div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid #1F1E1C; padding-bottom: 6px">
+<span style="width: 64px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #A39F97">{{ t.px }} px</span>
+<span style="width: 70px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #8A857D">{{ t.w }}</span>
+<span style="flex: 1; font-size: {{ t.sample }}; font-weight: {{ t.w }}; line-height: 1.1">{{ t.use }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: auto">
+<div style="border-radius: 20px; background: #141413; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; color: #A39F97">Radien</span><span style="font-size: 16px; line-height: 1.5">Kachel 24<br>Bedienung 20<br>Pille = Höhe/2</span></div>
+<div style="border-radius: 20px; background: #141413; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; color: #A39F97">Touch</span><span style="font-size: 16px; line-height: 1.5">Minimum 64 × 64<br>Standard 72–88<br>Primär 104–112</span></div>
+<div style="border-radius: 20px; background: #141413; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 14px; color: #A39F97">Abstände</span><span style="font-size: 16px; line-height: 1.5">Rand 16 · Raster 12<br>Innen 16–20<br>Kachel 221 × 308</span></div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const colors = [
+      ['Hintergrund', '#000000'], ['Fläche', '#141413'], ['Fläche 2', '#1F1E1C'], ['Aktiv', '#2B2A27'],
+      ['Text', '#ECE9E3'], ['Text 2', '#A39F97'], ['Text 3', '#8A857D'], ['Akzent Sand', '#D6B98A'],
+      ['Heizen', '#CF9271'], ['Kühlen', '#94AFC4'], ['Warnung', '#D98A73'], ['OK', '#8FA88A']
+    ].map(([name, hex]) => ({ name, hex }));
+    const type = [
+      [160, 600, 'Uhr Schoner', '36px'], [96, 600, 'Uhr, Hauptwert', '36px'], [44, 600, 'Messwerte', '32px'],
+      [28, 600, 'Seitentitel', '28px'], [22, 500, 'Namen, Text', '22px'], [18, 500, 'Status, Labels', '18px']
+    ].map(([px, w, use, sample]) => ({ px, w, use, sample }));
+    return { colors, type };
+  }
+}
+</script>
+</body>
+</html>

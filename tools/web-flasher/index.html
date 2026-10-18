@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homepane — ESP32-P4 Web Flasher</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- ESP Web Tools – browser-based USB-Serial flashing via Web Serial API -->
+  <script
+    type="module"
+    src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"
+  ></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Homepane Web Flasher</h1>
+      <p class="subtitle">
+        Flash the <strong>Homepane</strong> firmware onto your
+        <strong>Waveshare ESP32-P4-86-Panel</strong> directly from the browser.
+      </p>
+    </header>
+
+    <section class="flash-card">
+      <div class="board-info">
+        <h2>Waveshare ESP32-P4-86-Panel-ETH-2RO</h2>
+        <table>
+          <tr><td>Chip</td><td>ESP32-P4</td></tr>
+          <tr><td>Flash</td><td>32 MB</td></tr>
+          <tr><td>PSRAM</td><td>32 MB (SPIRAM)</td></tr>
+          <tr><td>Display</td><td>4.0" 720×720 IPS (ST7703)</td></tr>
+          <tr><td>Touch</td><td>GT911 capacitive</td></tr>
+          <tr><td>Connectivity</td><td>Ethernet + WiFi 6 (ESP32-C6 co-processor)</td></tr>
+        </table>
+      </div>
+
+      <fieldset class="options">
+        <legend>Wi-Fi module (ESP32-C6)</legend>
+        <label class="option">
+          <input type="radio" name="c6" value="manifest.json" checked />
+          <span>
+            <strong>Install with the Homepane Wi-Fi firmware</strong>
+            <small>The panel updates the ESP32-C6 on first boot and with later updates.</small>
+          </span>
+        </label>
+        <label class="option">
+          <input type="radio" name="c6" value="manifest-no-c6.json" />
+          <span>
+            <strong>Keep the current Wi-Fi firmware</strong>
+            <small>The ESP32-C6 is never updated. You can turn updates on later in
+              <em>Settings → Update</em>; they then come with the next firmware update.</small>
+          </span>
+        </label>
+        <p class="warning">
+          Updating the ESP32-C6 from the factory firmware has not been tested yet.
+          If it fails, recovering the C6 needs a USB-UART adapter on the board's
+          contact pads.
+        </p>
+      </fieldset>
+
+      <div class="install-container">
+        <esp-web-install-button
+          id="install"
+          manifest="manifest.json"
+        >
+          <button slot="activate" class="install-btn">
+            Connect &amp; Flash Firmware
+          </button>
+          <span slot="unsupported">
+            <p class="unsupported-msg">
+              Your browser does not support Web Serial.<br />
+              Please use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>
+              (desktop) version 89+.
+            </p>
+          </span>
+          <span slot="not-allowed">
+            <p class="unsupported-msg">
+              Web Serial access was denied.<br />
+              This page must be served over <strong>HTTPS</strong> or
+              <strong>localhost</strong>.
+            </p>
+          </span>
+        </esp-web-install-button>
+      </div>
+    </section>
+
+    <section class="instructions">
+      <h2>Instructions</h2>
+      <ol>
+        <li>
+          Connect the <strong>Waveshare ESP32-P4-86-Panel</strong> to your
+          computer via USB-C.
+        </li>
+        <li>
+          Click <em>Connect &amp; Flash Firmware</em> above and select the serial
+          port of your board (usually labelled <code>USB JTAG/serial debug unit</code>).
+        </li>
+        <li>
+          Wait for the firmware to be written. The device will reboot automatically
+          once flashing is complete.
+        </li>
+        <li>
+          The flasher then asks for your Wi-Fi and sends it to the panel. You can
+          skip this and choose the network on the panel instead (or use Ethernet).
+        </li>
+        <li>
+          On the panel, enter your Home Assistant URL and confirm the login.
+        </li>
+      </ol>
+
+      <h3>Troubleshooting</h3>
+      <ul>
+        <li>
+          <strong>No serial port shown?</strong> — Make sure IDF USB-JTAG drivers
+          are installed and the board is in download mode (hold BOOT, press RESET,
+          release BOOT).
+        </li>
+        <li>
+          <strong>macOS:</strong> You may need to allow the serial device in
+          <em>System Settings → Privacy &amp; Security</em>.
+        </li>
+        <li>
+          <strong>Linux:</strong> Add your user to the <code>dialout</code> group:
+          <code>sudo usermod -aG dialout $USER</code> and re-login.
+        </li>
+      </ul>
+    </section>
+
+    <script>
+      // The install button reads its manifest when clicked.
+      document.querySelectorAll('input[name="c6"]').forEach((radio) =>
+        radio.addEventListener("change", () => {
+          document.getElementById("install").setAttribute("manifest", radio.value);
+        })
+      );
+    </script>
+
+    <footer>
+      <p>
+        Powered by
+        <a href="https://esphome.github.io/esp-web-tools/" target="_blank" rel="noopener">
+          ESP Web Tools</a>
+        &bull;
+        <a href="https://github.com/schaeck-core/Homepane" target="_blank" rel="noopener">
+          Source Code</a>
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

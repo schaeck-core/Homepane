@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Gesten und Aktionen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1524px; height: 860px; box-sizing: border-box; padding: 56px; background: #0E0E0D; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<h1 style="margin: 0; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">Gesten &amp; Aktionen</h1>
+<p style="margin: 0; font-size: 22px; color: #A39F97">Kacheln übernehmen <span style="font-family: 'JetBrains Mono', monospace; color: #ECE9E3; font-size: 19px">tap_action</span>, <span style="font-family: 'JetBrains Mono', monospace; color: #ECE9E3; font-size: 19px">double_tap_action</span> und <span style="font-family: 'JetBrains Mono', monospace; color: #ECE9E3; font-size: 19px">hold_action</span> aus dem Dashboard. Ohne Angabe gelten diese Standards.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px">
+<div style="border-radius: 24px; background: #141413; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="height: 104px; border-radius: 18px; background: #000000; display: flex; align-items: center; justify-content: center"><span style="width: 52px; height: 52px; border-radius: 26px; border: 3px solid #D6B98A; background: #2E271C"></span></div>
+<span style="font-size: 28px; font-weight: 600">Tippen</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.45">Hauptaktion sofort, mit kurzem Haptik-Impuls.</span>
+</div>
+<div style="border-radius: 24px; background: #141413; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="height: 104px; border-radius: 18px; background: #000000; display: flex; align-items: center; justify-content: center; gap: 14px"><span style="width: 44px; height: 44px; border-radius: 22px; border: 3px solid #D6B98A; background: #2E271C"></span><span style="width: 44px; height: 44px; border-radius: 22px; border: 3px solid #D6B98A; background: #2E271C"></span></div>
+<span style="font-size: 28px; font-weight: 600">Doppeltippen</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.45">Nur wenn konfiguriert. Sonst kein Warten auf zweiten Tipp.</span>
+</div>
+<div style="border-radius: 24px; background: #141413; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="height: 104px; border-radius: 18px; background: #000000; display: flex; align-items: center; justify-content: center"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="#2B2A27" stroke-width="6"></circle><circle cx="40" cy="40" r="34" fill="none" stroke="#D6B98A" stroke-width="6" stroke-linecap="round" stroke-dasharray="160 214" transform="rotate(-90 40 40)"></circle><circle cx="40" cy="40" r="20" fill="#2E271C" stroke="#D6B98A" stroke-width="3"></circle></svg></div>
+<span style="font-size: 28px; font-weight: 600">Halten · 480 ms</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.45">Öffnet die Detailseite. Ring füllt sich als Rückmeldung.</span>
+</div>
+<div style="border-radius: 24px; background: #141413; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="height: 104px; border-radius: 18px; background: #000000; display: flex; align-items: center; justify-content: center; gap: 10px"><span style="width: 44px; height: 44px; border-radius: 22px; border: 3px solid #D6B98A; background: #2E271C"></span><svg width="90" height="24" viewBox="0 0 90 24" fill="none" stroke="#D6B98A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h84M74 2l12 10-12 10"></path></svg></div>
+<span style="font-size: 28px; font-weight: 600">Ziehen</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.45">Nur auf Reglern. Wischen zwischen Ansichten nur außerhalb von Reglern.</span>
+</div>
+</div>
+
+<div style="display: flex; gap: 24px; flex: 1; min-height: 0">
+<div style="flex: 1; border-radius: 24px; background: #141413; padding: 20px 28px; display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; color: #A39F97; padding-bottom: 10px; border-bottom: 2px solid #1F1E1C"><span>Kachel</span><span>Tippen</span><span>Doppeltippen</span><span>Halten</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0; border-bottom: 2px solid #1A1A19"><span>Licht</span><span>Ein/Aus</span><span>100 % Neutral</span><span>Detail</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0; border-bottom: 2px solid #1A1A19"><span>Schalter · Steckdose</span><span>Ein/Aus</span><span style="color: #8A857D">–</span><span>Verbrauch</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0; border-bottom: 2px solid #1A1A19"><span>Rollladen</span><span>Detail · Tasten direkt</span><span style="color: #8A857D">–</span><span>Detail</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0; border-bottom: 2px solid #1A1A19"><span>Thermostat</span><span>Detail</span><span style="color: #8A857D">–</span><span>Detail</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0; border-bottom: 2px solid #1A1A19"><span>Mediaplayer</span><span>Play/Pause</span><span>Nächster Titel</span><span>Player</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0; border-bottom: 2px solid #1A1A19"><span>Szene · Skript</span><span>Ausführen</span><span style="color: #8A857D">–</span><span>Info</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0; border-bottom: 2px solid #1A1A19"><span>Schloss · Tor</span><span>Halten bestätigt</span><span style="color: #8A857D">–</span><span>Detail</span></div>
+<div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.1fr; gap: 16px; font-size: 18px; padding: 9px 0"><span>Sensor · Wetter</span><span>Verlauf</span><span style="color: #8A857D">–</span><span>Verlauf</span></div>
+</div>
+<div style="width: 470px; flex: none; border-radius: 24px; background: #141413; padding: 20px 28px; display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 18px; color: #A39F97">Bildschirm</span>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 600">Raumname tippen · wischen</span><span style="font-size: 18px; color: #A39F97">Ansicht wechseln</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 600">Annäherung (mmWave)</span><span style="font-size: 18px; color: #A39F97">Display wacht auf, bevor man tippt</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 600">2 Min. ohne Präsenz</span><span style="font-size: 18px; color: #A39F97">Schoner, danach Display aus</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 600">Türklingel</span><span style="font-size: 18px; color: #A39F97">Overlay über allem; Öffnen nur durch Halten</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 600">Detailseiten</span><span style="font-size: 18px; color: #A39F97">Zurück immer oben links, gleiche Position</span></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1524,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+[
+ {
+  "player_id": "player_soundbar",
+  "provider": "universal_player",
+  "type": "player",
+  "name": "Soundbar Küche",
+  "available": true,
+  "playback_state": "idle",
+  "elapsed_time": null,
+  "elapsed_time_last_updated": null,
+  "powered": true,
+  "volume_level": null,
+  "volume_muted": false,
+  "group_members": [],
+  "static_group_members": [],
+  "can_group_with": [
+   "player_web",
+   "player_tv"
+  ],
+  "synced_to": null,
+  "active_source": "player_soundbar",
+  "active_group": null,
+  "enabled": true
+ },
+ {
+  "player_id": "player_tv",
+  "provider": "universal_player",
+  "type": "player",
+  "name": "TV Wohnzimmer",
+  "available": true,
+  "playback_state": "idle",
+  "elapsed_time": null,
+  "elapsed_time_last_updated": null,
+  "powered": true,
+  "volume_level": 20,
+  "volume_muted": false,
+  "group_members": [],
+  "static_group_members": [],
+  "can_group_with": [
+   "player_web",
+   "player_soundbar"
+  ],
+  "synced_to": null,
+  "active_source": "player_tv",
+  "active_group": null,
+  "enabled": true
+ },
+ {
+  "player_id": "group_eg",
+  "provider": "universal_group",
+  "type": "group",
+  "name": "Gruppe Erdgeschoss",
+  "available": true,
+  "playback_state": "idle",
+  "elapsed_time": null,
+  "elapsed_time_last_updated": null,
+  "powered": true,
+  "volume_level": null,
+  "volume_muted": null,
+  "group_members": [],
+  "static_group_members": [
+   "RINCON_48A6B88835E001400",
+   "uuid:5205ce45-3a68-4a8b-a9e5-47f421f08851"
+  ],
+  "can_group_with": [],
+  "synced_to": null,
+  "active_source": "group_eg",
+  "active_group": null,
+  "enabled": true
+ },
+ {
+  "player_id": "player_web",
+  "provider": "sendspin",
+  "type": "player",
+  "name": "Web",
+  "available": true,
+  "playback_state": "idle",
+  "elapsed_time": 0.0,
+  "elapsed_time_last_updated": 1791555470.4349782,
+  "powered": true,
+  "volume_level": 100,
+  "volume_muted": false,
+  "group_members": [],
+  "static_group_members": [],
+  "can_group_with": [
+   "player_soundbar",
+   "player_tv"
+  ],
+  "synced_to": null,
+  "active_source": "player_web",
+  "active_group": null,
+  "enabled": true
+ }
+]

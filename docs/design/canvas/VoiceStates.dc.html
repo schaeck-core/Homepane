@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Sprachassistent Zustände</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1680px; height: 640px; box-sizing: border-box; padding: 56px; background: #0E0E0D; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 32px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">Sprachassistent · Zustände</h1>
+<p style="margin: 0; font-size: 22px; color: #A39F97">Ein Kreis, der durch alle Phasen wandert. Jede Phase nutzt nur Kreise, Ringe und einen Bogen.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px">
+<sc-for list="{{ states }}" as="s" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="width: 288px; height: 288px; border-radius: 20px; overflow: hidden; box-shadow: 0 0 0 1px #2A2927">
+<div style="width: 720px; height: 720px; transform: scale(.4); transform-origin: 0 0"><dc-import name="VoiceAssistant" phase="{{ s.id }}" hint-size="720px,720px"></dc-import></div>
+</div>
+<span style="font-size: 22px; font-weight: 600">{{ s.title }}</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.4">{{ s.text }}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #8A857D; line-height: 1.5">{{ s.lvgl }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      states: [
+        { id: 'wake', title: '1 · Wake Word', text: 'Kreis wächst aus der Mitte, eine Welle läuft nach außen. 700 ms, Haptik-Impuls.', lvgl: 'lv_anim: size + opa · 1 Ring' },
+        { id: 'listening', title: '2 · Zuhören', text: 'Zwei Höfe atmen mit der Mikrofonlautstärke, Text erscheint Wort für Wort.', lvgl: 'Mic-RMS → size · 3 Kreise' },
+        { id: 'processing', title: '3 · Verarbeiten', text: 'Höfe ziehen sich zurück, ein Bogen kreist. Text bleibt stehen.', lvgl: 'lv_arc + rotation' },
+        { id: 'response', title: '4 · Antwort', text: 'Kreis gleitet nach oben, Antwort und betroffenes Gerät erscheinen. 3,5 s, dann zurück.', lvgl: 'lv_anim y + size · Kachel' },
+        { id: 'error', title: '5 · Nicht verstanden', text: 'Kreis wird grau, Beispielsatz hilft weiter. „Nochmal“ hört direkt wieder zu.', lvgl: 'Farbwechsel · 2 Buttons' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

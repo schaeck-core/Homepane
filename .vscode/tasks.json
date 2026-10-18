@@ -1,0 +1,177 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Setup vcpkg",
+			"type": "shell",
+			"command": "./scripts/setup-vcpkg.sh",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Configure with vcpkg",
+			"type": "shell",
+			"command": "cmake",
+			"args": [
+				"-DCMAKE_TOOLCHAIN_FILE=${env:HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+				"-DCMAKE_BUILD_TYPE=Debug",
+				"-S",
+				".",
+				"-B",
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Build with vcpkg",
+			"type": "shell",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"build",
+				"--config",
+				"Debug",
+				"--parallel",
+				"8"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": ["$gcc"],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Configure and Build (Debug)",
+			"type": "shell",
+			"command": "cmake -DCMAKE_TOOLCHAIN_FILE=${HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug -S . -B build && cmake --build build --config Debug --parallel 8",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": ["$gcc"],
+			"group": "build"
+		},
+		{
+			"label": "Clean Build",
+			"type": "shell",
+			"command": "cmake",
+			"args": ["--build", ".", "--target", "clean"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Set Target",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && idf.py set-target esp32p4",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Configure",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && idf.py -D SDKCONFIG_DEFAULTS=sdkconfig.defaults reconfigure",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": ["$gcc"],
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Build",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && idf.py build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": ["$gcc"],
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Flash",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && ESPPORT=${input:espPort} idf.py flash",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Monitor",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && ESPPORT=${input:espPort} idf.py monitor",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"isBackground": true,
+			"group": "none"
+		},
+		{
+			"label": "ESP32-P4: Flash + Monitor",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && ESPPORT=${input:espPort} idf.py flash monitor",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Build + Flash",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && ESPPORT=${input:espPort} idf.py build flash",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": ["$gcc"],
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Build + Flash + Monitor",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && ESPPORT=${input:espPort} idf.py build flash monitor",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": ["$gcc"],
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "ESP32-P4: Clean",
+			"type": "shell",
+			"command": "source ~/esp/v5.5.1/esp-idf/export.sh && cd platforms/esp32p4 && idf.py fullclean",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		}
+	],
+	"inputs": [
+		{
+			"id": "espPort",
+			"type": "promptString",
+			"description": "Serial port of the board, empty: found by itself (macOS /dev/cu.usbmodem*, Linux /dev/ttyACM0 or /dev/ttyUSB0, Windows COM5)",
+			"default": ""
+		}
+	],
+	"version": "2.0.0"
+}

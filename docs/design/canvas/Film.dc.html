@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Frontfolie Vergleich</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1520px; height: 800px; box-sizing: border-box; padding: 56px; background: #0E0E0D; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<h1 style="margin: 0; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">Frontfolie</h1>
+<p style="margin: 0; font-size: 22px; color: #A39F97">Simulation: dasselbe Dashboard ohne Folie, hinter satinierter Folie und hinter Spiegelfolie.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 56px">
+
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="width: 432px; height: 432px; box-sizing: border-box; border-radius: 32px; background: #050505; padding: 18px; position: relative; box-shadow: 0 0 0 1px #2A2927">
+<div style="width: 396px; height: 396px; overflow: hidden; border-radius: 6px; position: relative">
+<div style="width: 720px; height: 720px; transform: scale(.55); transform-origin: 0 0"><dc-import name="Main" hint-size="720px,720px"></dc-import></div>
+<div style="position: absolute; inset: 0; background: rgba(38,40,46,.28); pointer-events: none"></div>
+</div>
+</div>
+<span style="font-size: 28px; font-weight: 600">Ohne Folie</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.45">Schwarz des IPS-Panels leuchtet leicht grau: Displaykante zum Rahmen bleibt sichtbar.</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="width: 432px; height: 432px; box-sizing: border-box; border-radius: 32px; background: #050505; padding: 18px; position: relative; box-shadow: 0 0 0 1px #2A2927">
+<div style="width: 396px; height: 396px; overflow: hidden; border-radius: 6px; position: relative; filter: blur(1.1px) contrast(.88)">
+<div style="width: 720px; height: 720px; transform: scale(.55); transform-origin: 0 0"><dc-import name="Main" hint-size="720px,720px"></dc-import></div>
+<div style="position: absolute; inset: 0; background: rgba(38,40,46,.18); pointer-events: none"></div>
+</div>
+<div style="position: absolute; inset: 0; border-radius: 32px; background: rgba(200,200,205,.07); pointer-events: none"></div>
+</div>
+<span style="font-size: 28px; font-weight: 600">Satiniert</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.45">Rahmen und Display werden eine Fläche. Feine Linien und kleine Schrift werden weich: ab 18 px, Striche ab 2 px.</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="width: 432px; height: 432px; box-sizing: border-box; border-radius: 32px; background: #050505; padding: 18px; position: relative; box-shadow: 0 0 0 1px #2A2927">
+<div style="width: 396px; height: 396px; overflow: hidden; border-radius: 6px; position: relative; filter: brightness(.55) contrast(1.1)">
+<div style="width: 720px; height: 720px; transform: scale(.55); transform-origin: 0 0"><dc-import name="Main" hint-size="720px,720px"></dc-import></div>
+</div>
+<div style="position: absolute; inset: 0; border-radius: 32px; background: linear-gradient(125deg, rgba(255,255,255,0) 28%, rgba(255,255,255,.13) 44%, rgba(255,255,255,.02) 56%, rgba(255,255,255,0) 70%), rgba(150,152,160,.10); pointer-events: none"></div>
+</div>
+<span style="font-size: 28px; font-weight: 600">Spiegelfolie</span>
+<span style="font-size: 18px; color: #A39F97; line-height: 1.45">Aus wirkt das Gerät wie ein Spiegel. Kostet etwa 40–60 % Helligkeit: dunkle Grautöne verschwinden, Kontrast muss hoch.</span>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1520,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

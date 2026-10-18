@@ -1,0 +1,72 @@
+{
+  "entity_id": "sensor.ha_eventcalendar_kalenderanzeige",
+  "state": "2",
+  "attributes": {
+    "friendly_name": "HA Eventcalendar Kalenderanzeige",
+    "icon": "mdi:calendar-star",
+    "api_version": 1,
+    "events": [
+      {
+        "id": "11111111111111111111111111111111",
+        "title": "Demo: Herbstmarkt",
+        "start": "2026-10-10T11:00:00+02:00",
+        "end": "2026-10-10T18:00:00+02:00",
+        "all_day": false,
+        "timezone": "Europe/Berlin",
+        "location": "Marktplatz, Beispielstadt",
+        "distance_km": 8.4,
+        "distance_type": "Luftlinie",
+        "image_source": null,
+        "source_urls": [],
+        "collection_kind": null,
+        "image_kind": "symbol",
+        "image_key": "11111111111111111111111111111111"
+      },
+      {
+        "id": "22222222222222222222222222222222",
+        "title": "Demo: Burgfest",
+        "start": "2026-10-11T10:00:00+02:00",
+        "end": "2026-10-11T19:00:00+02:00",
+        "all_day": false,
+        "timezone": "Europe/Berlin",
+        "location": "Burg Beispielstein",
+        "distance_km": 14.2,
+        "distance_type": "Luftlinie",
+        "image_source": null,
+        "source_urls": [],
+        "collection_kind": null,
+        "image_kind": "symbol",
+        "image_key": "22222222222222222222222222222222"
+      }
+    ],
+    "waste": [
+      {
+        "id": "33333333333333333333333333333333",
+        "title": "Demo: Gelbe Tonne",
+        "start": "2026-10-09",
+        "end": "2026-10-10",
+        "all_day": true,
+        "timezone": "Europe/Berlin",
+        "location": "Zu Hause",
+        "distance_km": null,
+        "distance_type": null,
+        "image_source": null,
+        "source_urls": [],
+        "collection_kind": "household",
+        "day_label": "Morgen"
+      }
+    ],
+    "display": {
+      "card_seconds": 10,
+      "idle_seconds": 45,
+      "cooldown_seconds": 60
+    }
+  },
+  "last_changed": "2026-10-08T08:00:00+00:00",
+  "last_updated": "2026-10-08T08:00:00+00:00",
+  "context": {
+    "id": "demo_context",
+    "parent_id": null,
+    "user_id": null
+  }
+}

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Licht Detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+.ov{-webkit-appearance:none;appearance:none;opacity:0;margin:0;cursor:pointer}
+.vov{-webkit-appearance:none;appearance:none;writing-mode:vertical-lr;direction:rtl;opacity:0;cursor:pointer;margin:0}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 16px; overflow: hidden">
+
+<div style="height: 72px; display: flex; align-items: center; gap: 16px">
+<button aria-label="Zurück" onClick="{{ close }}" style="width: 64px; height: 64px; flex: none; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 28px; font-weight: 600">{{ e.label }}</span>
+<span style="font-size: 18px; color: #A39F97">{{ e.room }} · {{ sub }}</span>
+</div>
+<button role="switch" aria-checked="{{ sw.aria }}" aria-label="Ein/Aus" onClick="{{ toggle }}" style="width: 112px; height: 64px; flex: none; border-radius: 32px; padding: 6px; box-sizing: border-box; display: flex; justify-content: {{ sw.justify }}; background: {{ sw.track }}"><span style="width: 52px; height: 52px; border-radius: 26px; background: {{ sw.knob }}"></span></button>
+</div>
+
+<sc-if value="{{ e.supportsColor }}" hint-placeholder-val="{{ true }}">
+<div style="height: 64px; flex: none; border-radius: 22px; background: #141413; padding: 6px; box-sizing: border-box; display: flex; gap: 6px">
+<button onClick="{{ tabColor }}" style="flex: 1; border-radius: 16px; font-size: 22px; font-weight: 600; background: {{ seg.c.bg }}; color: {{ seg.c.fg }}">Farbe</button>
+<button onClick="{{ tabWhite }}" style="flex: 1; border-radius: 16px; font-size: 22px; font-weight: 600; background: {{ seg.w.bg }}; color: {{ seg.w.fg }}">Weiß</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isColor }}" hint-placeholder-val="{{ true }}">
+<button aria-label="Farbfeld: Farbton und Sättigung" onPointerDown="{{ fieldDown }}" onPointerMove="{{ fieldMove }}" onPointerUp="{{ fieldUp }}" onPointerLeave="{{ fieldUp }}" style="flex: 1; min-height: 0; border-radius: 24px; position: relative; overflow: hidden; touch-action: none; background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0) 100%), linear-gradient(90deg, hsl(0 78% 56%), hsl(60 78% 56%), hsl(120 78% 56%), hsl(180 78% 56%), hsl(240 78% 56%), hsl(300 78% 56%), hsl(360 78% 56%))">
+<span style="position: absolute; width: 44px; height: 44px; border-radius: 50%; box-sizing: border-box; border: 5px solid #FFFFFF; box-shadow: 0 0 0 2px #000000; transform: translate(-50%, -50%); left: {{ knob.x }}; top: {{ knob.y }}; background: {{ col }}; pointer-events: none"></span>
+</button>
+</sc-if>
+
+<sc-if value="{{ isWhite }}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; border-radius: 24px; position: relative; overflow: hidden; background: linear-gradient(90deg, #E39F5C 0%, #EDC48F 22%, #F3E2C4 45%, #EFEEEA 64%, #D3E0EA 82%, #B6CCE0 100%)">
+<span style="position: absolute; left: 20px; top: 16px; font-size: 18px; color: #3A2F22; pointer-events: none">Warm</span>
+<span style="position: absolute; right: 20px; top: 16px; font-size: 18px; color: #2A3540; pointer-events: none">Kalt</span>
+<span style="position: absolute; top: 12px; bottom: 12px; width: 12px; margin-left: -6px; border-radius: 6px; background: #FFFFFF; box-shadow: 0 0 0 3px #000000; left: {{ ctPos }}; pointer-events: none; transition: left .05s"></span>
+<span style="position: absolute; left: 20px; bottom: 16px; height: 48px; padding: 0 18px; border-radius: 24px; background: #000000; color: #ECE9E3; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 600; pointer-events: none">{{ e.kelvin }} K<span style="font-size: 18px; font-weight: 500; color: #A39F97">{{ ctName }}</span></span>
+<label for="ct" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Farbtemperatur</label>
+<input id="ct" class="ov" type="range" min="2200" max="6500" step="100" value="{{ e.kelvin }}" onChange="{{ setKelvin }}" style="position: absolute; inset: 0; width: 100%; height: 100%">
+</div>
+</sc-if>
+
+<div style="height: 72px; flex: none; border-radius: 24px; position: relative; overflow: hidden; background: #141413">
+<div style="position: absolute; left: 0; top: 0; bottom: 0; width: {{ briW }}; background: #2B2A27"></div>
+<div style="position: absolute; inset: 0; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; font-size: 22px; pointer-events: none"><span style="display: flex; align-items: center; gap: 12px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A39F97" stroke-width="2" stroke-linecap="round"><path d="M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2v2M12 20v2M2 12h2M20 12h2"></path></svg><label for="bri">Helligkeit</label></span><span style="font-weight: 600">{{ briLabel }}</span></div>
+<input id="bri" class="ov" type="range" min="1" max="100" step="1" value="{{ e.bri }}" onChange="{{ setBri }}" style="position: absolute; inset: 0; width: 100%; height: 100%">
+</div>
+
+<sc-if value="{{ isColor }}" hint-placeholder-val="{{ true }}">
+<div role="group" aria-label="Lieblingsfarben" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; flex: none">
+<sc-for list="{{ favs }}" as="f" hint-placeholder-count="6">
+<button aria-label="{{ f.label }}" onClick="{{ f.pick }}" style="height: 80px; border-radius: 40px; background: {{ f.c }}; box-shadow: {{ f.ring }}"></button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWhite }}" hint-placeholder-val="{{ false }}">
+<div role="group" aria-label="Weißtöne" style="flex: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ whites }}" as="w" hint-placeholder-count="5">
+<button onClick="{{ w.pick }}" style="height: 96px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: {{ w.bg }}; box-shadow: {{ w.ring }}">
+<span style="width: 32px; height: 32px; border-radius: 16px; background: {{ w.c }}"></span>
+<span style="font-size: 18px; color: {{ w.fg }}">{{ w.label }}</span>
+</button>
+</sc-for>
+</div>
+<div role="group" aria-label="Profile" style="flex: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ profiles }}" as="p" hint-placeholder-count="4">
+<button onClick="{{ p.pick }}" style="height: 72px; border-radius: 22px; font-size: 18px; font-weight: 600; background: {{ p.bg }}; color: {{ p.fg }}">{{ p.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"entity":{"editor":null},"onChange":{"editor":null},"onClose":{"editor":null},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: null, local: { on: true, bri: 64, mode: 'color', kelvin: 2700, hue: 30, sat: 70, supportsColor: true, label: 'Stehlampe', room: 'Wohnzimmer' } };
+  }
+  ent() { return this.props.entity || this.state.local; }
+  change(p) {
+    if (this.props.onChange) this.props.onChange(p);
+    if (!this.props.entity) this.setState((st) => ({ local: { ...st.local, ...p } }));
+  }
+  kColor(k) {
+    const t = Math.max(0, Math.min(1, (k - 2200) / 4300));
+    const a = [229, 168, 106], b = [242, 226, 198], c = [190, 209, 226];
+    const mix = (x, y, q) => x.map((v, i) => Math.round(v + (y[i] - v) * q));
+    const rgb = t < 0.45 ? mix(a, b, t / 0.45) : mix(b, c, (t - 0.45) / 0.55);
+    return 'rgb(' + rgb.join(',') + ')';
+  }
+  pick(ev) {
+    const r = ev.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width));
+    const y = Math.max(0, Math.min(1, (ev.clientY - r.top) / r.height));
+    this.change({ on: true, mode: 'color', hue: Math.round(x * 360), sat: Math.round(y * 100) });
+  }
+  renderVals() {
+    const e = this.ent();
+    const tab = e.supportsColor ? (this.state.tab || (e.mode === 'color' ? 'color' : 'white')) : 'white';
+    const sat = e.sat == null ? 70 : e.sat;
+    const col = e.mode === 'color' ? 'hsl(' + e.hue + ' ' + Math.round(sat * 0.78) + '% ' + Math.round(100 - sat * 0.44) + '%)' : this.kColor(e.kelvin);
+    const seg = (on) => ({ bg: on ? '#2B2A27' : 'transparent', fg: on ? '#ECE9E3' : '#A39F97' });
+    const ring = '0 0 0 4px #000000, 0 0 0 7px #ECE9E3';
+    const favs = [[30, 70, 'Bernstein'], [42, 40, 'Sand'], [200, 45, 'Nebelblau'], [265, 40, 'Lavendel'], [340, 38, 'Rosé'], [150, 30, 'Salbei']];
+    const whites = [[2200, 'Kerze'], [2700, 'Warm'], [4000, 'Neutral'], [5000, 'Kühl'], [6500, 'Tag']];
+    const profiles = [['Entspannen', 2200, 50], ['Lesen', 4000, 100], ['Fokus', 5000, 100], ['Nacht', 2200, 5]];
+    return {
+      e,
+      sub: e.on ? e.bri + ' %' : 'Aus',
+      sw: { aria: e.on ? 'true' : 'false', justify: e.on ? 'flex-end' : 'flex-start', track: e.on ? '#D6B98A' : '#2B2A27', knob: e.on ? '#000000' : '#8A857D' },
+      isColor: tab === 'color', isWhite: tab === 'white',
+      seg: { c: seg(tab === 'color'), w: seg(tab === 'white') },
+      tabColor: () => this.setState({ tab: 'color' }), tabWhite: () => this.setState({ tab: 'white' }),
+      col,
+      knob: { x: (e.mode === 'color' ? e.hue / 3.6 : 8) + '%', y: (e.mode === 'color' ? sat : 20) + '%' },
+      fieldDown: (ev) => { this._drag = true; this.pick(ev); },
+      fieldMove: (ev) => { if (this._drag) this.pick(ev); },
+      fieldUp: () => { this._drag = false; },
+      ctPos: ((e.kelvin - 2200) / 43) + '%',
+      ctName: e.kelvin < 2500 ? 'Kerzenlicht' : e.kelvin < 3300 ? 'Warmweiß' : e.kelvin < 4500 ? 'Neutralweiß' : e.kelvin < 5800 ? 'Kaltweiß' : 'Tageslicht',
+      briW: (e.on ? e.bri : 0) + '%',
+      briLabel: e.on ? e.bri + ' %' : 'Aus',
+      close: () => { if (this.props.onClose) this.props.onClose(); },
+      toggle: () => this.change({ on: !e.on }),
+      setBri: (ev) => this.change({ on: true, bri: +ev.target.value }),
+      setKelvin: (ev) => this.change({ on: true, mode: 'ct', kelvin: +ev.target.value }),
+      favs: favs.map(([h, s, label]) => ({ label, c: 'hsl(' + h + ' ' + Math.round(s * 0.78) + '% ' + Math.round(100 - s * 0.44) + '%)', ring: e.mode === 'color' && e.hue === h && sat === s ? ring : 'none', pick: () => this.change({ on: true, mode: 'color', hue: h, sat: s }) })),
+      whites: whites.map(([k, label]) => {
+        const on = e.mode === 'ct' && e.kelvin === k;
+        return { label, c: this.kColor(k), bg: on ? '#2B2A27' : '#141413', fg: on ? '#ECE9E3' : '#A39F97', ring: on ? 'inset 0 0 0 2px #ECE9E3' : 'none', pick: () => this.change({ on: true, mode: 'ct', kelvin: k }) };
+      }),
+      profiles: profiles.map(([label, k, b]) => {
+        const on = e.on && e.mode === 'ct' && e.kelvin === k && e.bri === b;
+        return { label, bg: on ? '#2B2A27' : '#141413', fg: on ? '#ECE9E3' : '#A39F97', pick: () => this.change({ on: true, mode: 'ct', kelvin: k, bri: b }) };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

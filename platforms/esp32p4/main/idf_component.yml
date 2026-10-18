@@ -1,0 +1,37 @@
+## IDF Component Manager Manifest File
+dependencies:
+  lvgl/lvgl:
+    version: 9.3.0
+    public: true
+  ## Required IDF version
+  idf:
+    version: '>=4.1.0'
+  # # Put list of dependencies here
+  # # For components maintained by Espressif:
+  # component: "~1.0.0"
+  # # For 3rd party components:
+  # username/component: ">=1.0.0,<2.0.0"
+  # username2/component2:
+  #   version: "~1.0.0"
+  #   # For transient dependencies `public` flag can be set.
+  #   # `public` flag doesn't have an effect dependencies of the `main` component.
+  #   # All dependencies of `main` are public by default.
+  #   public: true
+  # Exact versions (= dependencies.lock): a component manager that
+  # re-solves (fresh CI checkout) must not pick newer releases; e.g.
+  # esp_lvgl_port >= 2.8 needs LVGL >= 9.3, the lvgl submodule is 9.2-dev.
+  # Bump deliberately, together with the lock file.
+  espressif/esp_lvgl_port: '==2.7.0'
+  espressif/esp_lcd_touch: '==1.2.1'
+  waveshare/esp_lcd_st7703: '==1.0.5'
+  espressif/esp_lcd_touch_gt911: '==1.2.0'
+  #espressif/esp_codec_dev: ^1.5.4
+  joltwallet/littlefs: ==1.20.3
+  espressif/esp_wifi_remote: '==1.2.2'
+  # Pinned: the ESP32-C6 firmware (platforms/esp32c6_coprocessor) is built
+  # from the slave project of exactly this version; host and co-processor
+  # must stay in step. Bump both together.
+  espressif/esp_hosted: '==2.12.3'
+  espressif/esp_websocket_client: '==1.6.1'
+  # Wake word on the device (microWakeWord models, docs/voice/VOICE_ASSISTANT_PLAN.md V3).
+  espressif/esp-tflite-micro: '==1.4.1'

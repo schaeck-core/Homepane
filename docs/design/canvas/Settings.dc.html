@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Einstellungen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 16px; overflow: hidden; position: relative">
+
+<div style="height: 72px; display: flex; align-items: center; justify-content: space-between">
+<span style="font-size: 28px; font-weight: 600; padding-left: 4px">Einstellungen</span>
+<button aria-label="Schließen" onClick="{{ close }}" style="width: 64px; height: 64px; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+
+<div style="flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{ items }}" as="i" hint-placeholder-count="6">
+<button onClick="{{ i.pick }}" style="border-radius: 24px; background: #141413; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; text-align: left">
+<span style="width: 64px; height: 64px; border-radius: 32px; background: #1F1E1C; display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ECE9E3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ i.icon }}"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 22px; font-weight: 600">{{ i.label }}</span>
+<span style="font-size: 18px; color: {{ i.subC }}; display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{ i.dot }}"></span>{{ i.sub }}</span>
+</span>
+</button>
+</sc-for>
+</div>
+
+<sc-if value="{{ general }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 5"><dc-import name="SettingsGeneral" on-back="{{ back }}" on-close="{{ close }}" hint-size="720px,720px"></dc-import></div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"onClose":{"editor":null},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { page: null }; }
+  renderVals() {
+    const ok = '#8FA88A', none = 'transparent';
+    const items = [
+      ['general', 'Allgemein', 'Sprache, Sensoren, Anzeige', none, 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0M16 4v4M10 10v4M18 16v4'],
+      ['clock', 'Uhr & Datum', 'Automatisch (NTP)', none, 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v5l3 2'],
+      ['wifi', 'WLAN', 'Verbunden · stark', ok, 'M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M12 19h0'],
+      ['ha', 'Home Assistant', 'Verbunden', ok, 'M3 11l9-7 9 7M5 10v10h14V10'],
+      ['ma', 'Music Assistant', '3 Player gefunden', none, 'M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'],
+      ['bell', 'Türklingel', 'Haustür · Ton an', none, 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4']
+    ];
+    return {
+      general: this.state.page === 'general',
+      back: () => this.setState({ page: null }),
+      close: () => { this.setState({ page: null }); if (this.props.onClose) this.props.onClose(); },
+      items: items.map(([id, label, sub, dot, icon]) => ({ label, sub, dot, icon, subC: '#A39F97', pick: () => this.setState({ page: id === 'general' ? 'general' : null }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

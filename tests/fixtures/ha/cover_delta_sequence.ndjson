@@ -1,0 +1,5 @@
+{"timestamp":"2026-09-07 01:49:55","entity_id":"cover.living_room_window","event":{"a":{"cover.living_room_window":{"s":"open","a":{"current_position":70,"current_tilt_position":50,"friendly_name":"Living Room Window","supported_features":255},"c":"01M0AY7C54BCDD1PEZ1BCYS0Y2","lc":1787073638.5648222}}}}
+{"timestamp":"2026-09-07 01:55:51","entity_id":"cover.living_room_window","event":{"c":{"cover.living_room_window":{"+":{"s":"opening","lc":1788738951.5122929,"c":{"user_id":"REDACTED","id":"01M1WJCPAQAZF0GVBHRMF3B6KC"}}}}}}
+{"timestamp":"2026-09-07 01:55:52","entity_id":"cover.living_room_window","event":{"c":{"cover.living_room_window":{"+":{"lu":1788738952.51383,"a":{"current_position":80}}}}}}
+{"timestamp":"2026-09-07 01:55:53","entity_id":"cover.living_room_window","event":{"c":{"cover.living_room_window":{"+":{"lu":1788738953.51521,"a":{"current_position":90}}}}}}
+{"timestamp":"2026-09-07 01:55:54","entity_id":"cover.living_room_window","event":{"c":{"cover.living_room_window":{"+":{"s":"open","lc":1788738954.5162096,"a":{"current_position":100}}}}}}

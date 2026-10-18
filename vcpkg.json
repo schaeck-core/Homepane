@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "homepane",
+  "version": "1.0.0",
+  "description": "Touch panel for Home Assistant",
+  "homepage": "https://github.com/schaeck-core/Homepane",
+  "license": "Apache-2.0",
+  "dependencies": [
+    "sdl2",
+    "curl",
+    "cjson",
+    "libwebsockets",
+    "libmicrohttpd"
+  ],
+  "builtin-baseline": "0b88aacde46a853151730fbe7d0b7ee45f4b6864"
+}

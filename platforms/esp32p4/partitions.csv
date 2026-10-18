@@ -1,0 +1,29 @@
+# ESP-IDF Partition Table (32 MB flash)
+# Name, Type, SubType, Offset, Size, Flags
+#
+# Final layout for OTA — a partition table cannot be changed safely over the
+# air, so devices updated only via OTA keep this layout forever:
+#   ota_0 / ota_1  A/B app slots (Track U, CPP_MIGRATION_PLAN.md §19), 6 MB
+#                  each: the app is ~3.5 MB today, leave room to grow.
+#   c6fw_0/c6fw_1  ESP32-C6 co-processor firmware image the P4 pushes to the
+#                  C6 over SDIO (platforms/esp32c6_coprocessor/README.md),
+#                  one per app slot: an OTA update writes the new C6 image
+#                  next to the new app, so if the new app is rolled back the
+#                  old app still finds the C6 image it was released with.
+#                  Custom data subtype 0x40, as in Espressif's
+#                  host_performs_slave_ota example. 2 MB each: the C6's own
+#                  app slots are 1.5-1.9 MB.
+#   storage        LittleFS.
+#   coredump       the last crash (ESP-IDF core dump, ELF), read over the
+#                  developer endpoint /sys/coredump. Appended after storage,
+#                  so the partitions before it keep their place.
+## Name,     Type, SubType,  Offset,   Size
+nvs,         data, nvs,      0x9000,    24K
+otadata,     data, ota,      ,          8K
+phy_init,    data, phy,      ,          4K
+ota_0,       app,  ota_0,    ,          6M
+ota_1,       app,  ota_1,    ,          6M
+c6fw_0,      data, 0x40,     ,          2M
+c6fw_1,      data, 0x40,     ,          2M
+storage,     data, littlefs, ,          8M
+coredump,    data, coredump, ,          2M

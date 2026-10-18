@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Kachel-Katalog</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+.cat button{font:inherit;color:inherit;border:0;cursor:pointer}
+</style>
+</helmet>
+<div class="cat" style="width: 1524px; height: 3500px; box-sizing: border-box; padding: 56px; background: #0E0E0D; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; font-variant-numeric: tabular-nums; display: flex; flex-direction: column; gap: 40px">
+
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<h1 style="margin: 0; font-size: 44px; font-weight: 600; letter-spacing: -0.02em">Kachel-Katalog</h1>
+<p style="margin: 0; font-size: 22px; color: #A39F97; max-width: 920px">Alle Kacheln in Dashboard-Größe (221 × 308). Eine Kachel zeigt den Zustand auf einen Blick und höchstens eine Schnellaktion. Alles Weitere öffnet sich per Tippen oder Halten im Detail.</p>
+</div>
+<div style="display: flex; gap: 20px; font-size: 18px; color: #A39F97">
+<span style="display: flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 10px; background: #2E271C; box-shadow: inset 0 0 0 6px #D6B98A"></span>An</span>
+<span style="display: flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 10px; background: #1F1E1C; box-shadow: inset 0 0 0 6px #8A857D"></span>Aus · Info</span>
+<span style="display: flex; align-items: center; gap: 8px"><span style="width: 20px; height: 20px; border-radius: 10px; background: #2A1D18; box-shadow: inset 0 0 0 6px #D98A73"></span>Hinweis</span>
+</div>
+</div>
+
+<sc-for list="{{ sections }}" as="sec" hint-placeholder-count="6">
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 28px; font-weight: 600">{{ sec.title }}</h2>
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: 16px; row-gap: 24px">
+<sc-for list="{{ sec.tiles }}" as="t" hint-placeholder-count="6">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="height: 308px; border-radius: 24px; background: #141413; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden; opacity: {{ t.op }}">
+
+<sc-if value="{{ t.k.center }}" hint-placeholder-val="{{ true }}">
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: {{ t.cgap }}">
+<span style="width: {{ t.bs }}; height: {{ t.bs }}; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{ t.bub }}; color: {{ t.ico }}"><svg width="{{ t.is }}" height="{{ t.is }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"></path></svg></span>
+<span style="display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center">
+<span style="font-size: 22px; font-weight: 600">{{ t.name }}</span>
+<span style="font-size: 18px; color: {{ t.sc }}">{{ t.state }}</span>
+</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ t.k.value }}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: space-between">
+<span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+<span style="font-size: 22px; font-weight: 600">{{ t.name }}</span>
+<sc-if value="{{ t.vIcon }}" hint-placeholder-val="{{ false }}"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="{{ t.vIconC }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.vIcon }}"></path></svg></sc-if>
+</span>
+<span style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: {{ t.vc }}">{{ t.value }}<span style="font-size: 22px; color: #A39F97"> {{ t.unit }}</span></span>
+<span style="font-size: 18px; color: {{ t.sc }}">{{ t.state }}</span>
+</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ t.k.gauge }}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; gap: 4px">
+<span style="align-self: flex-start; font-size: 22px; font-weight: 600">{{ t.name }}</span>
+<span style="position: relative; width: 164px; height: 164px">
+<svg width="164" height="164" viewBox="0 0 164 164" style="position: absolute; inset: 0">
+<circle cx="82" cy="82" r="70" fill="none" stroke="#1F1E1C" stroke-width="12" stroke-linecap="round" stroke-dasharray="329.9 439.8" transform="rotate(135 82 82)"></circle>
+<circle cx="82" cy="82" r="70" fill="none" stroke="{{ t.g.col }}" stroke-width="12" stroke-linecap="round" stroke-dasharray="{{ t.g.dash }}" stroke-dashoffset="{{ t.g.off }}" transform="rotate(135 82 82)"></circle>
+<circle cx="{{ t.g.kx }}" cy="{{ t.g.ky }}" r="11" fill="#ECE9E3" stroke="#141413" stroke-width="4"></circle>
+</svg>
+<span style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px">
+<span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1">{{ t.value }}</span>
+<span style="font-size: 18px; color: #A39F97; text-align: center; max-width: 120px">{{ t.state }}</span>
+</span>
+</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ t.k.cover }}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; gap: 12px">
+<span style="align-self: flex-start; font-size: 22px; font-weight: 600">{{ t.name }}</span>
+<span style="flex: 1; width: 120px; display: flex; flex-direction: column">
+<span style="flex: 1; position: relative; border: 7px solid #3A3833; border-bottom: 0; background: #10161A; overflow: hidden">
+<sc-if value="{{ t.window }}" hint-placeholder-val="{{ true }}">
+<span style="position: absolute; top: 0; bottom: 0; left: 50%; width: 5px; margin-left: -2px; background: #3A3833"></span>
+<span style="position: absolute; left: 0; right: 0; top: 46%; height: 5px; background: #3A3833"></span>
+</sc-if>
+<span style="position: absolute; left: 0; right: 0; top: 0; height: {{ t.shade }}; background: {{ t.pattern }}"></span>
+</span>
+<span style="height: 10px; margin: 0 -8px; border-radius: 2px; background: #3A3833"></span>
+</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ t.k.media }}" hint-placeholder-val="{{ false }}">
+<span style="flex: 1; min-height: 0; border-radius: 18px; background: #1F1E1C; display: flex; align-items: center; justify-content: center; color: #5E5A54"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.art }}"></path></svg></span>
+<div style="height: 64px; flex: none; display: flex; align-items: center; gap: 10px">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 22px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ t.name }}</span>
+<span style="font-size: 18px; color: #A39F97; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ t.state }}</span>
+</span>
+<button aria-label="{{ t.pLabel }}" style="width: 64px; height: 64px; flex: none; border-radius: 32px; background: {{ t.pbg }}; color: {{ t.pfg }}; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.picon }}"></path></svg></button>
+</div>
+</sc-if>
+
+<sc-if value="{{ t.k.buttons }}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 22px; font-weight: 600; padding-bottom: 4px">{{ t.name }}</span>
+<sc-for list="{{ t.opts }}" as="o" hint-placeholder-count="3">
+<button style="flex: 1; border-radius: 20px; padding: 0 16px; display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 600; text-align: left; background: {{ o.bg }}; color: {{ o.fg }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ o.ico }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ o.icon }}"></path></svg>{{ o.label }}</button>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{ t.k.chart }}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 22px; font-weight: 600">{{ t.name }}</span>
+<sc-if value="{{ t.hasData }}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1">{{ t.value }}<span style="font-size: 22px; color: #A39F97"> {{ t.unit }}</span></span>
+<span style="flex: 1; display: flex; align-items: flex-end; gap: 3px">
+<sc-for list="{{ t.bars }}" as="b" hint-placeholder-count="24">
+<span style="flex: 1; border-radius: 2px; height: {{ b.h }}; background: {{ b.c }}"></span>
+</sc-for>
+</span>
+</sc-if>
+<sc-if value="{{ t.empty }}" hint-placeholder-val="{{ false }}">
+<span style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px">
+<span style="font-size: 18px; color: #8A857D">Noch keine Daten</span>
+<span style="height: 2px; background: repeating-linear-gradient(90deg, #34322E 0 8px, transparent 8px 14px)"></span>
+</span>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ t.k.camera }}" hint-placeholder-val="{{ false }}">
+<span style="position: absolute; inset: 0; background: #1A1A19; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #5E5A54"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h4l2-3h6l2 3h4v12H3zM12 9a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path></svg><span style="font-size: 18px">[Kamerabild]</span></span>
+<span style="position: absolute; left: 12px; right: 12px; bottom: 12px; border-radius: 18px; background: #000000; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 22px; font-weight: 600">{{ t.name }}</span>
+<span style="font-size: 18px; color: #A39F97; display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #D98A73"></span>{{ t.state }}</span>
+</span>
+</sc-if>
+
+<sc-if value="{{ t.k.timer }}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; gap: 8px">
+<span style="align-self: flex-start; font-size: 22px; font-weight: 600">{{ t.name }}</span>
+<span style="position: relative; width: 156px; height: 156px">
+<svg width="156" height="156" viewBox="0 0 156 156" style="position: absolute; inset: 0"><circle cx="78" cy="78" r="66" fill="none" stroke="#1F1E1C" stroke-width="10"></circle><circle cx="78" cy="78" r="66" fill="none" stroke="#D6B98A" stroke-width="10" stroke-linecap="round" stroke-dasharray="{{ t.ring }}" transform="rotate(-90 78 78)"></circle></svg>
+<span style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px"><span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em; line-height: 1">{{ t.value }}</span><span style="font-size: 18px; color: #A39F97">{{ t.state }}</span></span>
+</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ t.k.list }}" hint-placeholder-val="{{ false }}">
+<span style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 22px; font-weight: 600">{{ t.name }}</span><span style="font-size: 18px; color: #A39F97">{{ t.state }}</span></span>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 6px; padding-top: 4px">
+<sc-for list="{{ t.items }}" as="it" hint-placeholder-count="4">
+<span style="min-height: 44px; display: flex; align-items: center; gap: 12px; border-top: 2px solid #1F1E1C; padding-top: 6px">
+<sc-if value="{{ it.box }}" hint-placeholder-val="{{ true }}"><span style="width: 28px; height: 28px; flex: none; border-radius: 8px; box-sizing: border-box; border: 2px solid {{ it.boxB }}; background: {{ it.boxBg }}; display: flex; align-items: center; justify-content: center; color: #ECE9E3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="{{ it.check }}"></path></svg></span></sc-if>
+<sc-if value="{{ it.lead }}" hint-placeholder-val="{{ false }}"><span style="width: 52px; flex: none; font-size: 18px; color: #A39F97">{{ it.lead }}</span></sc-if>
+<span style="font-size: 18px; color: {{ it.c }}; text-decoration: {{ it.deco }}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.text }}</span>
+</span>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ t.hasBtns }}" hint-placeholder-val="{{ false }}">
+<div style="height: 64px; flex: none; display: grid; grid-template-columns: {{ t.cols }}; gap: 8px">
+<sc-for list="{{ t.btns }}" as="b" hint-placeholder-count="2">
+<button aria-label="{{ b.aria }}" style="border-radius: 20px; background: {{ b.bg }}; color: {{ b.fg }}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 18px; font-weight: 600"><sc-if value="{{ b.icon }}" hint-placeholder-val="{{ true }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="{{ b.fill }}" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ b.icon }}"></path></svg></sc-if><sc-if value="{{ b.label }}" hint-placeholder-val="{{ false }}"><span>{{ b.label }}</span></sc-if></button>
+</sc-for>
+</div>
+</sc-if>
+
+</div>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; color: #8A857D; padding-left: 6px">{{ t.domain }}</span>
+<span style="font-size: 16px; color: #A39F97; padding-left: 6px; line-height: 1.4">{{ t.note }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1524,"height":3500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const I = {
+      bulb: 'M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z',
+      strip: 'M4 17L17 4M7 20L20 7',
+      plug: 'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v4',
+      fan: 'M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM12 10c0-4 1-7 4-7 2 0 3 2 1 4l-3 3M14 12c4 0 7 1 7 4 0 2-2 3-4 1l-3-3M12 14c0 4-1 7-4 7-2 0-3-2-1-4l3-3M10 12c-4 0-7-1-7-4 0-2 2-3 4-1l3 3',
+      toggle: 'M8 7h8a5 5 0 0 1 0 10H8A5 5 0 0 1 8 7zM8 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+      lock: 'M7 11h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM8 11V7a4 4 0 0 1 8 0v4',
+      valve: 'M12 3v5M8 3h8M4 12h16v6H4zM12 8v4',
+      shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',
+      button: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z',
+      music: 'M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+      tv: 'M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zM8 21h8',
+      bell: 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4',
+      siren: 'M6 18v-6a6 6 0 0 1 12 0v6M4 18h16v3H4zM12 2v2M4.5 5.5l1.5 1.5M19.5 5.5L18 7',
+      door: 'M6 3h10a1 1 0 0 1 1 1v17H5V4a1 1 0 0 1 1-1zM14 12v0M3 21h18',
+      person: 'M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21a8 8 0 0 1 16 0',
+      sun: 'M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
+      script: 'M8 6l-5 6 5 6M16 6l5 6-5 6',
+      vacuum: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3',
+      tvScreen: 'M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zM8 21h8',
+      film: 'M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zM8 21h8',
+      dinner: 'M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2v2M12 20v2M2 12h2M20 12h2',
+      power: 'M12 3v9M6.3 6.3a8 8 0 1 0 11.4 0',
+      check: 'M5 12l4 4 10-10',
+      minus: 'M5 12h14', plus: 'M12 5v14M5 12h14',
+      up: 'M6 15l6-6 6 6', down: 'M6 9l6 6 6-6', stop: 'M7 7h10v10H7z',
+      pause: 'M8 5v14M16 5v14', x: 'M6 6l12 12M18 6L6 18'
+    };
+    const LOOK = { on: ['#2E271C', '#D6B98A'], off: ['#1F1E1C', '#8A857D'], warn: ['#2A1D18', '#D98A73'], info: ['#1F1E1C', '#ECE9E3'], heat: ['#33231B', '#CF9271'], cool: ['#1C252C', '#94AFC4'] };
+    const K = (kind) => ({ center: kind === 'center', value: kind === 'value', gauge: kind === 'gauge', cover: kind === 'cover', media: kind === 'media', buttons: kind === 'buttons', chart: kind === 'chart', camera: kind === 'camera', timer: kind === 'timer', list: kind === 'list' });
+    const btn = (icon, label, aria, primary) => ({ icon: icon ? I[icon] : false, label: label || false, aria: aria || label || '', bg: primary ? '#ECE9E3' : '#1F1E1C', fg: primary ? '#000000' : '#ECE9E3', fill: icon === 'stop' ? 'currentColor' : 'none' });
+    const tile = (o) => {
+      const look = LOOK[o.look || 'off'];
+      const btns = o.btns || [];
+      return {
+        k: K(o.kind), name: o.name, state: o.state || '', domain: o.domain, note: o.note || '',
+        icon: o.icon ? I[o.icon] : '', bub: o.bub || look[0], ico: o.ico || look[1],
+        sc: o.look === 'warn' ? '#D98A73' : (o.sc || '#A39F97'),
+        bs: btns.length ? '96px' : '112px', is: btns.length ? '42' : '48', cgap: btns.length ? '14px' : '20px',
+        value: o.value || '', unit: o.unit || '', vc: o.vc || '#ECE9E3', vIcon: o.vIcon ? I[o.vIcon] : false, vIconC: o.vIconC || '#8A857D',
+        g: o.g || {}, shade: o.shade || '0%', window: o.garage ? false : true,
+        pattern: o.garage ? 'repeating-linear-gradient(180deg, #6E6A63 0 26px, #4A4741 26px 29px)' : 'repeating-linear-gradient(180deg, #8A857D 0 12px, #5E5A54 12px 14px)',
+        art: o.art ? I[o.art] : '', picon: o.picon ? I[o.picon] : '', pbg: o.pbg || '#ECE9E3', pfg: o.pfg || '#000000', pLabel: o.pLabel || '',
+        opts: o.opts || [], hasData: !o.empty, empty: !!o.empty, bars: o.bars || [], ring: o.ring || '0 415',
+        items: o.items || [],
+        hasBtns: btns.length > 0, btns, cols: 'repeat(' + Math.max(1, btns.length) + ', minmax(0, 1fr))',
+        op: o.na ? 0.6 : 1
+      };
+    };
+    const gauge = (min, max, lo, hi, knob, col) => {
+      const ARC = 329.9, CIRC = 439.8;
+      const f = (v) => Math.max(0, Math.min(1, (v - min) / (max - min)));
+      const a = (135 + 270 * f(knob)) * Math.PI / 180;
+      return { col, dash: ((f(hi) - f(lo)) * ARC).toFixed(1) + ' ' + CIRC, off: (-f(lo) * ARC).toFixed(1), kx: (82 + 70 * Math.cos(a)).toFixed(1), ky: (82 + 70 * Math.sin(a)).toFixed(1) };
+    };
+    const power = [22, 18, 15, 14, 14, 16, 30, 52, 44, 38, 35, 41, 48, 62, 40, 36, 33, 45, 70, 82, 66, 50, 38, 58];
+    const bars = power.map((v, i) => ({ h: v + '%', c: i === power.length - 1 ? '#D6B98A' : '#34322E' }));
+    const opt = (label, icon, sel) => ({ label, icon: icon ? I[icon] : (sel ? I.check : ''), bg: sel ? '#2B2A27' : '#1F1E1C', fg: sel ? '#ECE9E3' : '#A39F97', ico: sel ? '#D6B98A' : '#8A857D' });
+    const item = (text, done, lead) => ({ text, box: !lead, lead: lead || false, check: done ? I.check : '', boxB: done ? '#2B2A27' : '#4A4842', boxBg: done ? '#2B2A27' : 'transparent', c: done ? '#8A857D' : '#ECE9E3', deco: done ? 'line-through' : 'none' });
+    const HEAT = '#CF9271', COOL = '#94AFC4';
+    return {
+      sections: [
+        { title: 'Licht & Schalter', tiles: [
+          tile({ kind: 'center', domain: 'light', name: 'Deckenlicht', state: '80 %', icon: 'bulb', look: 'on', note: 'Tippen: an/aus · Halten: Detail' }),
+          tile({ kind: 'center', domain: 'light', name: 'Flur', state: 'Aus', icon: 'bulb', look: 'off', note: 'Aus: Symbol grau, kein Leuchten' }),
+          tile({ kind: 'center', domain: 'light · Farbe', name: 'LED-Leiste', state: '40 %', icon: 'strip', look: 'on', ico: 'hsl(265 40% 74%)', bub: '#26222C', note: 'Symbol in gedämpfter Lichtfarbe' }),
+          tile({ kind: 'center', domain: 'switch', name: 'Kaffeemaschine', state: 'An', icon: 'plug', look: 'on', note: 'Tippen schaltet' }),
+          tile({ kind: 'center', domain: 'fan', name: 'Ventilator', state: 'Stufe 2 von 3', icon: 'fan', look: 'on', btns: [btn('minus', null, 'Langsamer'), btn('plus', null, 'Schneller')], note: '−/+ Stufe · Halten: Richtung, Schwenk' }),
+          tile({ kind: 'center', domain: 'input_boolean', name: 'Gästemodus', state: 'Aus', icon: 'toggle', look: 'off', note: 'Wie Schalter' })
+        ] },
+        { title: 'Klima', tiles: [
+          tile({ kind: 'gauge', domain: 'climate · heat', name: 'Bad', value: '24°', state: 'Heizen', g: gauge(7, 30, 7, 24, 24, HEAT), btns: [btn('minus', null, 'Ziel senken'), btn('plus', null, 'Ziel erhöhen')], note: 'Zahl = Ziel, Raumwert im Detail' }),
+          tile({ kind: 'gauge', domain: 'climate · heat_cool', name: 'Büro', value: '24°', state: 'Heizen unter 20°', g: gauge(7, 30, 20, 24, 24, COOL), btns: [btn('minus', null, 'Ziel senken'), btn('plus', null, 'Ziel erhöhen')], note: 'Wärmer als Bereich: obere Grenze groß' }),
+          tile({ kind: 'gauge', domain: 'humidifier', name: 'Befeuchter', value: '45 %', state: 'Jetzt 38 %', g: gauge(30, 80, 30, 45, 45, COOL), btns: [btn('minus', null, 'Ziel senken'), btn('plus', null, 'Ziel erhöhen')], note: 'Gleiches Muster wie Thermostat' }),
+          tile({ kind: 'gauge', domain: 'water_heater', name: 'Warmwasser', value: '55°', state: 'Eco', g: gauge(30, 70, 30, 55, 55, HEAT), btns: [btn('minus', null, 'Ziel senken'), btn('plus', null, 'Ziel erhöhen')], note: 'Modus im Detail' }),
+          tile({ kind: 'value', domain: 'sensor · Temperatur', name: 'Außen', value: '14,2', unit: '°C', state: 'Seit 1 h fallend', note: 'Tippen: Verlauf' }),
+          tile({ kind: 'value', domain: 'sensor · CO₂', name: 'Raumluft', value: '640', unit: 'ppm', state: 'Gut', sc: '#8FA88A', note: 'Bewertung als Wort, keine Ampel' })
+        ] },
+        { title: 'Abdeckungen & Zugang', tiles: [
+          tile({ kind: 'cover', domain: 'cover', name: 'Rollladen', shade: '60%', btns: [btn('up', null, 'Öffnen'), btn('down', null, 'Schließen')], note: 'Grafik zeigt Position · fährt: Taste wird Stopp' }),
+          tile({ kind: 'cover', domain: 'cover · garage', name: 'Garagentor', shade: '100%', garage: true, btns: [btn('up', null, 'Öffnen'), btn('down', null, 'Schließen')], note: 'Öffnen mit Bestätigung' }),
+          tile({ kind: 'center', domain: 'valve', name: 'Bewässerung', state: 'Geschlossen', icon: 'valve', look: 'off', btns: [btn(null, 'Öffnen')], note: 'Position-Ventile: Regler im Detail' }),
+          tile({ kind: 'center', domain: 'lock', name: 'Haustür', state: 'Verriegelt', icon: 'lock', look: 'info', note: 'Halten entriegelt (Fortschritt füllt Kachel)' }),
+          tile({ kind: 'center', domain: 'alarm_control_panel', name: 'Alarmanlage', state: 'Scharf · Abwesend', icon: 'shield', look: 'warn', note: 'Tippen: Keypad' }),
+          tile({ kind: 'center', domain: 'button', name: 'Klingel stumm', state: 'Tippen zum Auslösen', icon: 'button', look: 'off', note: 'Kurzes Aufleuchten als Bestätigung' })
+        ] },
+        { title: 'Medien & Kamera', tiles: [
+          tile({ kind: 'media', domain: 'media_player', name: 'Lautsprecher', state: 'Spielt · [Titel]', art: 'music', picon: 'pause', pLabel: 'Pause', note: 'Cover füllt Fläche · Halten: Player' }),
+          tile({ kind: 'media', domain: 'media_player · TV', name: 'Fernseher', state: 'Aus', art: 'tv', picon: 'power', pLabel: 'Einschalten', pbg: '#1F1E1C', pfg: '#ECE9E3', note: 'Aus: Taste wird Einschalten' }),
+          tile({ kind: 'camera', domain: 'camera', name: 'Einfahrt', state: 'Live · Bewegung 12:04', note: 'Standbild alle 10 s, Tippen: Vollbild' }),
+          tile({ kind: 'center', domain: 'event · Türklingel', name: 'Haustür', state: 'Geklingelt · 12:31', icon: 'bell', look: 'info', note: 'Klingeln öffnet Overlay automatisch' }),
+          tile({ kind: 'center', domain: 'siren', name: 'Sirene', state: 'Aus', icon: 'siren', look: 'off', note: 'Einschalten nur per Halten' }),
+          tile({ kind: 'center', domain: 'remote', name: 'TV-Fernbedienung', state: 'Bereit', icon: 'tvScreen', look: 'off', btns: [btn('minus', null, 'Leiser'), btn('plus', null, 'Lauter')], note: 'Lautstärke direkt, Rest im Detail' })
+        ] },
+        { title: 'Energie & Info', tiles: [
+          tile({ kind: 'chart', domain: 'sensor · Leistung', name: 'Energie', value: '1,24', unit: 'kW', bars, note: 'Letzter Balken = jetzt' }),
+          tile({ kind: 'chart', domain: 'history-graph · leer', name: 'Leistung 24 h', empty: true, note: 'Leerzustand statt „No data“' }),
+          tile({ kind: 'center', domain: 'binary_sensor', name: 'Terrassentür', state: 'Offen · 12 Min.', icon: 'door', look: 'warn', note: 'Einzige Warnfarbe im Raster' }),
+          tile({ kind: 'value', domain: 'sensor · nicht verfügbar', name: 'Spannung', value: '–', state: 'Nicht verfügbar', na: true, note: 'Gedimmt, kein Link-Blau' }),
+          tile({ kind: 'value', domain: 'weather', name: 'Wetter', value: '16,7', unit: '°', state: 'Sonnig · 22° / 13°', vIcon: 'sun', vIconC: '#D6B98A', note: 'Für Ansichten ohne Uhr-Block' }),
+          tile({ kind: 'center', domain: 'person', name: 'Anna', state: 'Zuhause', icon: 'person', look: 'info', note: 'Unterwegs: Ortsname statt „not_home“' })
+        ] },
+        { title: 'Helfer & Haushalt', tiles: [
+          tile({ kind: 'buttons', domain: 'scene', name: 'Szenen', opts: [opt('Filmabend', 'film', true), opt('Essen', 'dinner'), opt('Alles aus', 'power')], note: 'Bis zu 3 Szenen pro Kachel' }),
+          tile({ kind: 'center', domain: 'script', name: 'Garten gießen', state: 'Läuft · 9 Min.', icon: 'script', look: 'on', btns: [btn('stop', 'Stopp')], note: 'Tippen startet, läuft: Stopp-Taste' }),
+          tile({ kind: 'timer', domain: 'timer', name: 'Nudeln', value: '04:32', state: 'von 10:00', ring: (414.7 * 0.45).toFixed(1) + ' 414.7', btns: [btn('pause', null, 'Pause'), btn('x', null, 'Abbrechen')], note: 'HA-Timer; erscheint auch im Uhr-Block' }),
+          tile({ kind: 'buttons', domain: 'input_select · select', name: 'Hausmodus', opts: [opt('Normal', null, true), opt('Urlaub'), opt('Party')], note: 'Bis 3 Optionen direkt, mehr: Liste im Detail' }),
+          tile({ kind: 'value', domain: 'input_number · number', name: 'Ziel-Feuchte', value: '45', unit: '%', state: 'Hilfswert', btns: [btn('minus', null, 'Weniger'), btn('plus', null, 'Mehr')], note: 'Schrittweite aus HA' }),
+          tile({ kind: 'center', domain: 'vacuum · lawn_mower', name: 'Saugroboter', state: 'Lädt · 86 %', icon: 'vacuum', look: 'off', btns: [btn(null, 'Start'), btn(null, 'Basis')], note: 'Räume wählen im Detail' }),
+          tile({ kind: 'list', domain: 'todo', name: 'Einkauf', state: '3 offen', items: [item('Milch'), item('Brot'), item('Kaffeebohnen'), item('Äpfel', true)], note: 'Abhaken direkt in der Kachel' }),
+          tile({ kind: 'list', domain: 'calendar', name: 'Heute', state: 'Di.', items: [item('Müll rausstellen', false, '18:00'), item('[Termin]', false, '19:30'), item('Wecker', false, '06:30')], note: 'Nächste 3 Einträge' }),
+          tile({ kind: 'value', domain: 'update', name: 'Panel-Firmware', value: '1.4.0', state: 'Update verfügbar', sc: '#D6B98A', btns: [btn(null, 'Installieren')], note: 'Nur sichtbar, wenn Update ansteht' })
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Simulator (LVGL)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/main",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "Configure and Build (Debug)"
+        },
+        {
+            "name": "Attach to Running Simulator",
+            "type": "cppdbg",
+            "request": "attach",
+            "processId": "${command:pickProcess}",
+            "MIMode": "lldb"
+        }
+    ]
+}

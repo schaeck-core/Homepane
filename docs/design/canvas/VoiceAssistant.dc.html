@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Sprachassistent</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.va button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+</style>
+</helmet>
+<div class="va" style="width: 720px; height: 720px; position: relative; overflow: hidden; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500">
+
+<div style="position: absolute; left: 0; right: 0; top: 48px; display: flex; justify-content: center; opacity: {{ v.labelOp }}; transition: opacity .3s">
+<span style="font-size: 22px; color: #A39F97; display: flex; align-items: center; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 4px; background: {{ v.dot }}"></span>{{ v.label }}</span>
+</div>
+
+<div style="position: absolute; left: {{ v.ripple.x }}; top: {{ v.ripple.y }}; width: {{ v.ripple.d }}; height: {{ v.ripple.d }}; border-radius: 50%; box-sizing: border-box; border: 2px solid #D6B98A; opacity: {{ v.ripple.op }}"></div>
+<div style="position: absolute; left: {{ v.halo.x }}; top: {{ v.halo.y }}; width: {{ v.halo.d }}; height: {{ v.halo.d }}; border-radius: 50%; background: #D6B98A; opacity: {{ v.halo.op }}; transition: all .12s linear"></div>
+<div style="position: absolute; left: {{ v.mid.x }}; top: {{ v.mid.y }}; width: {{ v.mid.d }}; height: {{ v.mid.d }}; border-radius: 50%; background: #D6B98A; opacity: {{ v.mid.op }}; transition: all .12s linear"></div>
+
+<sc-if value="{{ v.spin }}" hint-placeholder-val="{{ false }}">
+<svg width="216" height="216" viewBox="0 0 216 216" style="position: absolute; left: 252px; top: 192px; transform: rotate({{ v.angle }}deg)"><circle cx="108" cy="108" r="96" fill="none" stroke="#2B2A27" stroke-width="6"></circle><circle cx="108" cy="108" r="96" fill="none" stroke="#D6B98A" stroke-width="6" stroke-linecap="round" stroke-dasharray="150 453"></circle></svg>
+</sc-if>
+
+<div style="position: absolute; left: {{ v.core.x }}; top: {{ v.core.y }}; width: {{ v.core.d }}; height: {{ v.core.d }}; border-radius: 50%; background: {{ v.coreBg }}; color: {{ v.coreFg }}; display: flex; align-items: center; justify-content: center; transition: all .25s ease-out">
+<svg width="{{ v.iconS }}" height="{{ v.iconS }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ v.icon }}"></path></svg>
+</div>
+
+<sc-if value="{{ v.showTranscript }}" hint-placeholder-val="{{ true }}">
+<p aria-live="polite" style="position: absolute; left: 60px; right: 60px; top: 500px; margin: 0; text-align: center; font-size: 28px; font-weight: 600; line-height: 1.35; text-wrap: balance">{{ v.said }}<span style="color: #8A857D">{{ v.saying }}</span></p>
+</sc-if>
+
+<sc-if value="{{ v.showResponse }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 60px; right: 60px; top: 250px; display: flex; flex-direction: column; align-items: center; gap: 28px">
+<p style="margin: 0; text-align: center; font-size: 28px; font-weight: 600; line-height: 1.35">{{ v.reply }}</p>
+<sc-if value="{{ v.card }}" hint-placeholder-val="{{ true }}">
+<div style="width: 360px; height: 112px; box-sizing: border-box; border-radius: 24px; background: #141413; padding: 0 20px; display: flex; align-items: center; gap: 16px">
+<span style="width: 72px; height: 72px; border-radius: 36px; background: #2E271C; color: #D6B98A; display: flex; align-items: center; justify-content: center"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 600">Deckenlicht</span><span style="font-size: 18px; color: #A39F97">Wohnzimmer · 50 %</span></span>
+</div>
+</sc-if>
+<sc-if value="{{ v.retry }}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 18px; color: #A39F97; text-align: center">Zum Beispiel: „Licht im Wohnzimmer an“</p>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ v.showCancel }}" hint-placeholder-val="{{ true }}">
+<button aria-label="Abbrechen" onClick="{{ cancel }}" style="position: absolute; left: 324px; top: 612px; width: 72px; height: 72px; border-radius: 36px; background: #141413; display: flex; align-items: center; justify-content: center; color: #A39F97"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</sc-if>
+<sc-if value="{{ v.showRetry }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 0; right: 0; top: 612px; display: flex; justify-content: center; gap: 12px">
+<button onClick="{{ cancel }}" style="height: 72px; padding: 0 28px; border-radius: 36px; background: #141413; font-size: 22px; font-weight: 600; color: #A39F97">Schließen</button>
+<button onClick="{{ restart }}" style="height: 72px; padding: 0 28px; border-radius: 36px; background: #ECE9E3; color: #000000; font-size: 22px; font-weight: 600; display: flex; align-items: center; gap: 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3"></path></svg>Nochmal</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ v.idle }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ restart }}" style="position: absolute; inset: 0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #8A857D; font-size: 22px">
+<span style="font-size: 28px; color: #ECE9E3; font-weight: 600">„[Wake Word]“</span>
+<span>Tippen, um die Demo neu zu starten</span>
+</button>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"phase":{"editor":"enum","options":["auto","wake","listening","processing","response","error"],"default":"auto"},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { t: 0, cancelled: false }; this._start = Date.now(); }
+  componentDidMount() { this._iv = setInterval(() => this.setState({ t: Date.now() - this._start }), 33); }
+  componentWillUnmount() { clearInterval(this._iv); }
+  renderVals() {
+    const t = this.state.t;
+    const fixed = this.props.phase && this.props.phase !== 'auto' ? this.props.phase : null;
+    const CY = 300, CX = 360;
+    const clamp = (x) => Math.max(0, Math.min(1, x));
+    const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+    const words = 'Mach das Licht im Wohnzimmer auf 50 Prozent'.split(' ');
+    let phase, p = 0, lt = 0;
+    if (fixed) { phase = fixed; p = 1; lt = 4000; }
+    else if (this.state.cancelled) { phase = 'idle'; }
+    else {
+      const tt = t % 11000;
+      if (tt < 700) { phase = 'wake'; p = tt / 700; }
+      else if (tt < 4700) { phase = 'listening'; lt = tt - 700; }
+      else if (tt < 6000) { phase = 'processing'; }
+      else if (tt < 9500) { phase = 'response'; p = (tt - 6000) / 400; }
+      else phase = 'idle';
+    }
+    let amp = 0;
+    if (phase === 'listening') {
+      const speaking = fixed ? 1 : clamp((lt - 300) / 300) * clamp((3900 - lt) / 300);
+      amp = speaking * clamp(0.18 + 0.6 * Math.abs(Math.sin(t / 140)) * (0.55 + 0.45 * Math.sin(t / 53 + 1.3)) + 0.12 * Math.sin(t / 23));
+    }
+    const circle = (r, op) => ({ x: (CX - r) + 'px', y: (CY - r) + 'px', d: (2 * r) + 'px', op: op.toFixed(3) });
+    const ICON = {
+      mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3',
+      dots: 'M6 12h.01M12 12h.01M18 12h.01',
+      check: 'M5 12l4 4 10-10',
+      q: 'M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 18h.01'
+    };
+    let coreR = 64, coreY = CY, halo = circle(0, 0), mid = circle(0, 0), ripple = circle(0, 0);
+    let coreBg = '#D6B98A', coreFg = '#000000', icon = ICON.mic, iconS = 40, label = 'Ich höre zu', dot = '#D6B98A';
+    if (phase === 'wake') {
+      const e = easeOut(fixed ? 0.75 : p);
+      coreR = 64 * e; halo = circle(110 * e, 0.07 * e); mid = circle(88 * e, 0.12 * e);
+      const rp = fixed ? 0.45 : clamp(p);
+      ripple = circle(70 + 190 * rp, 0.5 * (1 - rp));
+      label = 'Ich höre zu';
+    } else if (phase === 'listening') {
+      coreR = 64 + amp * 10;
+      mid = circle(90 + amp * 42, 0.13);
+      halo = circle(112 + amp * 84, 0.06 + amp * 0.04);
+      const rp = (t % 1800) / 1800;
+      ripple = circle(96 + 150 * rp, 0.22 * (1 - rp) * (0.4 + amp));
+    } else if (phase === 'processing') {
+      coreR = 60; icon = ICON.dots; iconS = 44; label = 'Einen Moment'; mid = circle(84, 0.08);
+    } else if (phase === 'response') {
+      const e = easeOut(fixed ? 1 : p);
+      coreR = 64 - 24 * e; coreY = CY - 150 * e; icon = ICON.check; iconS = 28; label = 'Erledigt';
+    } else if (phase === 'error') {
+      coreR = 40; coreY = CY - 150; coreBg = '#2B2A27'; coreFg = '#ECE9E3'; icon = ICON.q; iconS = 30; label = 'Nicht verstanden'; dot = '#D98A73';
+    }
+    let shown = words.length;
+    if (phase === 'listening' && !fixed) shown = Math.floor(clamp((lt - 500) / 3000) * words.length);
+    if (phase === 'wake') shown = 0;
+    const said = words.slice(0, Math.max(0, shown - 1)).join(' ');
+    const saying = shown > 0 ? (shown > 1 ? ' ' : '') + words[shown - 1] : '';
+    return {
+      v: {
+        label, dot, labelOp: phase === 'idle' ? 0 : 1,
+        halo, mid, ripple,
+        core: { x: (CX - coreR) + 'px', y: (coreY - coreR) + 'px', d: (2 * coreR) + 'px' },
+        coreBg, coreFg, icon, iconS: phase === 'idle' ? 0 : iconS,
+        spin: phase === 'processing', angle: ((t / 1100) * 360 % 360).toFixed(1),
+        showTranscript: phase === 'listening' || phase === 'processing' || phase === 'wake',
+        said: phase === 'wake' ? '' : said, saying: phase === 'wake' ? '' : saying,
+        showResponse: phase === 'response' || phase === 'error',
+        reply: phase === 'error' ? 'Das habe ich nicht verstanden.' : 'Deckenlicht ist jetzt auf 50 %.',
+        card: phase === 'response', retry: phase === 'error',
+        showCancel: phase === 'wake' || phase === 'listening' || phase === 'processing',
+        showRetry: phase === 'error',
+        idle: phase === 'idle'
+      },
+      cancel: () => { if (!fixed) this.setState({ cancelled: true }); },
+      restart: () => { this._start = Date.now(); this.setState({ cancelled: false, t: 0 }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

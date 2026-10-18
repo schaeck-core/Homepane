@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Energie Detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 16px; overflow: hidden">
+
+<div style="height: 72px; display: flex; align-items: center; gap: 16px">
+<button aria-label="Zurück" onClick="{{ close }}" style="width: 64px; height: 64px; flex: none; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 28px; font-weight: 600">Energie</span>
+<span style="font-size: 18px; color: #A39F97">Steckdose Wohnzimmer · 6 Sensoren</span>
+</div>
+</div>
+
+<div style="height: 120px; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 4px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 18px; color: #A39F97">Leistung jetzt</span>
+<span style="font-size: 96px; font-weight: 600; line-height: .9; letter-spacing: -0.04em">1,24<span style="font-size: 44px; color: #A39F97"> kW</span></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end; font-size: 22px">
+<span><span style="color: #A39F97">Heute </span>6,8 kWh</span>
+<span><span style="color: #A39F97">Gestern </span>7,4 kWh</span>
+</div>
+</div>
+
+<div role="group" aria-label="Zeitraum" style="height: 64px; border-radius: 22px; background: #141413; padding: 6px; box-sizing: border-box; display: flex; gap: 6px">
+<sc-for list="{{ ranges }}" as="r" hint-placeholder-count="3">
+<button onClick="{{ r.pick }}" style="flex: 1; border-radius: 16px; font-size: 22px; font-weight: 600; background: {{ r.bg }}; color: {{ r.fg }}">{{ r.label }}</button>
+</sc-for>
+</div>
+
+<div style="flex: 1; min-height: 0; border-radius: 24px; background: #141413; padding: 20px 20px 12px; display: flex; flex-direction: column; gap: 10px">
+<div style="flex: 1; display: flex; align-items: flex-end; gap: {{ gap }}">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="24">
+<span style="flex: 1; border-radius: 3px; height: {{ b.h }}; background: {{ b.c }}"></span>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 18px; color: #8A857D">
+<sc-for list="{{ axis }}" as="a" hint-placeholder-count="5"><span>{{ a }}</span></sc-for>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ values }}" as="v" hint-placeholder-count="4">
+<div style="height: 96px; border-radius: 20px; background: #141413; padding: 14px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between">
+<span style="font-size: 18px; color: #A39F97">{{ v.label }}</span>
+<span style="font-size: {{ v.size }}; font-weight: 600; color: {{ v.c }}; white-space: nowrap">{{ v.value }}</span>
+</div>
+</sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"onClose":{"editor":null},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { range: 'day' }; }
+  renderVals() {
+    const r = this.state.range;
+    const data = {
+      day: { v: [22, 18, 15, 14, 14, 16, 30, 52, 44, 38, 35, 41, 48, 62, 40, 36, 33, 45, 70, 82, 66, 50, 38, 58], axis: ['00', '06', '12', '18', 'jetzt'], gap: '4px' },
+      week: { v: [64, 71, 58, 80, 75, 92, 54], axis: ['Mi', 'Do', 'Fr', 'Sa', 'So', 'Mo', 'Di'], gap: '14px' },
+      month: { v: [60, 55, 70, 62, 58, 66, 80, 75, 61, 59, 64, 68, 72, 77, 70, 63, 57, 61, 66, 74, 79, 69, 64, 60, 58, 67, 73, 76, 71, 54], axis: ['7. Sep', '14.', '21.', '28.', 'heute'], gap: '3px' }
+    }[r];
+    return {
+      gap: data.gap, axis: data.axis,
+      bars: data.v.map((v, i) => ({ h: v + '%', c: i === data.v.length - 1 ? '#D6B98A' : '#34322E' })),
+      ranges: [['day', '24 h'], ['week', '7 Tage'], ['month', '30 Tage']].map(([id, label]) => ({ label, bg: r === id ? '#2B2A27' : 'transparent', fg: r === id ? '#ECE9E3' : '#A39F97', pick: () => this.setState({ range: id }) })),
+      values: [
+        { label: 'Scheinleistung', value: '1.310 VA', c: '#ECE9E3', size: '28px' },
+        { label: 'Strom', value: '5,6 A', c: '#ECE9E3', size: '28px' },
+        { label: 'Gesamt', value: '1.284 kWh', c: '#ECE9E3', size: '28px' },
+        { label: 'Spannung', value: 'Nicht verfügbar', c: '#8A857D', size: '18px' }
+      ],
+      close: () => { if (this.props.onClose) this.props.onClose(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

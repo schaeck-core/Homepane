@@ -1,0 +1,239 @@
+/* ── Homepane Web Flasher ── */
+
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --border:   #30363d;
+  --text:     #e6edf3;
+  --muted:    #8b949e;
+  --accent:   #58a6ff;
+  --accent-h: #79c0ff;
+  --success:  #3fb950;
+  --radius:   10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+/* ── Header ── */
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* ── Flash card ── */
+
+.flash-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.board-info h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.board-info table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.board-info td {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.board-info td:first-child {
+  color: var(--muted);
+  width: 40%;
+}
+
+/* ── Install options ── */
+
+.options {
+  border: none;
+  margin-top: 0.5rem;
+}
+
+.options legend {
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+
+.option {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+}
+
+.option:has(input:checked) {
+  border-color: var(--accent);
+}
+
+.option input {
+  margin-top: 0.35rem;
+}
+
+.option small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.warning {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-top: 0.4rem;
+}
+
+/* ── Install button ── */
+
+.install-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.install-btn {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.85rem 2rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.install-btn:hover {
+  background: var(--accent-h);
+}
+
+.install-btn:active {
+  transform: scale(0.97);
+}
+
+.unsupported-msg {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin-top: 0.5rem;
+}
+
+/* ── Instructions ── */
+
+.instructions {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.instructions h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.instructions h3 {
+  font-size: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.instructions ol,
+.instructions ul {
+  padding-left: 1.4rem;
+}
+
+.instructions li {
+  margin-bottom: 0.55rem;
+  font-size: 0.92rem;
+}
+
+.instructions code {
+  background: var(--bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+
+/* ── Footer ── */
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 480px) {
+  main {
+    padding: 1.25rem 0.75rem;
+  }
+
+  header h1 {
+    font-size: 1.4rem;
+  }
+
+  .install-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+}

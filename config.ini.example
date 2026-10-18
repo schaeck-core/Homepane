@@ -1,0 +1,29 @@
+# Homepane configuration example
+# Copy this file to config.ini and fill in your values
+
+# Home Assistant Connection
+haas_url=http://your-home-assistant:8123
+haas_dashboard=lovelace
+haas_token=YOUR_LONG_LIVED_ACCESS_TOKEN
+
+# Language (en, de, etc.)
+language=en
+
+# Timezone (POSIX TZ string, default: CET-1CEST,M3.5.0,M10.5.0/3 = Central European)
+# Examples: UTC0  |  EST5EDT,M3.2.0,M11.1.0  |  JST-9  |  AEST-10AEDT,M10.1.0,M4.1.0/3
+timezone=CET-1CEST,M3.5.0,M10.5.0/3
+
+# Music Assistant (optional)
+ma_player_id=your_player_id
+
+# Doorbell addon (optional)
+doorbell_unlock=
+doorbell_camera=
+doorbell_trigger=
+
+# Statistics display mode: chart or svg
+statistics_graph_mode=chart
+
+# Screen timeout in seconds before display turns off to save power.
+# Supported values: 5, 20, 30, 60  (default: 60)
+screen_timeout=60

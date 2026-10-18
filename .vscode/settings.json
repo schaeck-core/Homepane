@@ -1,0 +1,12 @@
+{
+    "cmake.cmakePath": "/opt/homebrew/opt/cmake/bin/cmake",
+    "cmake.buildDirectory": "${workspaceFolder}/",
+    "files.associations": {
+        "webserver.h": "c"
+    },
+    "idf.pythonInstallPath": "/usr/bin/python3",
+    "idf.openOcdConfigs": [
+        "board/esp32p4-builtin.cfg"
+    ],
+    "idf.flashType": "UART"
+}

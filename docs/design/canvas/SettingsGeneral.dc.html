@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Einstellungen Allgemein</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+.ov{-webkit-appearance:none;appearance:none;opacity:0;margin:0;cursor:pointer}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px 16px 0; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 12px; overflow: hidden">
+
+<div style="height: 72px; flex: none; display: flex; align-items: center; gap: 16px">
+<button aria-label="Zurück" onClick="{{ back }}" style="width: 64px; height: 64px; flex: none; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<span style="flex: 1; font-size: 28px; font-weight: 600">Allgemein</span>
+<button aria-label="Schließen" onClick="{{ close }}" style="width: 64px; height: 64px; flex: none; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+
+<div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-bottom: 16px">
+
+<span style="font-size: 18px; color: #A39F97; padding: 4px 4px 0">Gerät</span>
+<button style="height: 88px; flex: none; border-radius: 20px; background: #141413; padding: 0 20px; display: flex; align-items: center; gap: 16px; text-align: left"><span style="flex: 1; font-size: 22px">Gerätename</span><span style="font-size: 22px; color: #A39F97">Panel Wohnzimmer</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+<button style="height: 88px; flex: none; border-radius: 20px; background: #141413; padding: 0 20px; display: flex; align-items: center; gap: 16px; text-align: left"><span style="flex: 1; font-size: 22px">Sprache</span><span style="font-size: 22px; color: #A39F97">Deutsch</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+
+<span style="font-size: 18px; color: #A39F97; padding: 12px 4px 0">Sensoren</span>
+<sc-for list="{{ toggles }}" as="t" hint-placeholder-count="3">
+<button role="switch" aria-checked="{{ t.aria }}" onClick="{{ t.flip }}" style="height: 88px; flex: none; border-radius: 20px; background: #141413; padding: 0 16px 0 20px; display: flex; align-items: center; gap: 16px; text-align: left">
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px">{{ t.label }}</span><sc-if value="{{ t.sub }}" hint-placeholder-val="{{ false }}"><span style="font-size: 18px; color: #A39F97">{{ t.sub }}</span></sc-if></span>
+<span style="width: 96px; height: 56px; flex: none; border-radius: 28px; padding: 6px; box-sizing: border-box; display: flex; justify-content: {{ t.justify }}; background: {{ t.track }}"><span style="width: 44px; height: 44px; border-radius: 22px; background: {{ t.knob }}"></span></span>
+</button>
+</sc-for>
+
+<span style="font-size: 18px; color: #A39F97; padding: 12px 4px 0">Anzeige</span>
+<div style="height: 88px; flex: none; border-radius: 20px; position: relative; overflow: hidden; background: #141413">
+<div style="position: absolute; left: 0; top: 0; bottom: 0; width: {{ briW }}; background: #2B2A27"></div>
+<div style="position: absolute; inset: 0; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; font-size: 22px; pointer-events: none"><label for="dbri">Helligkeit</label><span style="font-weight: 600">{{ bri }} %</span></div>
+<input id="dbri" class="ov" type="range" min="5" max="100" step="1" value="{{ bri }}" onChange="{{ setBri }}" style="position: absolute; inset: 0; width: 100%; height: 100%">
+</div>
+<div style="flex: none; border-radius: 20px; background: #141413; padding: 16px 16px 16px 20px; display: flex; flex-direction: column; gap: 12px">
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px">Frontfolie</span><span style="font-size: 18px; color: #A39F97">Passt Kontrast und Schriftstärke an</span></span>
+<div style="height: 64px; border-radius: 18px; background: #000000; padding: 6px; box-sizing: border-box; display: flex; gap: 6px">
+<sc-for list="{{ films }}" as="f" hint-placeholder-count="3">
+<button onClick="{{ f.pick }}" style="flex: 1; border-radius: 14px; font-size: 18px; font-weight: 600; background: {{ f.bg }}; color: {{ f.fg }}">{{ f.label }}</button>
+</sc-for>
+</div>
+</div>
+<button style="height: 88px; flex: none; border-radius: 20px; background: #141413; padding: 0 20px; display: flex; align-items: center; gap: 16px; text-align: left"><span style="flex: 1; font-size: 22px">Bildschirm aus nach</span><span style="font-size: 22px; color: #A39F97">2 Min. ohne Präsenz</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+
+<span style="font-size: 18px; color: #A39F97; padding: 12px 4px 0">System</span>
+<button style="height: 88px; flex: none; border-radius: 20px; background: #141413; padding: 0 20px; display: flex; align-items: center; gap: 16px; text-align: left"><span style="flex: 1; font-size: 22px">Systeminformation</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"onBack":{"editor":null},"onClose":{"editor":null},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mic: false, haptic: true, mmwave: true, night: true, bri: 70, film: 'frost' }; }
+  renderVals() {
+    const s = this.state;
+    const tg = (key, label, sub) => {
+      const on = s[key];
+      return { label, sub: sub || false, aria: on ? 'true' : 'false', justify: on ? 'flex-end' : 'flex-start', track: on ? '#D6B98A' : '#2B2A27', knob: on ? '#000000' : '#8A857D', flip: () => this.setState({ [key]: !this.state[key] }) };
+    };
+    return {
+      toggles: [
+        tg('mic', 'Mikrofon', 'Für Sprachassistent'),
+        tg('haptic', 'Haptisches Feedback'),
+        tg('mmwave', 'Präsenzsensor (mmWave)', 'Display wacht bei Annäherung auf'),
+        tg('night', 'Nachts abdunkeln', '22:00 – 6:30 · 10 %')
+      ],
+      bri: s.bri, briW: s.bri + '%', setBri: (ev) => this.setState({ bri: +ev.target.value }),
+      films: [['none', 'Keine'], ['frost', 'Satiniert'], ['mirror', 'Spiegel']].map(([id, label]) => ({ label, bg: s.film === id ? '#2B2A27' : 'transparent', fg: s.film === id ? '#ECE9E3' : '#A39F97', pick: () => this.setState({ film: id }) })),
+      back: () => { if (this.props.onBack) this.props.onBack(); },
+      close: () => { if (this.props.onClose) this.props.onClose(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

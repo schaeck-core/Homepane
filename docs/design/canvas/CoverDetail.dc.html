@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Rollladen Detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+.ov{-webkit-appearance:none;appearance:none;opacity:0;margin:0;cursor:pointer}
+.vov{-webkit-appearance:none;appearance:none;writing-mode:vertical-lr;direction:rtl;opacity:0;cursor:pointer;margin:0}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 16px; overflow: hidden">
+
+<div style="height: 72px; display: flex; align-items: center; gap: 16px">
+<button aria-label="Zurück" onClick="{{ close }}" style="width: 64px; height: 64px; flex: none; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 28px; font-weight: 600">Rollladen</span>
+<span style="font-size: 18px; color: #A39F97">Wohnzimmer · Südfenster</span>
+</div>
+</div>
+
+<div style="flex: 1; min-height: 0; display: flex; gap: 16px">
+
+<div style="width: 248px; flex: none; border-radius: 24px; background: #141413; padding: 24px 20px 20px; box-sizing: border-box; display: flex; flex-direction: column">
+<div style="flex: 1; position: relative; border: 10px solid #3A3833; border-bottom: 0; background: #10161A; overflow: hidden">
+<div style="position: absolute; top: 0; bottom: 0; left: 50%; width: 6px; margin-left: -3px; background: #3A3833"></div>
+<div style="position: absolute; left: 0; right: 0; top: 46%; height: 6px; background: #3A3833"></div>
+<div style="position: absolute; left: 0; right: 0; top: 0; height: {{ shade }}; background: repeating-linear-gradient(180deg, #8A857D 0 18px, #5E5A54 18px 21px); transition: height .08s linear"></div>
+<label for="pos" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Position</label>
+<input id="pos" class="vov" type="range" min="0" max="100" step="1" value="{{ e.pos }}" onChange="{{ setPos }}" style="position: absolute; inset: 0; width: 100%; height: 100%">
+</div>
+<div style="height: 14px; margin: 0 -10px; border-radius: 3px; background: #3A3833"></div>
+</div>
+
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 4px 4px 0">
+<span style="font-size: 96px; font-weight: 600; line-height: .95; letter-spacing: -0.04em">{{ e.pos }}<span style="font-size: 44px; color: #A39F97"> %</span></span>
+<span style="font-size: 22px; color: #A39F97">{{ status }}</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<button onClick="{{ open }}" style="height: 104px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 18px; font-weight: 600; background: {{ btn.up }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"></path></svg>Öffnen</button>
+<button onClick="{{ stop }}" style="height: 104px; border-radius: 22px; background: #141413; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 18px; font-weight: 600"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"></path></svg>Stopp</button>
+<button onClick="{{ shut }}" style="height: 104px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 18px; font-weight: 600; background: {{ btn.down }}"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>Schließen</button>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+<button onClick="{{ p.pick }}" style="height: 72px; border-radius: 22px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: 600; background: {{ p.bg }}; color: {{ p.fg }}"><span>{{ p.label }}</span><span style="color: #8A857D">{{ p.v }} %</span></button>
+</sc-for>
+</div>
+
+<div style="margin-top: auto; height: 72px; flex: none; border-radius: 24px; position: relative; overflow: hidden; background: #141413">
+<div style="position: absolute; left: 0; top: 0; bottom: 0; width: {{ tiltW }}; background: #2B2A27"></div>
+<div style="position: absolute; inset: 0; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; font-size: 22px; pointer-events: none"><label for="tilt">Lamellen</label><span style="font-weight: 600">{{ e.tilt }} %</span></div>
+<input id="tilt" class="ov" type="range" min="0" max="100" step="5" value="{{ e.tilt }}" onChange="{{ setTilt }}" style="position: absolute; inset: 0; width: 100%; height: 100%">
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"entity":{"editor":null},"onChange":{"editor":null},"onClose":{"editor":null},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { local: { pos: 40, tilt: 50, moving: null } };
+  }
+  ent() { return this.props.entity || this.state.local; }
+  change(p) {
+    if (this.props.onChange) this.props.onChange(p);
+    if (!this.props.entity) {
+      const q = p.target != null ? { pos: p.target } : p.stop ? {} : p;
+      this.setState((st) => ({ local: { ...st.local, ...q, moving: null } }));
+    }
+  }
+  renderVals() {
+    const e = this.ent();
+    const status = e.moving === 'up' ? 'Öffnet …' : e.moving === 'down' ? 'Schließt …' : e.pos === 0 ? 'Geschlossen' : e.pos === 100 ? 'Ganz offen' : 'Offen';
+    const presets = [['Zu', 0], ['Sichtschutz', 30], ['Halb', 50], ['Offen', 100]];
+    return {
+      e, status,
+      shade: (100 - e.pos) + '%',
+      tiltW: e.tilt + '%',
+      btn: { up: e.moving === 'up' ? '#2B2A27' : '#141413', down: e.moving === 'down' ? '#2B2A27' : '#141413' },
+      close: () => { if (this.props.onClose) this.props.onClose(); },
+      open: () => this.change({ target: 100 }),
+      shut: () => this.change({ target: 0 }),
+      stop: () => this.change({ stop: true }),
+      setPos: (ev) => this.change({ pos: +ev.target.value }),
+      setTilt: (ev) => this.change({ tilt: +ev.target.value }),
+      presets: presets.map(([label, v]) => ({ label, v, bg: e.pos === v ? '#2B2A27' : '#141413', fg: e.pos === v ? '#ECE9E3' : '#A39F97', pick: () => this.change({ target: v }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

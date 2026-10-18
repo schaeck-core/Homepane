@@ -1,0 +1,216 @@
+{
+ "v": 3,
+ "attachments": {},
+ "boards": {
+  "Main.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Dashboard · Wohnzimmer (Prototyp)",
+   "w": 720,
+   "x": 0,
+   "y": 0
+  },
+  "LightDetail.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Licht · Detail (Farbe)",
+   "w": 720,
+   "x": 800,
+   "y": 0
+  },
+  "LightDetailWhite.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Licht · Detail (Weiß / Farbtemperatur)",
+   "w": 720,
+   "x": 1600,
+   "y": 0
+  },
+  "ClimateDetail.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Thermostat · Detail (heat_cool)",
+   "w": 720,
+   "x": 2400,
+   "y": 0
+  },
+  "CoverDetail.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Rollladen · Detail",
+   "w": 720,
+   "x": 3200,
+   "y": 0
+  },
+  "EnergyDetail.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Energie · Detail (Sensorgruppe)",
+   "w": 720,
+   "x": 4000,
+   "y": 0
+  },
+  "WeatherDetail.dc.html": {
+   "h": 720,
+   "radius": 36,
+   "title": "Wetter · Detail",
+   "w": 720,
+   "x": 0,
+   "y": 840
+  },
+  "MediaDetail.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Mediaplayer · Detail",
+   "w": 720,
+   "x": 800,
+   "y": 840
+  },
+  "Doorbell.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Türklingel · Overlay",
+   "w": 720,
+   "x": 1600,
+   "y": 840
+  },
+  "Alarm.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Alarmanlage · Keypad",
+   "w": 720,
+   "x": 2400,
+   "y": 840
+  },
+  "Screensaver.dc.html": {
+   "h": 720,
+   "radius": 36,
+   "title": "Bildschirmschoner",
+   "w": 720,
+   "x": 3200,
+   "y": 840
+  },
+  "Settings.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Einstellungen",
+   "w": 720,
+   "x": 0,
+   "y": 1680
+  },
+  "SettingsGeneral.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Einstellungen · Allgemein",
+   "w": 720,
+   "x": 800,
+   "y": 1680
+  },
+  "Film.dc.html": {
+   "h": 800,
+   "title": "Frontfolie · Vergleich",
+   "w": 1520,
+   "x": 1600,
+   "y": 1680
+  },
+  "Tokens.dc.html": {
+   "h": 720,
+   "title": "Design-Tokens für LVGL",
+   "w": 720,
+   "x": 3200,
+   "y": 1680
+  },
+  "Gestures.dc.html": {
+   "h": 860,
+   "title": "Gesten & Aktionen",
+   "w": 1524,
+   "x": 0,
+   "y": 2520
+  },
+  "Widgets.dc.html": {
+   "h": 3500,
+   "title": "Kachel-Katalog (Dashboard-Größe)",
+   "w": 1524,
+   "x": 1604,
+   "y": 2520
+  },
+  "VoiceAssistant.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Sprachassistent · Variante A (Kreis)",
+   "w": 720,
+   "x": 4000,
+   "y": 840
+  },
+  "VoiceStates.dc.html": {
+   "h": 640,
+   "title": "Sprachassistent · Zustände",
+   "w": 1680,
+   "x": 3208,
+   "y": 2520
+  },
+  "VoiceAssistantB.dc.html": {
+   "h": 720,
+   "is_interactive": true,
+   "radius": 36,
+   "title": "Sprachassistent · Variante B (Aurora)",
+   "w": 720,
+   "x": 4800,
+   "y": 840
+  }
+ },
+ "createdOnFiles": {
+  "at": "2026-10-06T10:25:00Z",
+  "v": 1
+ },
+ "designSystems": [],
+ "launch": {
+  "view": "canvas"
+ },
+ "notes": {
+  "title": {
+   "kind": "title1",
+   "maxW": 5520,
+   "text": "Smart-Home Panel · ESP32-P4 / LVGL · 720 × 720",
+   "w": 240,
+   "x": 0,
+   "y": -300
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "LightDetail.dc.html",
+  "LightDetailWhite.dc.html",
+  "ClimateDetail.dc.html",
+  "CoverDetail.dc.html",
+  "EnergyDetail.dc.html",
+  "WeatherDetail.dc.html",
+  "MediaDetail.dc.html",
+  "Doorbell.dc.html",
+  "Alarm.dc.html",
+  "Screensaver.dc.html",
+  "Settings.dc.html",
+  "SettingsGeneral.dc.html",
+  "Film.dc.html",
+  "Tokens.dc.html",
+  "Gestures.dc.html",
+  "Widgets.dc.html",
+  "VoiceAssistant.dc.html",
+  "VoiceAssistantB.dc.html",
+  "VoiceStates.dc.html"
+ ],
+ "pages": [],
+ "title": "Smart-Home Panel 720"
+}

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Thermostat Detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.pn button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pn{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+<div class="pn" style="width: 720px; height: 720px; box-sizing: border-box; padding: 16px; background: #000000; color: #ECE9E3; font-family: 'Manrope', system-ui, sans-serif; font-weight: 500; display: flex; flex-direction: column; gap: 16px; overflow: hidden">
+
+<div style="height: 72px; display: flex; align-items: center; gap: 16px">
+<button aria-label="Zurück" onClick="{{ close }}" style="width: 64px; height: 64px; flex: none; border-radius: 20px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 28px; font-weight: 600">Thermostat</span>
+<span style="font-size: 18px; color: #A39F97">Wohnzimmer · {{ action }}</span>
+</div>
+<span style="height: 56px; padding: 0 18px; border-radius: 28px; background: #141413; display: flex; align-items: center; gap: 8px; font-size: 22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A39F97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s7 7 7 12a7 7 0 0 1-14 0c0-5 7-12 7-12z"></path></svg>{{ e.humidity }} %</span>
+</div>
+
+<div style="height: 336px; display: flex; align-items: center; justify-content: space-between">
+<button aria-label="{{ downLabel }}" onClick="{{ down }}" style="width: 104px; height: 104px; border-radius: 52px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+<div style="width: 336px; height: 336px; position: relative">
+<svg width="336" height="336" viewBox="0 0 336 336" style="position: absolute; inset: 0">
+<circle cx="168" cy="168" r="150" fill="none" stroke="#1F1E1C" stroke-width="22" stroke-linecap="round" stroke-dasharray="706.86 942.48" transform="rotate(135 168 168)"></circle>
+<circle cx="168" cy="168" r="150" fill="none" stroke="{{ arc.col }}" stroke-width="22" stroke-linecap="round" stroke-dasharray="{{ arc.dash }}" stroke-dashoffset="{{ arc.off }}" transform="rotate(135 168 168)" style="transition: all .2s"></circle>
+<circle cx="{{ cur.x }}" cy="{{ cur.y }}" r="9" fill="#ECE9E3" stroke="#000000" stroke-width="4"></circle>
+</svg>
+<sc-if value="{{ dual }}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px">
+<div style="display: flex; gap: 8px">
+<button onClick="{{ selLow }}" aria-pressed="{{ lowSel.aria }}" style="width: 116px; height: 104px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: {{ lowSel.bg }}"><span style="font-size: 18px; color: #CF9271">Heizen ab</span><span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em">{{ lowLabel }}</span></button>
+<button onClick="{{ selHigh }}" aria-pressed="{{ highSel.aria }}" style="width: 116px; height: 104px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: {{ highSel.bg }}"><span style="font-size: 18px; color: #94AFC4">Kühlen ab</span><span style="font-size: 44px; font-weight: 600; letter-spacing: -0.02em">{{ highLabel }}</span></button>
+</div>
+<span style="font-size: 18px; color: #A39F97">Raum {{ curLabel }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ single }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px">
+<span style="font-size: 18px; color: #A39F97">Ziel</span>
+<span style="font-size: 96px; font-weight: 600; line-height: 1; letter-spacing: -0.04em">{{ targetLabel }}</span>
+<span style="font-size: 18px; color: #A39F97">Raum {{ curLabel }}</span>
+</div>
+</sc-if>
+</div>
+<button aria-label="{{ upLabel }}" onClick="{{ up }}" style="width: 104px; height: 104px; border-radius: 52px; background: #141413; display: flex; align-items: center; justify-content: center"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+</div>
+
+<div role="group" aria-label="Betriebsart" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="4">
+<button onClick="{{ m.pick }}" style="height: 88px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 18px; font-weight: 600; background: {{ m.bg }}; color: {{ m.fg }}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ m.ico }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ m.icon }}"></path></svg>{{ m.label }}</button>
+</sc-for>
+</div>
+
+<div role="group" aria-label="Voreinstellung" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+<button onClick="{{ p.pick }}" style="height: 72px; border-radius: 22px; font-size: 18px; font-weight: 600; background: {{ p.bg }}; color: {{ p.fg }}">{{ p.label }}</button>
+</sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"entity":{"editor":null},"onChange":{"editor":null},"onClose":{"editor":null},"$preview":{"width":720,"height":720}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 'low', local: { current: 21.8, low: 21, high: 24, target: 23, hvac: 'heat_cool', humidity: 46, preset: 'home', fan: 'auto' } };
+  }
+  ent() { return this.props.entity || this.state.local; }
+  change(p) {
+    if (this.props.onChange) this.props.onChange(p);
+    if (!this.props.entity) this.setState((st) => ({ local: { ...st.local, ...p } }));
+  }
+  renderVals() {
+    const e = this.ent();
+    const MIN = 7, MAX = 30, ARC = 706.86, CIRC = 942.48;
+    const fr = (v) => Math.max(0, Math.min(1, (v - MIN) / (MAX - MIN)));
+    const fmt = (v) => v.toFixed(1).replace('.', ',') + '°';
+    const dual = e.hvac === 'heat_cool';
+    const sel = this.state.sel;
+    const lo = dual ? fr(e.low) : 0, hi = dual ? fr(e.high) : fr(e.target);
+    const ang = (135 + 270 * fr(e.current)) * Math.PI / 180;
+    const col = { heat: '#CF9271', cool: '#94AFC4', heat_cool: '#C9B79A', off: '#2B2A27' }[e.hvac];
+    const step = (d) => {
+      if (dual) {
+        if (sel === 'low') this.change({ low: Math.max(MIN, Math.min(e.high - 1, e.low + d)) });
+        else this.change({ high: Math.min(MAX, Math.max(e.low + 1, e.high + d)) });
+      } else this.change({ target: Math.max(MIN, Math.min(MAX, e.target + d)) });
+    };
+    const modes = [
+      ['off', 'Aus', 'M12 3v9M6.3 6.3a8 8 0 1 0 11.4 0', '#8A857D'],
+      ['heat', 'Heizen', 'M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5.5 1-8.5z', '#CF9271'],
+      ['cool', 'Kühlen', 'M12 2v20M4.9 7l14.2 10M4.9 17L19.1 7', '#94AFC4'],
+      ['heat_cool', 'Auto', 'M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4', '#C9B79A']
+    ];
+    const presets = [['home', 'Zuhause'], ['away', 'Abwesend'], ['sleep', 'Schlafen']];
+    let action = 'Leerlauf';
+    if (e.hvac === 'off') action = 'Aus';
+    else if ((e.hvac === 'heat' || dual) && e.current < (dual ? e.low : e.target)) action = 'Heizt';
+    else if ((e.hvac === 'cool' || dual) && e.current > (dual ? e.high : e.target)) action = 'Kühlt';
+    const selBg = (on) => ({ bg: on ? '#1F1E1C' : 'transparent', aria: on ? 'true' : 'false' });
+    return {
+      e, action, dual, single: !dual,
+      arc: { col, dash: (e.hvac === 'off' ? 0 : (hi - lo) * ARC).toFixed(1) + ' ' + CIRC, off: (-lo * ARC).toFixed(1) },
+      cur: { x: (168 + 150 * Math.cos(ang)).toFixed(1), y: (168 + 150 * Math.sin(ang)).toFixed(1) },
+      lowLabel: fmt(e.low), highLabel: fmt(e.high), targetLabel: e.hvac === 'off' ? 'Aus' : fmt(e.target), curLabel: fmt(e.current),
+      lowSel: selBg(sel === 'low'), highSel: selBg(sel === 'high'),
+      selLow: () => this.setState({ sel: 'low' }), selHigh: () => this.setState({ sel: 'high' }),
+      downLabel: dual ? (sel === 'low' ? 'Heizgrenze senken' : 'Kühlgrenze senken') : 'Zieltemperatur senken',
+      upLabel: dual ? (sel === 'low' ? 'Heizgrenze erhöhen' : 'Kühlgrenze erhöhen') : 'Zieltemperatur erhöhen',
+      down: () => step(-0.5), up: () => step(0.5),
+      close: () => { if (this.props.onClose) this.props.onClose(); },
+      modes: modes.map(([id, label, icon, c]) => ({ label, icon, ico: c, bg: e.hvac === id ? '#2B2A27' : '#141413', fg: e.hvac === id ? '#ECE9E3' : '#A39F97', pick: () => this.change({ hvac: id }) })),
+      presets: presets.map(([id, label]) => ({ label, bg: e.preset === id ? '#2B2A27' : '#141413', fg: e.preset === id ? '#ECE9E3' : '#A39F97', pick: () => this.change({ preset: id }) }))
+        .concat([{ label: e.fan === 'on' ? 'Lüfter an' : 'Lüfter auto', bg: e.fan === 'on' ? '#2B2A27' : '#141413', fg: e.fan === 'on' ? '#ECE9E3' : '#A39F97', pick: () => this.change({ fan: e.fan === 'on' ? 'auto' : 'on' }) }])
+    };
+  }
+}
+</script>
+</body>
+</html>

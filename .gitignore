@@ -1,0 +1,80 @@
+# ============================================
+# Homepane .gitignore
+# ============================================
+
+# ----- Build Artifacts -----
+build/
+bin/
+CMakeFiles/
+out/
+Testing/
+*.ninja
+*.ninja_*
+CMakeCache.txt
+cmake_install.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+compile_commands.json*
+Makefile
+install_manifest.txt
+*.a
+
+# ----- Runtime/Temp Files -----
+tmp/
+logs/
+entity_logs/
+*.log
+
+# ----- Generated Files -----
+# Generated fonts (keep README.md)
+# Note: fonts are currently tracked for convenience; regenerate with:
+#   cmake --build build --target generate_fonts
+# app/generated/*.c
+scripts/out/
+
+# ----- ESP32 Build -----
+esp32p4/build/
+esp32p4/managed_components/
+platforms/esp32p4/build/
+platforms/esp32p4/managed_components/
+sdkconfig.old
+
+# ----- Web Flasher (local dev artefacts) -----
+tools/web-flasher/firmware/
+tools/web-flasher/manifest.json
+tools/web-flasher/manifest-no-c6.json
+tools/web-flasher/.certs/
+
+# ----- OS Files -----
+.DS_Store
+Thumbs.db
+
+# ----- IDE/Editor (keep .vscode for shared configs) -----
+# .vscode/  # Committed for shared launch.json/tasks.json
+*.swp
+*.swo
+*~
+
+# ----- Dependencies (installed via vcpkg) -----
+lib/libwebsockets/
+lib/cJSON/
+lib/libmicrohttpd/
+vcpkg_installed/
+
+
+# ----- Secrets (never commit) -----
+config.ini
+# Home Assistant API token for development tooling (never commit)
+.homeassistant
+.homeassistant-logins
+*.pem
+*.key
+# Public half of the OTA signing key: embedded in the firmware, meant to be public.
+!platforms/esp32p4/main/ota_signing_pubkey.pem
+
+# ----- Unused/Legacy -----
+ethernet/
+# legacy simulator output dir at root level only:
+/main/
+.cmake/
+macache/

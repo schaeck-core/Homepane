@@ -490,11 +490,23 @@ static void close_msgbox_cb(lv_event_t *e)
     lv_msgbox_close(msgbox);
 }
 
+static void reset_after_revoke(bool revoked, void *user);
+
 static void reset_connection_cb(lv_event_t *e)
 {
     LV_UNUSED(e);
 
     printf("[Settings] Resetting Home Assistant connection...\n");
+    // First the panel's token in Home Assistant, then the local config
+    // (reset_after_revoke): otherwise it stays in HA, and pairing again
+    // under the same name fails there.
+    app_cpp_ha_revoke_token(reset_after_revoke, NULL);
+}
+
+static void reset_after_revoke(bool revoked, void *user)
+{
+    LV_UNUSED(user);
+    if (!revoked) printf("[Settings] Could not delete the panel's token in Home Assistant\n");
 
     // Stop the live dashboard connection (C++ migration phase 10
     // tr(TR_SETTINGS_HA_TOKEN) consumer: the legacy closeConnection() only ever touched
@@ -514,7 +526,7 @@ static void reset_connection_cb(lv_event_t *e)
     // Show confirmation
     lv_obj_t *msgbox = lv_msgbox_create(NULL);
     lv_msgbox_add_title(msgbox, tr(TR_SETTINGS_HA_RESET_DONE_TITLE));
-    lv_msgbox_add_text(msgbox, tr(TR_SETTINGS_HA_RESET_DONE));
+    lv_msgbox_add_text(msgbox, tr(revoked ? TR_SETTINGS_HA_RESET_DONE : TR_SETTINGS_HA_RESET_TOKEN_KEPT));
     lv_msgbox_add_close_button(msgbox);
     lv_obj_add_event_cb(msgbox, close_msgbox_cb, LV_EVENT_VALUE_CHANGED, NULL);
     lv_obj_center(msgbox);

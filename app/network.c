@@ -225,6 +225,16 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base,
 }
 
 // Event handler for Ethernet
+// Ethernet is brought up after WiFi may already be connected (or connecting)
+// from saved credentials. Until Ethernet actually has an address, its link
+// events must not take over the shared status, or the WiFi wait on the setup
+// screen sees "not WiFi" and reports a failed connection.
+static bool wifi_link_active(void)
+{
+    return s_network_info.type == NET_TYPE_WIFI &&
+           (s_network_info.status == NET_STATUS_CONNECTED || s_network_info.status == NET_STATUS_CONNECTING);
+}
+
 static void eth_event_handler(void *arg, esp_event_base_t event_base,
                               int32_t event_id, void *event_data)
 {
@@ -237,12 +247,16 @@ static void eth_event_handler(void *arg, esp_event_base_t event_base,
         ESP_LOGI(TAG, "Ethernet Link Up");
         ESP_LOGI(TAG, "Ethernet HW Addr %02x:%02x:%02x:%02x:%02x:%02x",
                  mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
-        s_network_info.status = NET_STATUS_CONNECTING;
-        s_network_info.type = NET_TYPE_ETHERNET;
+        if (!wifi_link_active()) {
+            s_network_info.status = NET_STATUS_CONNECTING;
+            s_network_info.type = NET_TYPE_ETHERNET;
+        }
         break;
     case ETHERNET_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "Ethernet Link Down");
-        s_network_info.status = NET_STATUS_DISCONNECTED;
+        if (s_network_info.type == NET_TYPE_ETHERNET) {
+            s_network_info.status = NET_STATUS_DISCONNECTED;
+        }
         if (s_network_event_group) {
             xEventGroupSetBits(s_network_event_group, ETH_FAIL_BIT);
         }
@@ -391,8 +405,10 @@ bool network_ethernet_init(void)
     }
 
     ESP_LOGI(TAG, "Ethernet initialization completed");
-    s_network_info.type = NET_TYPE_ETHERNET;
-    s_network_info.status = NET_STATUS_CONNECTING;
+    if (!wifi_link_active()) {
+        s_network_info.type = NET_TYPE_ETHERNET;
+        s_network_info.status = NET_STATUS_CONNECTING;
+    }
     return true;
 }
 

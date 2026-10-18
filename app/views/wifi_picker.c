@@ -3,6 +3,7 @@
 #include "../i18n.h"
 
 #include "../cpp/app_facade.h"
+#include "../config.h"
 #include "../fonts.h"
 #include "../ui_kit.h"
 #include "keyboard_style.h"
@@ -206,6 +207,18 @@ static void connect_done_cb(bool ok, const char *message, void *user)
 
 static void start_connect(const char *ssid, const char *password)
 {
+    /* What was typed is kept for the next dialog (after a failed attempt or
+     * a restart). The credentials the panel connects with (wifi_ssid /
+     * wifi_password) only change once a connection succeeded. */
+    char ssid_copy[33], pass_copy[65];
+    snprintf(ssid_copy, sizeof(ssid_copy), "%s", ssid);
+    snprintf(pass_copy, sizeof(pass_copy), "%s", password ? password : "");
+    updateConfig("wifi_last_ssid", ssid_copy);
+    updateConfig("wifi_last_password", pass_copy);
+    saveConfig();
+    ssid = ssid_copy;
+    password = pass_copy;
+
     conn_overlay_show(ssid);
     app_cpp_wifi_connect(ssid, password, connect_done_cb, instance_token());
 }
@@ -340,6 +353,21 @@ static void show_password_dialog(const char *ssid, bool is_other)
     lv_textarea_set_password_mode(s_pass_ta, true);
     lv_textarea_set_max_length(s_pass_ta, 64);
     lv_obj_add_event_cb(s_pass_ta, dialog_ta_event_cb, LV_EVENT_ALL, NULL);
+
+    /* Prefilled: the saved password of this network, else what was typed last */
+    const char *saved = getConfig("wifi_ssid");
+    const char *last = getConfig("wifi_last_ssid");
+    if (is_other && last && last[0]) {
+        lv_textarea_set_text(s_ssid_ta, last);
+        const char *pw = getConfig("wifi_last_password");
+        if (pw) lv_textarea_set_text(s_pass_ta, pw);
+    } else if (!is_other && saved && strcmp(saved, s_dialog_ssid) == 0) {
+        const char *pw = getConfig("wifi_password");
+        if (pw) lv_textarea_set_text(s_pass_ta, pw);
+    } else if (!is_other && last && strcmp(last, s_dialog_ssid) == 0) {
+        const char *pw = getConfig("wifi_last_password");
+        if (pw) lv_textarea_set_text(s_pass_ta, pw);
+    }
 
     lv_obj_t *btns = lv_obj_create(box);
     lv_obj_remove_style_all(btns);

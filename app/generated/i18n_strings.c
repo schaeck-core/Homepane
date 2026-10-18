@@ -365,6 +365,7 @@ static const char *const s_de[TR__COUNT] = {
     "Kreis\nAurora", /* settings.ha.ui_options */
     "Glocke\nSchimmer\nBlip\nSchalter\nAus", /* settings.ha.sound_options */
     "Die Verbindung zu Home Assistant wurde zurückgesetzt.\n\nStarte das Panel neu, um dich wieder anzumelden.", /* settings.ha.reset_done */
+    "Die Verbindung zu Home Assistant wurde zurückgesetzt, Home Assistant war aber nicht erreichbar: Lösche das Token des Panels selbst (dein Profil in Home Assistant, Sicherheit, langlebige Zugangs-Tokens).\n\nStarte das Panel neu, um dich wieder anzumelden.", /* settings.ha.reset_token_kept */
     "Verbunden mit {0}", /* settings.wifi.connected_to */
     "IP-Adresse: {0}", /* settings.wifi.ip */
     "Verbinde mit {0} …", /* settings.wifi.connecting_to */
@@ -405,6 +406,7 @@ static const char *const s_de[TR__COUNT] = {
     "Das Panel verbindet sich von selbst", /* setup.qr_step3 */
     "Token eingeben", /* setup.use_token */
     "Die Anmeldung hat nicht geklappt. Adresse prüfen und den Code erneut scannen.", /* setup.pairing_failed */
+    "Home Assistant hat schon ein Token namens „{0}“ aus einer früheren Einrichtung dieses Panels. Lösche es (dein Profil in Home Assistant, Sicherheit, langlebige Zugangs-Tokens) und scanne den Code erneut.", /* setup.pairing_token_exists */
     "Zugriffstoken", /* setup.token_title */
     "Token", /* setup.token */
     "Bitte ein Token eingeben.", /* setup.token_missing */
@@ -911,6 +913,7 @@ static const char *const s_en[TR__COUNT] = {
     "Circle\nAurora", /* settings.ha.ui_options */
     "Chime\nShimmer\nBlip\nSwitch\nOff", /* settings.ha.sound_options */
     "The Home Assistant connection has been reset.\n\nRestart the panel to sign in again.", /* settings.ha.reset_done */
+    "The Home Assistant connection has been reset, but Home Assistant could not be reached: delete the panel's token yourself (your profile in Home Assistant, Security, long-lived access tokens).\n\nRestart the panel to sign in again.", /* settings.ha.reset_token_kept */
     "Connected to {0}", /* settings.wifi.connected_to */
     "IP address: {0}", /* settings.wifi.ip */
     "Connecting to {0} …", /* settings.wifi.connecting_to */
@@ -951,6 +954,7 @@ static const char *const s_en[TR__COUNT] = {
     "The panel connects by itself", /* setup.qr_step3 */
     "Enter a token", /* setup.use_token */
     "Signing in did not work. Check the address and scan the code again.", /* setup.pairing_failed */
+    "Home Assistant already has a token named \"{0}\" from an earlier setup of this panel. Delete it (your profile in Home Assistant, Security, long-lived access tokens) and scan the code again.", /* setup.pairing_token_exists */
     "Access token", /* setup.token_title */
     "Token", /* setup.token */
     "Please enter a token.", /* setup.token_missing */

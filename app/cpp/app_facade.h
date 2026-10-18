@@ -195,6 +195,11 @@ void app_cpp_wifi_get_status(app_cpp_wifi_status_t* out);
 // The dashboard's Home Assistant connection is up (authenticated).
 bool app_cpp_ha_connected(void);
 
+// Deletes the panel's own long-lived token in Home Assistant (the one the
+// dashboard's connection signed in with), before a reset forgets it. done
+// (UI thread) gets false when HA could not be reached or refused.
+void app_cpp_ha_revoke_token(void (*done)(bool ok, void* user), void* user);
+
 // ── Firmware updates (UpdateController, Track U Phase U1) ────────────────
 // Source: HOMEPANE_OTA_MANIFEST_URL (app/cpp/update/UpdateSource.h, fixed
 // at build time); config key ota_auto_check ("0" disables the daily check). The listener fires on the UI thread on every status change.

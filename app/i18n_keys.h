@@ -381,6 +381,7 @@ Off */
     TR_SETTINGS_HA_RESET_DONE, /* The Home Assistant connection has been reset.
 
 Restart the p */
+    TR_SETTINGS_HA_RESET_TOKEN_KEPT, /* The Home Assistant connection has been reset, but Home Assis */
     TR_SETTINGS_WIFI_CONNECTED_TO, /* Connected to {0} */
     TR_SETTINGS_WIFI_IP, /* IP address: {0} */
     TR_SETTINGS_WIFI_CONNECTING_TO, /* Connecting to {0} … */
@@ -422,6 +423,7 @@ Please check the network an */
     TR_SETUP_QR_STEP3, /* The panel connects by itself */
     TR_SETUP_USE_TOKEN, /* Enter a token */
     TR_SETUP_PAIRING_FAILED, /* Signing in did not work. Check the address and scan the code */
+    TR_SETUP_PAIRING_TOKEN_EXISTS, /* Home Assistant already has a token named "{0}" from an earli */
     TR_SETUP_TOKEN_TITLE, /* Access token */
     TR_SETUP_TOKEN, /* Token */
     TR_SETUP_TOKEN_MISSING, /* Please enter a token. */

@@ -12,11 +12,17 @@
 #include "lvgl/lvgl.h"
 #include "esp_lvgl_port.h"
 #include "cpp/app_facade.h"
+#include "webserver_esp32.h"
 
 // Forward declare — avoid pulling in app/views/views.h just for this one
 // symbol (matches how websocket_client_esp.c declared it locally too).
 extern void enter_setup_state(void);
 extern void initialization_pairing_failed(const char *detail);
+extern void initialization_pairing_token_exists(const char *token_name);
+
+/* The long-lived token's name in Home Assistant: "Homepane" and the IP
+ * address, so the user can tell which panel a token belongs to. */
+static char s_token_name[40];
 
 static const char *TAG = "webserver_esp32";
 static httpd_handle_t s_server = NULL;
@@ -65,6 +71,7 @@ typedef struct {
 static void pairing_on_success(const char *long_lived_token) {
     updateConfig("haas_token", long_lived_token);
     saveConfig();
+    stopServer(); /* only needed for the login; frees its stack */
 
     isLoading = false;
     if (lvgl_port_lock(0)) {
@@ -83,7 +90,10 @@ static void pairing_on_error(const char *message) {
     if (lvgl_port_lock(0)) {
         if (loadingOverlay) lv_obj_del(loadingOverlay);
         loadingOverlay = NULL;
-        initialization_pairing_failed(message);
+        /* HA answers a second token with an existing name only with
+         * "Unknown error": a token of an earlier pairing that was not deleted */
+        if (strcmp(message, "Unknown error") == 0) initialization_pairing_token_exists(s_token_name);
+        else initialization_pairing_failed(message);
         lvgl_port_unlock();
     }
 }
@@ -156,6 +166,8 @@ static esp_err_t oauth_handler(httpd_req_t *req) {
                     int status = esp_http_client_get_status_code(client);
                     // Status only: the body contains the access + refresh tokens.
                     ESP_LOGI(TAG, "Token exchange status=%d", status);
+                    // A refused exchange has no tokens, only HA's reason.
+                    if (status != 200) ESP_LOGW(TAG, "Token exchange refused: %.160s", resp.buf);
 
                     cJSON *json = cJSON_Parse(resp.buf);
                     if (json) {
@@ -176,7 +188,8 @@ static esp_err_t oauth_handler(httpd_req_t *req) {
                         if (cJSON_IsString(accessToken) && accessToken->valuestring) {
                             PairingRequest *ctx = (PairingRequest *)malloc(sizeof(PairingRequest));
                             ctx->access_token = strdup(accessToken->valuestring);
-                            asprintf(&ctx->client_name, "LVGL %s", getLocalIp());
+                            snprintf(s_token_name, sizeof(s_token_name), "Homepane %s", getLocalIp());
+                            ctx->client_name = strdup(s_token_name);
                             app_cpp_post_to_ui(start_pairing_on_ui_thread, ctx);
                             pairing_started = true;
                         }
@@ -231,6 +244,12 @@ bool startServer(){
 
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
     config.server_port = 8989;
+    /* The OAuth callback does the whole token exchange on this task: an HTTP
+     * request, JSON and two config writes (LittleFS). The default 4 KB
+     * overflowed and crashed the panel when the login came back (v0.2.0).
+     * Internal RAM: the config writes need a stack outside PSRAM. The server
+     * stops once pairing succeeded (pairing_on_success). */
+    config.stack_size = 12288;
     config.uri_match_fn = httpd_uri_match_wildcard;
 
     if (httpd_start(&s_server, &config) != ESP_OK) {

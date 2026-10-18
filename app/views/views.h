@@ -28,6 +28,7 @@ void setup_render(lv_obj_t *parent);
 void initialization_render(lv_obj_t *parent);
 /* The QR login failed (pairing in webserver.c / webserver_esp32.c); UI thread. */
 void initialization_pairing_failed(const char *detail);
+void initialization_pairing_token_exists(const char *token_name);
 /* Setup step "network". autoskip: continue at once when Ethernet is up
  * (false when the user came back to this step). */
 void network_setup_render(lv_obj_t *parent, void (*continue_callback)(void), void (*back_callback)(void),

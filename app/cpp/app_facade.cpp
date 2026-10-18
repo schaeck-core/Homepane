@@ -848,6 +848,43 @@ std::vector<app::application::PanelOption> g_dashboards;
 app::core::CancellationSource g_dashboardsFetch;
 } // namespace
 
+void app_cpp_ha_revoke_token(void (*done)(bool ok, void* user), void* user) {
+    auto* client = g_dashboardController ? g_dashboardController->ha_client() : nullptr;
+    if (!client || client->state() != app::home_assistant::HaClientState::Ready) {
+        if (done) done(false, user);
+        return;
+    }
+    // The token list marks the one this connection signed in with.
+    g_dashboardsFetch = client->send_command(R"({"type":"auth/refresh_tokens"})",
+                                             [client, done, user](const app::home_assistant::ResultMessage& r) {
+        std::string id;
+        if (r.success) {
+            cJSON* list = cJSON_Parse(r.result_json.c_str());
+            const cJSON* t = nullptr;
+            cJSON_ArrayForEach(t, list) {
+                const cJSON* current = cJSON_GetObjectItemCaseSensitive(t, "is_current");
+                const cJSON* tid = cJSON_GetObjectItemCaseSensitive(t, "id");
+                if (cJSON_IsTrue(current) && cJSON_IsString(tid)) id = tid->valuestring;
+            }
+            cJSON_Delete(list);
+        }
+        if (id.empty()) {
+            if (done) done(false, user);
+            return;
+        }
+        cJSON* req = cJSON_CreateObject();
+        cJSON_AddStringToObject(req, "type", "auth/delete_refresh_token");
+        cJSON_AddStringToObject(req, "refresh_token_id", id.c_str());
+        char* text = cJSON_PrintUnformatted(req);
+        const std::string json = text ? text : "";
+        cJSON_free(text);
+        cJSON_Delete(req);
+        g_dashboardsFetch = client->send_command(json, [done, user](const app::home_assistant::ResultMessage& d) {
+            if (done) done(d.success, user);
+        });
+    });
+}
+
 void app_cpp_dashboards_fetch(void (*done)(void* user, bool ok), void* user) {
     auto* client = g_dashboardController ? g_dashboardController->ha_client() : nullptr;
     if (!client) {

@@ -283,6 +283,18 @@ void initialization_pairing_failed(const char *detail)
     lv_obj_remove_flag(s_message, LV_OBJ_FLAG_HIDDEN);
 }
 
+/* Home Assistant already has a long-lived token with this panel's name (an
+ * earlier pairing whose token was not deleted): say which one to delete. */
+void initialization_pairing_token_exists(const char *token_name)
+{
+    if (!s_message) return;
+    char text[320];
+    const char *args[] = {token_name ? token_name : "Homepane"};
+    tr_format(text, sizeof(text), TR_SETUP_PAIRING_TOKEN_EXISTS, args, 1);
+    lv_label_set_text(s_message, text);
+    lv_obj_remove_flag(s_message, LV_OBJ_FLAG_HIDDEN);
+}
+
 // ── Token ────────────────────────────────────────────────────────────────────
 
 static void token_back_cb(lv_event_t *e) { (void)e; show_home_assistant(); }

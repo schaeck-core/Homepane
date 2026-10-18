@@ -1,12 +1,14 @@
-# Builds the firmware on every push and pull request. Nothing is published:
-# releases are made by .github/workflows/release.yml.
+# Checks that pull requests still build the firmware; can also be started
+# by hand (Actions > Build > Run workflow). Nothing is published. Not on
+# pushes: GitHub only gets release states (scripts/publish_github.sh), and
+# .github/workflows/release.yml builds those itself. Day-to-day builds run
+# on Gitea (.gitea/workflows).
 
 name: Build
 
 on:
-  push:
-    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   firmware:

@@ -1,4 +1,4 @@
-// Integration test for SetupController (CPP_MIGRATION_PLAN.md Phase
+// Integration test for SetupController (C++ migration phase
 // 10's "Setup" consumer) — the full real stack (FakeWebSocketTransport
 // -> WebSocketConnection -> HaClient -> PanelListParser) through the
 // SAME entry point app_facade.cpp uses live. No LVGL: unlike

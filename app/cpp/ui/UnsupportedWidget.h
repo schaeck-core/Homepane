@@ -8,7 +8,7 @@
 namespace app::ui {
 
 // Visible, crash-free placeholder for a card type not yet migrated to
-// C++ (CPP_MIGRATION_PLAN.md Phase 6 DoD). Deliberately owns no
+// C++ (C++ migration phase 6 DoD). Deliberately owns no
 // requirements and does nothing on on_data().
 class UnsupportedWidget final : public Widget {
 public:

@@ -85,7 +85,7 @@ void EntityStore::notify(const EntityKey& key) {
     if (by_key == slots_by_key_.end()) return;
     // Snapshot the id list: a callback may add/remove observers for this
     // same key (including unsubscribing itself) without corrupting the
-    // notification pass (§6.2 reentrancy rule).
+    // notification pass (ARCHITECTURE.md §5.2 reentrancy rule).
     std::vector<uint64_t> ids = by_key->second;
 
     auto rec_it = records_.find(key);

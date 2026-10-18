@@ -12,7 +12,8 @@ set -euo pipefail
 
 REMOTE_URL="https://github.com/schaeck-core/Homepane.git"
 REMOTE="github"
-EXCLUDE=(.gitea) # Gitea's own CI (internal hosts); not needed on GitHub
+# Gitea-only: its own CI (internal hosts) and the internal development plan
+EXCLUDE=(.gitea CPP_MIGRATION_PLAN.md)
 MESSAGE="${1:?usage: $0 \"commit message\"}"
 
 cd "$(git rev-parse --show-toplevel)"

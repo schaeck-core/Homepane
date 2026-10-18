@@ -51,7 +51,7 @@ P4 verify the whole image before transferring). The ESP32-P4 build flashes
 ## Rules
 
 - Never flash the C6 directly without a recovery path; see
-  `CPP_MIGRATION_PLAN.md` §0.
+  `AGENTS.md`.
 - Host and co-processor ESP-Hosted versions move together: bump the pin in
   `platforms/esp32p4/main/idf_component.yml` and `EXPECTED_VERSION` in
   `build.sh` in the same change, and keep the P4 working with the previous

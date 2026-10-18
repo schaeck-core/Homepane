@@ -14,7 +14,7 @@
 
 namespace app::home_assistant {
 
-// Sits beside EntitySubscriptionCoordinator (CPP_MIGRATION_PLAN.md Phase
+// Sits beside EntitySubscriptionCoordinator (C++ migration phase
 // 9 "spezielle Datenquellen"): handles the two HA data shapes that are
 // not "one entity's state".
 //
@@ -101,7 +101,7 @@ public:
     void on_ha_ready();
     // Call on any HaClient transition out of Ready that is not a step
     // toward Ready: drops now-invalid remote subscription bookkeeping.
-    // Cached results/observers are kept (§5-style "stale, not gone").
+    // Cached results/observers are kept (ARCHITECTURE.md §4-style "stale, not gone").
     void on_ha_disconnected();
     // Drives the statistics periodic-refresh scheduler; call periodically
     // (e.g. from Application::poll()), same as every other poll()-driven

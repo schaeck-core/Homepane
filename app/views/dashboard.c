@@ -456,7 +456,7 @@ void dashboard_render(lv_obj_t *parent)
     lv_obj_set_width(menuContent, LV_PCT(100));
     lv_obj_set_flex_grow(menuContent, 1);
 
-    // Live cutover (CPP_MIGRATION_PLAN.md): the actual card-rendering
+    // Live cutover (C++ migration): the actual card-rendering
     // content used to be built here directly via cJSON parsing + manual
     // grid math + renderWidgetByType() (see git history) — that is now
     // entirely the new C++ stack's job (WidgetFactory/DashboardSession/

@@ -14,9 +14,9 @@ namespace app::home_assistant {
 // Bridges local widget demand (EntityStore::observe) and the network
 // (HaClient): N local observers of the same entity collapse to at most
 // one active `subscribe_entities` call per connection/epoch
-// (CPP_MIGRATION_PLAN.md §3.1 EntitySubscriptionCoordinator).
+// (docs/ARCHITECTURE.md §2 EntitySubscriptionCoordinator).
 //
-// Deliberate deviation from §7.5's literal wording ("HaClient markiert
+// Deliberate deviation from ARCHITECTURE.md §6's literal wording ("HaClient markiert
 // ... stale"): HaClient stays decoupled from EntityStore (it only knows
 // WebSocketConnection + decoded messages), so it is this Coordinator —
 // which already holds both — that reacts to HaClient's state changes and
@@ -37,7 +37,7 @@ public:
     // Move-only handle combining the EntityStore observer with this
     // Coordinator's local-observer refcount for the entity. Destruction
     // decrements the count and, if it reaches zero, schedules a debounced
-    // remote unsubscribe (§3.1: "Bei letztem lokalen Consumer darf nach
+    // remote unsubscribe (ARCHITECTURE.md §2: "Bei letztem lokalen Consumer darf nach
     // Debounce unsubscribed werden") instead of unsubscribing immediately.
     class SubscriptionHandle {
     public:
@@ -62,13 +62,13 @@ public:
     // exactly this one handle's observer, synchronously, on demand.
     // Callers invoke this once they are ready to receive it (e.g. right
     // after a widget's create() returns) — never implicitly from
-    // observe() itself (§6.2: must not run inline into a
+    // observe() itself (ARCHITECTURE.md §5.2: must not run inline into a
     // half-constructed widget).
     void deliver_current(const std::string& entity_id, const SubscriptionHandle& handle);
 
     // Re-issues subscribe_entities for every entity that still has local
     // observers. Call on every transition into HaClientState::Ready,
-    // including the first one (§7.7).
+    // including the first one (ARCHITECTURE.md §6).
     void on_ha_ready();
 
     // Call on any HaClient transition out of Ready that is not a step

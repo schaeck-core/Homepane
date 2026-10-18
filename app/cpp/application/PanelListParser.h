@@ -7,7 +7,7 @@
 namespace app::application {
 
 // One selectable dashboard, as shown in the Setup consumer's dropdown
-// (CPP_MIGRATION_PLAN.md Phase 10's "Setup/Token/Dashboard/Music-
+// (C++ migration phase 10's "Setup/Token/Dashboard/Music-
 // Consumer" split).
 struct PanelOption {
     std::string title;    // shown to the user

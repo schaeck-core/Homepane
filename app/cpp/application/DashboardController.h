@@ -57,7 +57,7 @@ public:
     // match the legacy callback_ws_error() contract: a transient
     // reconnect blip on an already-showing dashboard must not blow it
     // away or re-trigger the error overlay (widgets already show their
-    // own `stale` state for that — CPP_MIGRATION_PLAN.md §5/§7.5).
+    // own `stale` state for that — docs/ARCHITECTURE.md §4/§6).
     void render(lv_obj_t* parent, const std::string& ws_url, const std::string& access_token,
                 const std::string& dashboard_url_path, std::function<void()> on_ready,
                 std::function<void()> on_error);
@@ -70,7 +70,7 @@ public:
     // the dashboard editor). A no-op until connected.
     void reload();
 
-    // "Token" consumer support (CPP_MIGRATION_PLAN.md Phase 10's
+    // "Token" consumer support (C++ migration phase 10's
     // Setup/Token/Dashboard/Music-Consumer split): the settings screen's
     // "Reset Connection" button needs to stop the *live* HA connection
     // this class owns, not the legacy websocket_client.c one dashboard.c

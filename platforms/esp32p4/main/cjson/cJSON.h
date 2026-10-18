@@ -5,7 +5,7 @@
  * lookup checks this file's own directory first, and "cJSON.h" matches
  * "cJSON.h" regardless of case, so it matches itself. `#pragma once` then
  * silently swallows that self-include, leaving no real declarations
- * behind (found by CPP_MIGRATION_PLAN.md Phase 4: the first C++ file to
+ * behind (found by C++ migration phase 4: the first C++ file to
  * actually exercise this shim on ESP32-P4). `#include_next` continues the
  * search *after* this file's directory, reaching the real ESP-IDF header
  * instead of looping back here. */

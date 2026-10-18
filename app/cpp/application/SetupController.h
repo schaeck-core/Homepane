@@ -13,7 +13,7 @@
 
 namespace app::application {
 
-// The "Setup" consumer's composition root (CPP_MIGRATION_PLAN.md Phase
+// The "Setup" consumer's composition root (C++ migration phase
 // 10's "Setup/Token/Dashboard/Music-Consumer" split): connects to Home
 // Assistant, fetches the list of Lovelace dashboards via `get_panels`,
 // and hands the parsed list back — replacing app/views/setup.c's own
@@ -22,7 +22,7 @@ namespace app::application {
 // always finishes — the user picks a dashboard and continues — strictly
 // before the Dashboard consumer's own connection is ever started, so
 // there is no live concurrent-connection scenario to design around; see
-// CPP_MIGRATION_PLAN.md's own state machine: INIT -> SETUP -> COMPLETE).
+// the app's own state machine: INIT -> SETUP -> COMPLETE).
 //
 // Deliberately narrower than DashboardController: no EntityStore/
 // QueryCoordinator/WidgetFactory (Setup never subscribes to entities),

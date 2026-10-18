@@ -1,4 +1,4 @@
-// Unit tests for PanelListParser (CPP_MIGRATION_PLAN.md Phase 10's
+// Unit tests for PanelListParser (C++ migration phase 10's
 // "Setup" consumer). No LVGL, no network.
 
 #include "app/cpp/application/PanelListParser.h"

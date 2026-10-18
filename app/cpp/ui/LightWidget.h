@@ -15,7 +15,7 @@ class LightDetail;
 
 // The light tile of the design guide (centred tile): icon circle in the
 // light's colour, name, brightness. Tap toggles (optimistic UI with
-// rollback, §6.3), double tap sets 100 % neutral white, hold opens the
+// rollback, ARCHITECTURE.md §5.3), double tap sets 100 % neutral white, hold opens the
 // light detail (LightDetail).
 class LightWidget final : public Widget {
 public:
@@ -45,7 +45,7 @@ private:
     bool is_on_ = false;
     app::home_assistant::Availability availability_ = app::home_assistant::Availability::loading;
 
-    // Optimistic UI + rollback (§6.3): set immediately on tap, cleared by
+    // Optimistic UI + rollback (ARCHITECTURE.md §5.3): set immediately on tap, cleared by
     // the next real EntityStore update (confirms or supersedes it) or
     // rolled back explicitly on a failed/timed-out command.
     bool pending_ = false;

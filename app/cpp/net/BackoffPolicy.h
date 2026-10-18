@@ -7,7 +7,7 @@
 namespace app::net {
 
 // Exponential backoff with a deterministic, injectable jitter source so
-// tests stay reproducible (CPP_MIGRATION_PLAN.md §7.6: "Exponentieller
+// tests stay reproducible (docs/ARCHITECTURE.md §6: "Exponentieller
 // Backoff mit Jitter und Obergrenze").
 class BackoffPolicy {
 public:

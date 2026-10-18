@@ -44,7 +44,7 @@ struct ConnectionTelemetry {
 // Connection-level state machine on top of IWebSocketTransport: frame
 // reassembly, bounded send queue, per-epoch request ids, reconnect with
 // backoff. Knows nothing about HA/MA message semantics — HaClient (Phase 4)
-// is layered on top of this. CPP_MIGRATION_PLAN.md §3.1/§7/§10.
+// is layered on top of this. docs/ARCHITECTURE.md §2/§6/§9
 class WebSocketConnection final : public IWebSocketTransportSink {
 public:
     using MessageHandler = std::function<void(const ReceivedMessage&)>;
@@ -73,7 +73,7 @@ public:
 
     // Enqueues a message for sending; returns a handle whose epoch can be
     // compared against epoch() later to detect that a reconnect happened
-    // in between (CPP_MIGRATION_PLAN.md §2.4: request ids are connection-
+    // in between (docs/ARCHITECTURE.md: request ids are connection-
     // local and reset on reconnect).
     SendHandle send(std::string payload);
     // Binary frame through the same ordered queue as send().

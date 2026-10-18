@@ -118,7 +118,7 @@ void EspWebSocketTransport::close() {
 bool EspWebSocketTransport::send_text(const uint8_t* data, size_t len) {
     if (!handle_) return false;
     // Bounded timeout, not portMAX_DELAY: a UI-context caller must never
-    // block indefinitely on a network send (CPP_MIGRATION_PLAN.md §10).
+    // block indefinitely on a network send (docs/ARCHITECTURE.md §9).
     int sent = esp_websocket_client_send_text(handle_, reinterpret_cast<const char*>(data),
                                                static_cast<int>(len), pdMS_TO_TICKS(200));
     if (sent != static_cast<int>(len)) {

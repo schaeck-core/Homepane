@@ -105,7 +105,7 @@ Over-the-air updates only accept firmware signed with the project's key, so a se
 
 ## Building your own widgets
 
-The [design guide](docs/design/DESIGN_GUIDE.md) describes the design language and walks through [building a new dashboard widget](docs/design/DESIGN_GUIDE.md#building-a-new-widget) step by step. Together with [AGENTS.md](AGENTS.md) it is written so that you can hand it to an AI coding assistant such as [Claude Code](https://claude.com/claude-code) and have it build custom widgets for you.
+The [design guide](docs/design/DESIGN_GUIDE.md) describes the design language and walks through [building a new dashboard widget](docs/design/DESIGN_GUIDE.md#building-a-new-widget) step by step. How the code is organised is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Together with [AGENTS.md](AGENTS.md) the design guide is written so that you can hand it to an AI coding assistant such as [Claude Code](https://claude.com/claude-code) and have it build custom widgets for you.
 
 Keep in mind: a panel running your own build has to be flashed over USB, and it no longer receives the official over-the-air updates.
 

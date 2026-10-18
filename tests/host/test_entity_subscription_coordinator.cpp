@@ -1,5 +1,5 @@
 // Contract tests for EntitySubscriptionCoordinator (Phase 5 of
-// CPP_MIGRATION_PLAN.md §3.1). Drives the full stack — FakeWebSocketTransport
+// docs/ARCHITECTURE.md §2). Drives the full stack — FakeWebSocketTransport
 // -> WebSocketConnection -> HaClient -> EntityStore/Coordinator — so these
 // tests exercise the real dedup/resubscribe/debounce logic, not a mock of it.
 

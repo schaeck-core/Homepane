@@ -1,4 +1,4 @@
-// End-to-end integration test for Phase 9 of CPP_MIGRATION_PLAN.md:
+// End-to-end integration test for C++ migration phase 9:
 // StatisticsWidget — periodic recorder/statistics_during_period queries
 // via QueryCoordinator, deduped by full query (not request id), rendered
 // as a real LVGL lv_chart series — through the full real stack down to

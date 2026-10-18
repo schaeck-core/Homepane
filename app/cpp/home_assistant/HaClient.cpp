@@ -47,7 +47,7 @@ void HaClient::set_state(HaClientState state) {
 void HaClient::start(const std::string& url) {
     if (state_ == HaClientState::AuthFailed) {
         // Deliberate: auth_invalid is not auto-retried. The caller must
-        // start() again explicitly (CPP_MIGRATION_PLAN.md §7.3).
+        // start() again explicitly (docs/ARCHITECTURE.md §6).
         if (logger_) logger_->log(LogLevel::Warn, "HaClient::start() after AuthFailed — retrying explicitly");
     }
     connection_->connect(url);
@@ -153,7 +153,7 @@ void HaClient::complete_pending(const ResultMessage& result, ConnectionEpoch msg
     if (it->second.epoch != msg_epoch) {
         // A result whose id happens to match but from a superseded
         // connection epoch — must never complete a request from the
-        // current epoch (CPP_MIGRATION_PLAN.md §7.4/Phase 4 DoD).
+        // current epoch (docs/ARCHITECTURE.md §6/Phase 4 DoD).
         if (logger_) logger_->log(LogLevel::Warn, "HaClient: dropped Result from a stale epoch");
         return;
     }

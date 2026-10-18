@@ -8,7 +8,7 @@ namespace app::core {
 // computing an HA `recorder/statistics_during_period` request's
 // start_time/end_time, which are real ISO8601 timestamps). Injectable
 // for the same reason IMonotonicClock is: host tests fix "now" instead
-// of depending on the real system clock (CPP_MIGRATION_PLAN.md Phase 9).
+// of depending on the real system clock (C++ migration phase 9).
 class IWallClock {
 public:
     virtual ~IWallClock() = default;

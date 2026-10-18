@@ -34,7 +34,7 @@ struct UpdateStatus {
     int progress = 0; // 0-100 while Installing
 };
 
-// Firmware update flow (Track U, Phase U1 — CPP_MIGRATION_PLAN.md §19):
+// Firmware update flow (Track U, Phase U1 — docs/ARCHITECTURE.md §13):
 // fetch the signed manifest from `manifest_url`, compare versions, install
 // into the inactive slot, restart. Lives on the UI thread; all callbacks
 // fire there. Network and flash work run through IBackgroundRunner.

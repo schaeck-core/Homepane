@@ -1,6 +1,6 @@
 # Notes for AI coding assistants
 
-Homepane is a Home Assistant touch panel: C/C++ with LVGL 9, running on an ESP32-P4 (720 × 720 touch screen) and in a desktop simulator. Read [README.md](README.md) for the overview and build steps.
+Homepane is a Home Assistant touch panel: C/C++ with LVGL 9, running on an ESP32-P4 (720 × 720 touch screen) and in a desktop simulator. Read [README.md](README.md) for the overview and build steps, and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how the code is organised and the rules it follows (ownership, threading, memory).
 
 ## Before you change the UI
 

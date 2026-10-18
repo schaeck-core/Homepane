@@ -24,7 +24,7 @@ using CJsonPtr = std::unique_ptr<cJSON, CJsonDeleter>;
 
 // auth/login's SuccessResultMessage.result carries the new session token
 // as "access_token" (confirmed against a real server — the earlier
-// speculative "token" field name in CPP_MIGRATION_PLAN.md §16 was wrong).
+// speculative "token" field name in docs/ARCHITECTURE.md §14 was wrong).
 std::string extract_access_token(const std::string& result_json) {
     CJsonPtr parsed(cJSON_Parse(result_json.c_str()));
     if (!parsed) return {};

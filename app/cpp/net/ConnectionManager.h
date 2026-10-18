@@ -10,7 +10,7 @@
 namespace app::net {
 
 // Owns named WebSocketConnection instances (HA, Music Assistant, later
-// Voice/Intercom — CPP_MIGRATION_PLAN.md §3.1). Enforces unique names
+// Voice/Intercom — docs/ARCHITECTURE.md §2). Enforces unique names
 // unless the caller explicitly opts into replacing an existing one, so a
 // repeated dashboard load cannot silently accumulate duplicate clients
 // (the exact bug documented for the legacy createWSConnectionNamed()).

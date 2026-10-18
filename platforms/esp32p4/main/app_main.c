@@ -42,7 +42,7 @@
 #include <sys/stat.h>
 #include "app/cpp/app_facade.h"
 
-// Track U Phase U0 (CPP_MIGRATION_PLAN.md §19): version string + rollback
+// Track U Phase U0 (docs/ARCHITECTURE.md §13): version string + rollback
 // self-test confirmation.
 #include "esp_app_desc.h"
 #include "esp_ota_ops.h"
@@ -137,6 +137,11 @@ static void *json_malloc(size_t size)
 }
 
 static volatile bool s_low_power = false;
+/* Turned off from Home Assistant: stays in power save until HA turns it on
+ * again or the screen is touched (not woken by the screen timeout logic).
+ * Dimmed like the screen timeout, not dark: with the backlight fully off
+ * (duty 0) the touch no longer wakes the panel. */
+static volatile bool s_forced_off = false;
 
 /* ── Power save helpers ─────────────────────────────────────── */
 
@@ -183,8 +188,24 @@ static void power_save_exit(lv_display_t *disp)
     ESP_LOGI(TAG, "Power save: exited (brightness 50, render restored)");
 }
 
+void app_display_set_on(bool on)
+{
+    lv_display_t *disp = lv_display_get_default();
+    if (on) {
+        s_forced_off = false;
+        power_save_exit(disp);
+        if (disp) lv_disp_trig_activity(disp);
+    } else {
+        s_forced_off = true;
+        power_save_enter(disp);
+    }
+}
+
+bool app_display_is_on(void) { return !s_low_power; }
+
 static void wake_if_needed(lv_event_t *e)
 {
+    s_forced_off = false;
     if (s_low_power) {
         lv_display_t *disp = lv_display_get_default();
         power_save_exit(disp);
@@ -213,14 +234,14 @@ static void backlight_off_for_restart(void)
 
 void app_main(void)
 {
-    // Track U Phase U0 (CPP_MIGRATION_PLAN.md §19): make the running
+    // Track U Phase U0 (docs/ARCHITECTURE.md §13): make the running
     // firmware version queryable at runtime, from version.txt (NOT git
     // describe — this repo's tags are inherited from upstream LVGL
     // history and would embed a misleading version otherwise).
     const esp_app_desc_t *app_desc = esp_app_get_description();
     ESP_LOGI(TAG, "Firmware version: %s", app_desc->version);
 
-    // Phase 1 of CPP_MIGRATION_PLAN.md: construct the C++ Application
+    // C++ migration phase 1: construct the C++ Application
     // skeleton early. It does not touch hardware/network yet.
     app_cpp_create();
 
@@ -289,7 +310,7 @@ void app_main(void)
     // saved wifi_ssid/wifi_password) and before
     // app_cpp_enter_initial_state() (reads haas_token/haas_dashboard) —
     // see AppStateController.h's own comment on this ordering constraint
-    // (CPP_MIGRATION_PLAN.md Phase 11).
+    // (C++ migration phase 11).
     /* JSON trees (Home Assistant messages, often large) in PSRAM, like the
      * app's C++ data (PsramNew.cpp): internal RAM is the scarce one. */
     static cJSON_Hooks json_hooks = {.malloc_fn = json_malloc, .free_fn = heap_caps_free};
@@ -307,7 +328,7 @@ void app_main(void)
     network_auto_connect_async();
 
     // Shared app-state logic (error handler, fonts, bg, Init/Setup/Complete
-    // decision) — CPP_MIGRATION_PLAN.md Phase 11.
+    // decision) — C++ migration phase 11.
     app_cpp_enter_initial_state();
     bsp_display_unlock();
 
@@ -333,7 +354,7 @@ void app_main(void)
     bsp_display_backlight_on();
     bsp_display_brightness_set(50);
 
-    // Track U Phase U0 (CPP_MIGRATION_PLAN.md §19.3): confirm this OTA
+    // Track U Phase U0 (docs/ARCHITECTURE.md §13.2): confirm this OTA
     // slot as valid, cancelling the bootloader's automatic-rollback timer.
     // Deliberately minimal for now — "a real frame rendered" rather than
     // just "code executed without crashing" — but not yet Phase U1's
@@ -397,7 +418,7 @@ void app_main(void)
 
             if (!s_low_power && timeout_ms && idle_ms >= timeout_ms) {
                 power_save_enter(disp);
-            } else if (s_low_power && (!timeout_ms || idle_ms < timeout_ms)) {
+            } else if (s_low_power && !s_forced_off && (!timeout_ms || idle_ms < timeout_ms)) {
                 /* Touch was registered by LVGL (idle reset) – wake up */
                 power_save_exit(disp);
             }

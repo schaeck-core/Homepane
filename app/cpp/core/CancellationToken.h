@@ -10,7 +10,7 @@ namespace app::core {
 // call from any thread. A CancellationSource produces lightweight, copyable
 // CancellationToken "readers" that queued commands carry along; the
 // dispatcher checks is_cancelled() at drain time and skips the command
-// without invoking it (CPP_MIGRATION_PLAN.md §6.2, Phase 2).
+// without invoking it (docs/ARCHITECTURE.md §5.2, Phase 2).
 class CancellationToken {
 public:
     // No attached source: is_cancelled() always returns false.

@@ -27,9 +27,10 @@ std::string discovery_payload(const DeviceInfo& device, const EntityDef& e)
     cJSON_AddStringToObject(root, "name", e.name.c_str());
     cJSON_AddStringToObject(root, "unique_id", (device.node_id + "_" + e.object_id).c_str());
     cJSON_AddStringToObject(root, "availability_topic", availability_topic(device.node_id).c_str());
-    if (e.component == "button") {
+    if (e.component == "button" || e.component == "switch") {
         cJSON_AddStringToObject(root, "command_topic", command_topic(device.node_id, e.object_id).c_str());
-    } else {
+    }
+    if (e.component != "button") {
         cJSON_AddStringToObject(root, "state_topic", state_topic(device.node_id, e.object_id).c_str());
     }
     if (!e.device_class.empty()) cJSON_AddStringToObject(root, "device_class", e.device_class.c_str());

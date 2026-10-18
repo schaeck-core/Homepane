@@ -12,7 +12,7 @@ namespace app::dashboard {
 // "light" in Phase 8, ...) into `factory`. Everything else keeps falling
 // back to UnsupportedWidget. Kept separate from WidgetFactory itself so
 // the factory stays generic and does not need to depend on concrete
-// widget types (CPP_MIGRATION_PLAN.md Phase 6/7/8).
+// widget types (C++ migration phase 6/7/8).
 void register_default_widgets(WidgetFactory& factory, app::home_assistant::HaInstanceId instance,
                                app::home_assistant::HaCommandService& commands);
 

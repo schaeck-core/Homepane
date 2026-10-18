@@ -7,7 +7,7 @@ namespace app::core {
 
 // Strong type: increments once per dashboard (re)load. Commands/events tag
 // the generation they belong to so a late response for an already-replaced
-// dashboard cannot mutate the new one (CPP_MIGRATION_PLAN.md §8/§4).
+// dashboard cannot mutate the new one (docs/ARCHITECTURE.md §7/§3).
 class DashboardGeneration {
 public:
     constexpr DashboardGeneration() = default;

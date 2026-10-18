@@ -7,11 +7,11 @@
 namespace app::dashboard {
 
 // Owned, LVGL-free representation of a parsed Lovelace "sections"
-// dashboard (CPP_MIGRATION_PLAN.md Phase 6). `raw_json` on each card
+// dashboard (C++ migration phase 6). `raw_json` on each card
 // keeps the full, owned card object so widget-specific fields (chart
 // options, tile features, ...) don't need a hand-modeled struct per
 // card type up front — matches "unbekannte optionale Felder sind
-// erlaubt" (§8.2).
+// erlaubt" (ARCHITECTURE.md §7).
 struct DashboardCard {
     std::string type;         // e.g. "clock", "light", "tile", "statistics-graph"
     std::string entity_id;    // convenience extraction of a top-level "entity" field, if present
@@ -20,7 +20,7 @@ struct DashboardCard {
     int grid_rows = 0;
     std::string section_title; // the title of the section the card is in ("" if none)
 
-    // Preserves the existing dashboard.c semantics (§2.2): a
+    // Preserves the legacy dashboard.c semantics: a
     // statistics-graph card is rendered as a background/floating element
     // during the first layout pass, not as a normal grid item. Computed
     // once here so downstream layout code never re-derives it from the

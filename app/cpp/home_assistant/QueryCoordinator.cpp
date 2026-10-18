@@ -27,7 +27,7 @@ void format_iso8601_utc(double epoch_s, char* buffer, size_t buffer_size) {
 
 // Bounds one series' point count so a widget never has to render (or a
 // dashboard switch never has to hold onto) an unbounded history —
-// CPP_MIGRATION_PLAN.md Phase 9 DoD: "UI erhält begrenzte Series-Daten".
+// C++ migration phase 9 DoD: "UI erhält begrenzte Series-Daten".
 constexpr size_t kMaxPointsPerSeries = 200;
 } // namespace
 
@@ -172,7 +172,7 @@ void QueryCoordinator::on_statistics_observer_removed(const StatisticsQuery& que
         // Unlike Forecast, Statistics is an *active* recurring poll this
         // client itself drives (real recorder/HA load per refresh) — stop
         // it as soon as nobody is looking, and cancel any in-flight
-        // request so its callback becomes a no-op (§8/§9 generation
+        // request so its callback becomes a no-op (ARCHITECTURE.md §7/§8 generation
         // safety) rather than updating a result nobody will ever read.
         it->second.pending_request.cancel();
         statistics_.erase(it);

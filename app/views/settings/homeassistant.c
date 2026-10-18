@@ -496,7 +496,7 @@ static void reset_connection_cb(lv_event_t *e)
 
     printf("[Settings] Resetting Home Assistant connection...\n");
 
-    // Stop the live dashboard connection (CPP_MIGRATION_PLAN.md Phase 10
+    // Stop the live dashboard connection (C++ migration phase 10
     // tr(TR_SETTINGS_HA_TOKEN) consumer: the legacy closeConnection() only ever touched
     // websocket_client.c's own global connection, which the dashboard
     // stopped using once it cut over to the new C++ stack — calling it

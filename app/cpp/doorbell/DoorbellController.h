@@ -11,7 +11,7 @@
 
 namespace app::doorbell {
 
-// The doorbell (CPP_MIGRATION_PLAN.md §16): watches the configured trigger
+// The doorbell (docs/ARCHITECTURE.md §14): watches the configured trigger
 // entity through the dashboard's entity subscriptions and reports a ring;
 // opens the door through the configured opener entity. UI thread.
 //

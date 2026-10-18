@@ -38,7 +38,7 @@ std::string entity_domain(const std::string& entity_id) {
 }
 
 // Extracts a statistics-graph card's own config directly from its raw
-// JSON (CPP_MIGRATION_PLAN.md §8.2: DashboardCard deliberately keeps
+// JSON (docs/ARCHITECTURE.md §7: DashboardCard deliberately keeps
 // these fields out of the generic model — only the widget that needs
 // them parses them, matching the legacy app/widgets/statistics_graph.c's
 // own parse_entities/parse_stat_types).

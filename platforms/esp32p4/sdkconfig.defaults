@@ -7,7 +7,7 @@ CONFIG_I2C_SKIP_LEGACY_CONFLICT_CHECK=y
 CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
 CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
 CONFIG_PARTITION_TABLE_CUSTOM=y
-# Track U Phase U0 (CPP_MIGRATION_PLAN.md §19): A/B OTA with automatic
+# Track U Phase U0 (docs/ARCHITECTURE.md §13): A/B OTA with automatic
 # bootloader rollback on a failed/unconfirmed self-test — see
 # esp_ota_mark_app_valid_cancel_rollback() in app_main.c.
 CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y

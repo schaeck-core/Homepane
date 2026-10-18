@@ -1,4 +1,4 @@
-// Integration test for PairingController (CPP_MIGRATION_PLAN.md Phase
+// Integration test for PairingController (C++ migration phase
 // 10's last consumer, the OAuth device-pairing flow's WebSocket half) —
 // the full real stack (FakeWebSocketTransport -> WebSocketConnection ->
 // HaClient) through the same entry point app_facade.cpp uses live. No

@@ -16,10 +16,10 @@
 
 namespace app::dashboard {
 
-// Owns one loaded dashboard's widget instances (CPP_MIGRATION_PLAN.md
-// §3.1/§4/§8). A dashboard switch means: shutdown() the old session in
+// Owns one loaded dashboard's widget instances (docs/ARCHITECTURE.md
+// §2/§3/§7). A dashboard switch means: shutdown() the old session in
 // the UI context (widgets' shutdown_ui(), then the LVGL subtree, then
-// the C++ objects — §4 Shutdown-Reihenfolge), then construct+create() a
+// the C++ objects — ARCHITECTURE.md §3 Shutdown-Reihenfolge), then construct+create() a
 // new one with a higher DashboardGeneration.
 class DashboardSession {
 public:
@@ -69,7 +69,7 @@ private:
     void wire_requirements(app::ui::Widget& widget);
 
     // A section's LVGL grid descriptor arrays: lv_obj_set_grid_dsc_array()
-    // stores the raw pointers, not a copy (CPP_MIGRATION_PLAN.md §4 —
+    // stores the raw pointers, not a copy (docs/ARCHITECTURE.md §3 —
     // matches dashboard.c's malloc'd descriptors kept alive via a
     // delete-callback), so these must outlive the section_content object,
     // i.e. the whole session. Reserved up front in create() so the outer

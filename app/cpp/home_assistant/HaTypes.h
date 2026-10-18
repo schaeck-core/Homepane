@@ -37,7 +37,7 @@ struct AttributeChange {
 // A real HA fixture (tests/fixtures/ha/cover_delta_sequence.ndjson) shows
 // "lc" (last_changed) and "lu" (last_updated) as UNIX epoch seconds
 // (double), e.g. 1788738598.1611631 — NOT ISO8601 strings. This refines
-// CPP_MIGRATION_PLAN.md §5's EntityState sketch, which assumed strings;
+// docs/ARCHITECTURE.md §4's EntityState sketch, which assumed strings;
 // EntityStore (Phase 5) should use this numeric representation instead.
 struct EntityChange {
     std::string entity_id;

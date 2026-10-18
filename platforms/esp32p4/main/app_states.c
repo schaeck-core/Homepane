@@ -105,7 +105,7 @@ void enter_splash_state(bool has_saved_ssid)
 
 /* enter_init_state()/enter_setup_state()/enter_complete_state() used to
  * live here too — moved to app/cpp/application/AppStateController.cpp
- * (CPP_MIGRATION_PLAN.md Phase 11), which now defines those same free
+ * (C++ migration phase 11), which now defines those same free
  * C-linkage symbol names via app_facade.cpp. enter_complete_state()
  * above (in splash_poll_cb()) and enter_splash_state() itself are
  * unaffected: the former still resolves to that shared implementation,

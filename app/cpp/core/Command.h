@@ -22,7 +22,7 @@ struct Command {
     DashboardGeneration generation{};
 
     // Critical commands are never silently dropped/coalesced away, even
-    // under overflow (CPP_MIGRATION_PLAN.md §10 Queue-Regeln).
+    // under overflow (docs/ARCHITECTURE.md §9 Queue-Regeln).
     bool critical = false;
 
     // If coalesce is set, a not-yet-drained queued command with the same

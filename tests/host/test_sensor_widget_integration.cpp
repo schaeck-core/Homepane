@@ -1,4 +1,4 @@
-// End-to-end integration test for Phase 7 of CPP_MIGRATION_PLAN.md: the
+// End-to-end integration test for C++ migration phase 7: the
 // first real EntityWidget (SensorWidget) driven through the FULL real
 // stack — FakeWebSocketTransport -> WebSocketConnection -> HaClient ->
 // EntityStore/EntitySubscriptionCoordinator -> WidgetFactory ->

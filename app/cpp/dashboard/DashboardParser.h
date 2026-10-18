@@ -10,7 +10,7 @@ namespace app::dashboard {
 // Turns the raw "result" object of a `lovelace/config` response (i.e.
 // HaClient's ResultMessage::result_json — the caller has already
 // stripped the outer {"id":...,"type":"result",...} envelope) into an
-// owned DashboardModel. Never touches LVGL (§8.2 Phase 6 DoD).
+// owned DashboardModel. Never touches LVGL (ARCHITECTURE.md §7 Phase 6 DoD).
 class DashboardParser {
 public:
     struct ParseError {

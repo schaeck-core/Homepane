@@ -1,4 +1,4 @@
-// Host unit test for Phase 1 of CPP_MIGRATION_PLAN.md.
+// Host unit test for C++ migration phase 1.
 // Deliberately has no LVGL and no network dependency: it only links
 // app/cpp/core (header-only) + app/cpp/application/Application.cpp,
 // so it can run on the build host without a display or HA connection.

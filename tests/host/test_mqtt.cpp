@@ -171,6 +171,29 @@ void test_change_based_publishing()
     expect(n < 6000 * 4, "values go out on change, not on every poll (" + std::to_string(n) + " messages in 10 min)");
 }
 
+void test_display_switch()
+{
+    Fixture fx;
+    bool on = true;
+    fx.mqtt.set_display([&on](bool v) { on = v; }, [&on] { return on; });
+    fx.mqtt.apply_settings();
+    fx.transport.sink->on_mqtt_connected();
+    bool has_switch = false;
+    for (const auto& p : fx.transport.published) {
+        has_switch |= p.topic == "homeassistant/switch/homepane_a1b2c3/display/config" &&
+                      p.payload.find("\"command_topic\":\"homepane/homepane_a1b2c3/display/set\"") != std::string::npos &&
+                      p.payload.find("\"state_topic\":\"homepane/homepane_a1b2c3/display/state\"") != std::string::npos;
+    }
+    expect(has_switch, "a Display switch with command and state topic");
+    fx.transport.published.clear();
+    fx.transport.sink->on_mqtt_message("homepane/homepane_a1b2c3/display/set", "OFF");
+    bool reported = false;
+    for (const auto& p : fx.transport.published) reported |= p.topic == "homepane/homepane_a1b2c3/display/state" && p.payload == "OFF";
+    expect(!on && reported, "OFF turns the screen off and reports it");
+    fx.transport.sink->on_mqtt_message("homepane/homepane_a1b2c3/display/set", "ON");
+    expect(on, "ON turns it on again");
+}
+
 void test_internal_ram_diagnostics()
 {
     FakeClock clock;
@@ -254,6 +277,7 @@ int main()
     test_commands_and_disable();
     test_simulated_sensors();
     test_internal_ram_diagnostics();
+    test_display_switch();
     if (g_failures == 0) {
         std::printf("All MQTT tests passed.\n");
         return 0;

@@ -11,7 +11,7 @@
 // They exist to prove the C++ skeleton links and runs on both
 // Simulator and ESP32-P4. Real per-platform adapters (Simulator:
 // libwebsockets/pthread based; ESP32-P4: FreeRTOS/esp_timer based)
-// land in Phase 2/11 per CPP_MIGRATION_PLAN.md and replace this
+// land in C++ migration phases 2/11 and replace this
 // file outright rather than extend it.
 namespace app::platform {
 

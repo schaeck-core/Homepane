@@ -16,7 +16,7 @@
 static bool is_initialized = false;
 
 // Persists a freshly (re-)issued MA session token so the next boot can try
-// it before falling back to username/password (CPP_MIGRATION_PLAN.md §16:
+// it before falling back to username/password (docs/ARCHITECTURE.md §14:
 // MaClient auth contract). Not read by anything else yet — mirrors
 // haas_access_token/haas_refresh_token, which are likewise cache-only
 // config keys with no dedicated settings-UI field.

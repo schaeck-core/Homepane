@@ -78,7 +78,7 @@ void LightWidget::create(lv_obj_t* parent) {
 }
 
 void LightWidget::shutdown_ui() {
-    // Generation-safety (§8/§9): a command sent right before a dashboard
+    // Generation-safety (ARCHITECTURE.md §7/§8): a command sent right before a dashboard
     // switch must not touch this widget after it is gone. Cancelling here
     // (UI context, before any member is destroyed) makes HaClient skip
     // the callback entirely when the Result/timeout eventually arrives.

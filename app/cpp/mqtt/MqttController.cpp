@@ -86,6 +86,13 @@ MqttController::MqttController(IMqttTransport& transport, app::core::IMonotonicC
     restart.entity_category = "config";
     entities_.push_back(restart);
 
+    EntityDef display;
+    display.component = "switch";
+    display.object_id = "display";
+    display.name = "Display";
+    display.icon = "mdi:monitor";
+    entities_.push_back(display);
+
     EntityDef simulated;
     simulated.component = "binary_sensor";
     simulated.object_id = "simulated_data";
@@ -194,6 +201,11 @@ void MqttController::on_mqtt_message(const std::string& topic, const std::string
     if (topic == command_topic(device_.node_id, "haptic_test")) {
         log(LogLevel::Info, "haptic test");
         source_.haptic(1); // DRV2605L effect 1: strong click
+    } else if (topic == command_topic(device_.node_id, "display")) {
+        const bool on = payload == "ON";
+        log(LogLevel::Info, std::string("display ") + (on ? "on" : "off") + " from Home Assistant");
+        if (on_display_) on_display_(on);
+        if (display_on_) publish_value("display", display_on_() ? "ON" : "OFF", clock_.now_ms(), true);
     } else if (topic == command_topic(device_.node_id, "restart")) {
         log(LogLevel::Warn, "restart requested from Home Assistant");
         if (on_restart_) on_restart_();
@@ -266,6 +278,7 @@ void MqttController::poll(uint64_t now_ms)
                            false);
     });
     publish_value("simulated_data", source_.simulated() ? "ON" : "OFF", now_ms);
+    if (display_on_) publish_value("display", display_on_() ? "ON" : "OFF", now_ms);
 
     if (diagnostics_ && (last_diag_ms_ == 0 || now_ms - last_diag_ms_ >= 60000)) {
         last_diag_ms_ = now_ms;

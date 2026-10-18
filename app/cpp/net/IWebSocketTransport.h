@@ -8,7 +8,7 @@
 namespace app::net {
 
 // Transport-level events. Carries no HA/MA message knowledge — just bytes
-// and connection lifecycle (CPP_MIGRATION_PLAN.md §3.1: "IWebSocketTransport
+// and connection lifecycle (docs/ARCHITECTURE.md §2: "IWebSocketTransport
 // ... kennt keine HA-Nachrichtentypen").
 class IWebSocketTransportSink {
 public:
@@ -34,7 +34,7 @@ public:
 // Thin per-platform I/O shim: bytes in, bytes out, lifecycle events out.
 // Never touches LVGL. Simulator: libwebsockets (LwsTransport). ESP32-P4:
 // esp_websocket_client (EspWebSocketTransport). Both must satisfy the same
-// contract tests (CPP_MIGRATION_PLAN.md Phase 3 DoD).
+// contract tests (C++ migration phase 3 DoD).
 class IWebSocketTransport {
 public:
     virtual ~IWebSocketTransport() = default;

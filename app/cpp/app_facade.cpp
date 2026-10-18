@@ -214,7 +214,7 @@ public:
 } g_mqttTransport;
 #endif
 
-// Stable for the device's life (CPP_MIGRATION_PLAN.md §19.5): HA would
+// Stable for the device's life (docs/ARCHITECTURE.md §13.4): HA would
 // create a new device whenever it changed. "smartboard_" is the project's
 // former name, kept so existing panels stay the same device in HA.
 std::string mqtt_node_id() {
@@ -244,6 +244,10 @@ app::mqtt::DeviceInfo mqtt_device_info() {
 }
 
 #ifdef ESP_PLATFORM
+// The screen, from Home Assistant's "Display" switch (app_main.c).
+extern "C" void app_display_set_on(bool on);
+extern "C" bool app_display_is_on(void);
+
 // esp_reset_reason() as HA shows it ("panic": the panel crashed).
 const char* reset_reason_text(esp_reset_reason_t r) {
     switch (r) {
@@ -415,6 +419,12 @@ void app_cpp_start(void) {
     app_cpp_datetime_apply_settings();
     g_application.start();
     g_mqttController.set_on_restart([] { g_updateAdapter.restart(); });
+#ifdef ESP_PLATFORM
+    g_mqttController.set_display([](bool on) { app_display_set_on(on); }, [] { return app_display_is_on(); });
+#else
+    static bool sim_display_on = true; // the simulator has no backlight
+    g_mqttController.set_display([](bool on) { sim_display_on = on; }, [] { return sim_display_on; });
+#endif
     g_voiceController.set_device_id_provider([] { return g_deviceLink.device_id(); });
     g_deviceLink.set_default_room([] { return config_or("haas_dashboard", ""); },
                                   [](const app::home_assistant::Area& a) {

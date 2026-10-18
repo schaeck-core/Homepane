@@ -27,7 +27,7 @@ struct ForecastState {
 
 // A recorder/statistics_during_period request. Query IDENTITY, not the
 // HA request id (which is ephemeral and gets reused every periodic
-// refresh) — CPP_MIGRATION_PLAN.md Phase 9 DoD: "Key basiert auf
+// refresh) — C++ migration phase 9 DoD: "Key basiert auf
 // kompletter Query, nicht Request-ID". entity_ids/stat_types are
 // compared as given (already-sorted callers get proper dedup; an
 // unsorted duplicate query with reordered entities is treated as a

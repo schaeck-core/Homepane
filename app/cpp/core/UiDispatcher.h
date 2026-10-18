@@ -25,7 +25,7 @@ struct DispatcherTelemetry {
     size_t current_depth = 0;
 };
 
-// Bounded, thread-safe command queue (CPP_MIGRATION_PLAN.md §10). Any
+// Bounded, thread-safe command queue (docs/ARCHITECTURE.md §9). Any
 // thread may call post(); only the UI thread may call drain() (checked,
 // not just assumed — see thread_violation_count).
 //

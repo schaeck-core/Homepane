@@ -1,4 +1,4 @@
-// End-to-end integration test for Phase 9 of CPP_MIGRATION_PLAN.md: the
+// End-to-end integration test for C++ migration phase 9: the
 // first widget combining two data sources — the weather entity's own
 // state (EntityStore/EntitySubscriptionCoordinator, unchanged since
 // Phase 5/7) and its forecast (QueryCoordinator, new in Phase 9) —

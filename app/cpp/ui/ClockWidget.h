@@ -13,7 +13,7 @@ using lv_font_t = _lv_font_t;
 
 namespace app::ui {
 
-// First real, non-entity widget (CPP_MIGRATION_PLAN.md Phase 6 §6.3:
+// First real, non-entity widget (C++ migration phase 6 ARCHITECTURE.md §5.3:
 // "Clock: keine HA-Subscription; ... lokaler UI-Timer mit RAII"). Proves
 // the Widget/Factory/Session pattern end-to-end before Phase 7 adds the
 // first entity-bound widget.

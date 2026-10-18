@@ -7,7 +7,7 @@ file(GLOB SRC_FILES
 
 idf_component_register(
     SRCS
-        # C++ core skeleton (Phase 1/2/3 of CPP_MIGRATION_PLAN.md)
+        # C++ core skeleton (C++ migration phase 1/2/3)
         "../../../app/cpp/app_facade.cpp"
         "../../../app/cpp/application/Application.cpp"
         "../../../app/cpp/application/AppStateController.cpp"
@@ -145,7 +145,7 @@ idf_component_register(
         ${SRC_FILES}
 
     # Public half of the firmware update signing key (Track U U1); the
-    # private key is a CI secret, see CPP_MIGRATION_PLAN.md §0.
+    # private key is a CI secret, see docs/ARCHITECTURE.md
     EMBED_TXTFILES "ota_signing_pubkey.pem"
     # microWakeWord model (github.com/esphome/micro-wake-word-models, Apache 2.0)
     EMBED_FILES "wakeword/okay_nabu.tflite" "wakeword/hey_jarvis.tflite"

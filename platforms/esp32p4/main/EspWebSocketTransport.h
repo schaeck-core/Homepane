@@ -21,8 +21,8 @@ namespace platform_esp32p4 {
 // every WEBSOCKET_EVENT_DATA chunk with its is-final status up through
 // on_transport_fragment() and leaves reassembly to WebSocketConnection,
 // exactly like LwsTransport does on the simulator side. Same contract,
-// two platform-appropriate implementations (CPP_MIGRATION_PLAN.md
-// Phase 3).
+// two platform-appropriate implementations (C++ migration
+// phase 3).
 //
 // Threading: esp_websocket_client invokes its event handler on its own
 // FreeRTOS task. The sink chain (WebSocketConnection -> HaClient ->

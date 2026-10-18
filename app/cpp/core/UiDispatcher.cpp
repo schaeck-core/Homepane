@@ -61,7 +61,7 @@ void UiDispatcher::post(void (*fn)(void* ctx), void* ctx, const PostOptions& opt
     }
 
     // Queue full. A non-critical command never evicts existing work — it
-    // is simply dropped ("Low-Priority-Progress verwerfen", §10). Only a
+    // is simply dropped ("Low-Priority-Progress verwerfen", ARCHITECTURE.md §9). Only a
     // critical command is allowed to force room for itself.
     if (!options.critical) {
         ++telemetry_.total_dropped_overflow;

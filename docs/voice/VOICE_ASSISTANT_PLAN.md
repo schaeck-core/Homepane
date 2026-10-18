@@ -251,13 +251,13 @@ Zwei Entwürfe, gleiche Zustände: Wakeword → Zuhören → Verarbeiten →
   Dashboard-Header (nur bei aktivem Assistenten), Texte der Overlays über die
   Sprachdateien (`app/i18n`).
 - **Raumbezug — umgesetzt 2026-10-07** (`DeviceLink`, Details in
-  CPP_MIGRATION_PLAN.md §0): `device_id` des MQTT-Geräts geht in jede
+  `app/cpp/home_assistant/DeviceLink.h`): `device_id` des MQTT-Geräts geht in jede
   Anfrage; der Bereich muss in HA am Gerät „Smartboard“ gesetzt werden (das
   Panel darf ihn ohne Admin-Rechte nicht setzen, übernimmt ihn aber).
   Nicht live geprüft: „Licht aus“ trifft den Raum.
 - **Timer/Wecker** (Nutzerwunsch 2026-10-08, offen): Assist-Timer gibt es nur
   für Satelliten mit Timer-Handler — prüfen, ob das über die
-  WebSocket-Pipeline geht; sonst Helfer in HA (s. CPP_MIGRATION_PLAN.md §0, 0f).
+  WebSocket-Pipeline geht; sonst Helfer in HA.
 - Ursprüngliche Planung des Raumbezugs (2026-10-07): HA nutzt den Bereich des
   anfragenden Geräts als bevorzugten Bereich, im eingebauten Agenten
   (`default_agent.py`, `preferred_area_id`) wie in den LLM-Tools

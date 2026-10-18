@@ -9,7 +9,7 @@
 
 namespace app::core {
 
-// Extended in Phase 2 (CPP_MIGRATION_PLAN.md §10) with the metadata the
+// Extended in Phase 2 (docs/ARCHITECTURE.md §9) with the metadata the
 // real bounded UiDispatcher needs: epoch/generation to drop stale work,
 // critical to exempt control/auth/disconnect events from coalescing, and
 // an optional coalesce key so repeated updates to the same logical thing

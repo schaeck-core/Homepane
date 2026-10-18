@@ -12,8 +12,8 @@
 namespace app::dashboard {
 
 // Maps a card's "type" string to a real Widget instance. An unregistered
-// type yields UnsupportedWidget rather than failing — CPP_MIGRATION_PLAN.md
-// Phase 6 DoD: "unbekannter Typ crashfrei". No RTTI/dynamic_cast (§17
+// type yields UnsupportedWidget rather than failing — C++ migration
+// phase 6 DoD: "unbekannter Typ crashfrei". No RTTI/dynamic_cast (ARCHITECTURE.md §15
 // Don't) — dispatch is a plain string-keyed map of factory functions.
 class WidgetFactory {
 public:

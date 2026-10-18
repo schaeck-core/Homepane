@@ -1,4 +1,4 @@
-// Contract tests for HaClient (Phase 4 of CPP_MIGRATION_PLAN.md §7).
+// Contract tests for HaClient (Phase 4 of docs/ARCHITECTURE.md §6).
 // No LVGL, no real sockets — FakeWebSocketTransport drives the scenario.
 
 #include "../../app/cpp/home_assistant/HaClient.h"

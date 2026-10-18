@@ -46,7 +46,7 @@ struct MaCredentials {
 //   - The server sends an unsolicited ServerInfo immediately on connect,
 //     which is where schema_version tells us whether auth is even needed.
 //
-// Auth strategy (CPP_MIGRATION_PLAN.md §16, decided 2026-09-23 after
+// Auth strategy (docs/ARCHITECTURE.md §14, decided 2026-09-23 after
 // verifying against MA's actual current auth system): username/password
 // only, self-healing. A cached session token is tried first if one was
 // supplied; if the server rejects it (expired/revoked — MA tokens are a

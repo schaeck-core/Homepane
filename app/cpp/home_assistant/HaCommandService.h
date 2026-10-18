@@ -9,7 +9,7 @@
 namespace app::home_assistant {
 
 // Thin, domain-shaped wrapper around HaClient::send_command() for HA
-// `call_service` calls (CPP_MIGRATION_PLAN.md §6.3: "Aktionen als
+// `call_service` calls (docs/ARCHITECTURE.md §5.3: "Aktionen als
 // HaCommandService"). Widgets build no JSON of their own; they never see
 // the "id" field or raw send_command() plumbing.
 class HaCommandService {

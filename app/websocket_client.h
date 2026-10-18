@@ -18,7 +18,7 @@ extern void enter_setup_state();
 
 // Named-connection send / subscribe — still live: Music Assistant (the one
 // consumer not yet migrated to the new C++ stack, see
-// CPP_MIGRATION_PLAN.md Phase 10/section 16) is the sole remaining caller.
+// C++ migration phase 10/section 16) is the sole remaining caller.
 int ws_send_message_named(const char *name, char* msg, callback_t callback);
 
 // Multi-connection API (Music Assistant's transport).

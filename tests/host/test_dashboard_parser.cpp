@@ -1,5 +1,5 @@
 // Unit tests for DashboardParser against a real captured Lovelace
-// "sections" dashboard config (Phase 6 of CPP_MIGRATION_PLAN.md §8.2).
+// "sections" dashboard config (Phase 6 of docs/ARCHITECTURE.md §7).
 // No LVGL.
 
 #include "../../app/cpp/dashboard/DashboardParser.h"
@@ -93,7 +93,7 @@ void test_real_lovelace_fixture() {
     expect(graph != nullptr, "the statistics-graph card is found");
     if (graph) {
         expect(graph->is_background_graph,
-               "statistics-graph is flagged as a background/floating element (preserves dashboard.c §2.2 semantics)");
+               "statistics-graph is flagged as a background/floating element (preserves the legacy dashboard.c semantics)");
     }
 
     const DashboardCard* light = find_card_by_type(home, "light");

@@ -12,8 +12,8 @@
 
 namespace app::application {
 
-// The OAuth device-pairing flow's WebSocket half (CPP_MIGRATION_PLAN.md
-// Phase 10's last unmigrated consumer). The platform webserver
+// The OAuth device-pairing flow's WebSocket half (C++ migration
+// phase 10's last unmigrated consumer). The platform webserver
 // (platforms/simulator/webserver.c / platforms/esp32p4/main/
 // webserver_esp32.c) already exchanged an HA OAuth authorization code for
 // a short-lived access token over plain HTTP before ever reaching this

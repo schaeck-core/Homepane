@@ -11,7 +11,7 @@
 
 namespace app::ui {
 
-// Combines two different data sources (CPP_MIGRATION_PLAN.md Phase 9):
+// Combines two different data sources (C++ migration phase 9):
 // the weather entity's own state (condition/temperature/humidity, via
 // the normal EntityRequirement path) and its forecast (via
 // QueryCoordinator's ForecastRequirement path). Read-only, like

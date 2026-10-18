@@ -2,7 +2,7 @@
 // REAL (headless) LVGL instance — no SDL, no display hardware, no
 // network. This is the one test target in this project that links LVGL
 // itself, to prove object creation/teardown actually works, not just
-// that the C++ scaffolding compiles (CPP_MIGRATION_PLAN.md Phase 6 DoD).
+// that the C++ scaffolding compiles (C++ migration phase 6 DoD).
 
 #include "app/i18n.h"
 #include "lvgl/lvgl.h"
@@ -288,7 +288,7 @@ void test_repeated_dashboard_switches_do_not_leak_lvgl_objects() {
     }
 
     expect(lv_obj_get_child_count(screen) == 0,
-           "100 repeated dashboard switches leave zero LVGL objects behind (CPP_MIGRATION_PLAN.md Phase 6 DoD)");
+           "100 repeated dashboard switches leave zero LVGL objects behind (C++ migration phase 6 DoD)");
 }
 
 } // namespace

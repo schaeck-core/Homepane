@@ -1,5 +1,5 @@
 // Pure-logic unit test for the Lovelace "sections" grid geometry
-// (CPP_MIGRATION_PLAN.md Phase 6/8) — no LVGL, no network. Verifies the
+// (C++ migration phase 6/8) — no LVGL, no network. Verifies the
 // arithmetic ported from app/views/dashboard.c's unit-based grid
 // (compute_unit_size_x/compute_section_geometry) and the card
 // left-to-right-then-wrap placement algorithm (place_cards/required_rows)

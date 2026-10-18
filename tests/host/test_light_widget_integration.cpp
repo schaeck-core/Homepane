@@ -1,4 +1,4 @@
-// End-to-end integration test for Phase 8 of CPP_MIGRATION_PLAN.md: the
+// End-to-end integration test for C++ migration phase 8: the
 // first interactive EntityWidget (LightWidget) — optimistic UI, real
 // server confirmation/rollback, generation-safe command cancellation —
 // through the full real stack down to real LVGL objects and simulated

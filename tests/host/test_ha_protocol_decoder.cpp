@@ -1,7 +1,7 @@
 // Golden tests for HaProtocolDecoder against the real, captured fixtures
 // from Phase 0 (tests/fixtures/ha/*.ndjson) plus a couple of synthetic
 // cases for paths no live capture produced (auth_invalid). No LVGL, no
-// network. CPP_MIGRATION_PLAN.md Phase 4 DoD.
+// network. C++ migration phase 4 DoD.
 
 #include "../../app/cpp/home_assistant/HaProtocolDecoder.h"
 
@@ -228,7 +228,7 @@ void test_sensor_unavailable_fixture() {
 void test_weather_forecast_event_decodes_as_raw_event() {
     // Synthetic, shaped after HA's real weather/subscribe_forecast event
     // payload (no captured fixture exists for this yet, unlike the
-    // entity-shaped fixtures above) — CPP_MIGRATION_PLAN.md Phase 9.
+    // entity-shaped fixtures above) — C++ migration phase 9.
     auto msg = HaProtocolDecoder::decode(
         R"({"id":7,"type":"event","event":{"forecast":[)"
         R"({"condition":"sunny","datetime":"2026-09-10T06:00:00+00:00","temperature":22.5,"templow":14.1})"

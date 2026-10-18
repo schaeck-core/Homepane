@@ -8,7 +8,7 @@
 
 namespace app::application {
 
-// Composition root skeleton (Phase 1 of CPP_MIGRATION_PLAN.md).
+// Composition root skeleton (C++ migration phase 1).
 // Intentionally does nothing beyond proving that the platform
 // interfaces wire together and the lifecycle can be driven from
 // both C entry points. HA/Dashboard/UI wiring is added in later

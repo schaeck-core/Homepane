@@ -107,7 +107,7 @@ add_executable(main
     ${PROJECT_SOURCE_DIR}/platforms/simulator/SimUpdateAdapter.cpp
     ${PROJECT_SOURCE_DIR}/platforms/simulator/DemoHaTransport.cpp
     ${PROJECT_SOURCE_DIR}/platforms/simulator/sim_script.c
-    # Shared App Code (C++ core skeleton, Phase 1/2/3 of CPP_MIGRATION_PLAN.md)
+    # Shared App Code (C++ core skeleton, C++ migration phase 1/2/3)
     ${PROJECT_SOURCE_DIR}/app/cpp/app_facade.cpp
     ${PROJECT_SOURCE_DIR}/app/cpp/application/Application.cpp
     ${PROJECT_SOURCE_DIR}/app/cpp/application/AppStateController.cpp
@@ -410,7 +410,7 @@ else()
 endif()
 endif()
 
-# ── Host-only unit tests (Phase 1 of CPP_MIGRATION_PLAN.md) ─────────────
+# ── Host-only unit tests (C++ migration phase 1) ─────────────
 # Deliberately excludes LVGL/SDL2/websockets/vcpkg: only the C++
 # core/application skeleton, so it builds and runs on any host.
 add_executable(app_core_tests
@@ -447,7 +447,7 @@ add_executable(ha_client_tests
 target_include_directories(ha_client_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_link_libraries(ha_client_tests PRIVATE cjson)
 
-# Music Assistant client foundation (CPP_MIGRATION_PLAN.md §16) — no
+# Music Assistant client foundation (docs/ARCHITECTURE.md §14) — no
 # widget consumer yet, host tests are the only coverage.
 add_executable(ma_protocol_decoder_tests
     ${PROJECT_SOURCE_DIR}/tests/host/test_ma_protocol_decoder.cpp

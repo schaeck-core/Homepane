@@ -5,7 +5,7 @@
 
 // Stable C ABI boundary between plain-C platform entry points
 // (platforms/simulator/main.c, platforms/esp32p4/main/app_main.c)
-// and the C++ Application (CPP_MIGRATION_PLAN.md §9/§12). This
+// and the C++ Application (docs/ARCHITECTURE.md §8/§11). This
 // facade is a permanent interop seam, not a temporary migration
 // shim: platform entry/hardware init stays C, everything behind
 // this boundary is C++.
@@ -18,7 +18,7 @@ void app_cpp_start(void);
 void app_cpp_poll(void);
 void app_cpp_stop(void);
 
-// CPP_MIGRATION_PLAN.md Phase 11: the shared replacement for the
+// C++ migration phase 11: the shared replacement for the
 // platform-duplicated render_content() (platforms/simulator/main.c and
 // platforms/esp32p4/main/app_entry.c used to each have their own).
 // Loads no config itself — callers must have already called loadConfig()
@@ -33,7 +33,7 @@ void app_cpp_enter_initial_state(void);
 // Posts a callback onto the bounded UiDispatcher queue, to run on the UI
 // thread during the next app_cpp_poll(). Introduced in Phase 2 as a
 // drop-in replacement for ad-hoc lv_async_call() call sites in C code
-// (CPP_MIGRATION_PLAN.md Phase 2: "einen ungefährlichen bestehenden
+// (C++ migration phase 2: "einen ungefährlichen bestehenden
 // asynchronen Pfad testweise durch Queue leiten").
 void app_cpp_post_to_ui(void (*fn)(void* ctx), void* ctx);
 
@@ -51,7 +51,7 @@ void app_cpp_post_to_ui(void (*fn)(void* ctx), void* ctx);
 void app_cpp_dashboard_render(lv_obj_t* parent, const char* ws_url, const char* access_token,
                                const char* dashboard_url_path, void (*on_ready)(void), void (*on_error)(void));
 
-// The "Token" consumer's entry point (CPP_MIGRATION_PLAN.md Phase 10):
+// The "Token" consumer's entry point (C++ migration phase 10):
 // stops the live HA connection app_cpp_dashboard_render() started,
 // replacing the legacy websocket_client.c closeConnection() call that
 // stopped affecting the dashboard the moment it cut over to this stack.
@@ -89,7 +89,7 @@ typedef struct {
     const char* url_path;
 } app_cpp_panel_option_t;
 
-// The "Setup" consumer's entry point (CPP_MIGRATION_PLAN.md Phase 10):
+// The "Setup" consumer's entry point (C++ migration phase 10):
 // replaces app/views/setup.c's own createWSConnectionNamed()+
 // ws_send_message_named()+callback_getPanels() manual cJSON parsing.
 // Connects to Home Assistant using the given ws_url/access_token,
@@ -105,8 +105,8 @@ void app_cpp_setup_fetch_panels(const char* ws_url, const char* access_token,
                                  void (*on_success)(const app_cpp_panel_option_t* options, int count),
                                  void (*on_error)(void));
 
-// The OAuth device-pairing flow's WebSocket half (CPP_MIGRATION_PLAN.md
-// Phase 10): replaces app/websocket_client.c's getLongLivedToken() /
+// The OAuth device-pairing flow's WebSocket half (C++ migration
+// phase 10): replaces app/websocket_client.c's getLongLivedToken() /
 // platforms/esp32p4/main/websocket_client_esp.c's getLongLivedToken().
 // access_token is the short-lived OAuth access token already obtained by
 // the caller's own HTTP exchange with HA's /auth/token endpoint (NOT the
@@ -133,8 +133,8 @@ void app_cpp_pairing_exchange_long_lived_token(const char* ws_url, const char* a
                                                 void (*on_success)(const char* long_lived_token),
                                                 void (*on_error)(const char* message));
 
-// Starts the persistent Music Assistant connection (CPP_MIGRATION_PLAN.md
-// §16: MaClient/MaCommandService foundation). Call once, after
+// Starts the persistent Music Assistant connection (docs/ARCHITECTURE.md
+// §14: MaClient/MaCommandService foundation). Call once, after
 // loadConfig(), with the values already read from
 // musicassistant_url/username/password — this function does not touch
 // config itself (matches every other app_cpp_* entry point's contract). A
@@ -151,11 +151,8 @@ void app_cpp_pairing_exchange_long_lived_token(const char* ws_url, const char* a
 // boot; the token is valid only for the duration of the callback — copy
 // it if you need it longer.
 //
-// No on_ready/on_error callbacks yet: nothing consumes this connection's
-// data yet (music_player.c/music_home.c remain on the legacy,
-// unauthenticated path — see CPP_MIGRATION_PLAN.md §0's "Bewusst
-// zurückgestellt" note), so there is nothing for them to usefully do yet.
-// Add them when a real consumer needs them.
+// No on_ready/on_error callbacks: MaController follows the client's state
+// itself. Add them when a consumer needs them.
 void app_cpp_music_assistant_connect(const char* ws_url, const char* username, const char* password,
                                       const char* cached_token, void (*on_token_issued)(const char* token));
 

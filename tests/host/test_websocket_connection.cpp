@@ -1,5 +1,5 @@
 // Contract tests for WebSocketConnection + ConnectionManager
-// (Phase 3 of CPP_MIGRATION_PLAN.md §3.1/§7/§10). No LVGL, no real
+// (Phase 3 of docs/ARCHITECTURE.md §2/§6/§9). No LVGL, no real
 // sockets — FakeWebSocketTransport drives exact byte-level scenarios.
 
 #include "../../app/cpp/net/ConnectionManager.h"

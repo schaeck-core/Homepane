@@ -1,4 +1,4 @@
-// Contract tests for QueryCoordinator (CPP_MIGRATION_PLAN.md Phase 9).
+// Contract tests for QueryCoordinator (C++ migration phase 9).
 // Drives the full stack — FakeWebSocketTransport -> WebSocketConnection ->
 // HaClient -> QueryCoordinator — so these tests exercise the real
 // dedup/resubscribe/periodic-refresh logic, not a mock of it. No LVGL.

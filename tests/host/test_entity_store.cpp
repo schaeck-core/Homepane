@@ -1,4 +1,4 @@
-// Unit tests for EntityStore (Phase 5 of CPP_MIGRATION_PLAN.md §5/§6).
+// Unit tests for EntityStore (Phase 5 of docs/ARCHITECTURE.md §4/§5).
 // No LVGL, no network — pure in-process store logic.
 
 #include "../../app/cpp/home_assistant/EntityStore.h"
@@ -119,7 +119,7 @@ void test_pre_snapshot_delta_is_buffered_and_replayed() {
     auto handle = store.observe(key("cover.x"), [&](const EntityState& s) { seen_states.push_back(s.state); });
 
     // Delta arrives before any snapshot — real race documented in
-    // CPP_MIGRATION_PLAN.md §5 / ADR-0005.
+    // docs/ARCHITECTURE.md §4 / ADR-0005.
     EntityChange delta;
     delta.entity_id = "cover.x";
     delta.state = "opening";

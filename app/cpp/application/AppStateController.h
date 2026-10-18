@@ -3,7 +3,7 @@
 
 namespace app::application {
 
-// CPP_MIGRATION_PLAN.md Phase 11: the one place that decides which
+// C++ migration phase 11: the one place that decides which
 // top-level screen is showing (Init/Setup/Complete), replacing the
 // duplicated render_content()/enter_*_state() logic that used to live
 // separately in platforms/simulator/main.c and

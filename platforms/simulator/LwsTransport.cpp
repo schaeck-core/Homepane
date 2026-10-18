@@ -13,7 +13,7 @@ namespace {
 // Same minimal "ws://host:port/path" parsing as the legacy
 // app/websocket_client.c::parse_ws_url(), reimplemented here since the
 // original is file-local (static) and this adapter must not reach into
-// the legacy file (CPP_MIGRATION_PLAN.md Phase 3: new transport is
+// the legacy file (C++ migration phase 3: new transport is
 // self-contained, not built on top of the old one).
 void parse_ws_url(const std::string& url, std::string& host, int& port, std::string& path) {
     host.clear();

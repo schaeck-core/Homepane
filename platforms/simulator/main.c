@@ -73,7 +73,7 @@ bool isLoading = false;
 // enter_init_state()/enter_setup_state()/enter_complete_state() and the
 // shared render_content()/AppState/fontBig/fontSmall logic that used to
 // live here moved to app/cpp/application/AppStateController.cpp
-// (CPP_MIGRATION_PLAN.md Phase 11) — see app_cpp_enter_initial_state()
+// (C++ migration phase 11) — see app_cpp_enter_initial_state()
 // in main() below.
 
 int main(int argc, char **argv)
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
   (void)argc; /*Unused*/
   (void)argv; /*Unused*/
 
-  /* Phase 1 of CPP_MIGRATION_PLAN.md: construct the C++ Application skeleton. */
+  /* C++ migration phase 1: construct the C++ Application skeleton. */
   app_cpp_create();
 
   /*Initialize LVGL*/

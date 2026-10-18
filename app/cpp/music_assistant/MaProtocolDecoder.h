@@ -9,8 +9,8 @@ namespace app::music_assistant {
 
 // Pure, stateless decoder: raw MA WebSocket JSON text in, a typed
 // MaDecodedMessage out. Never exposes a cJSON pointer across this
-// boundary (same contract as HaProtocolDecoder — CPP_MIGRATION_PLAN.md
-// §11 Don't: "Keine geborgten cJSON-Strings... über Callbackgrenzen
+// boundary (same contract as HaProtocolDecoder — docs/ARCHITECTURE.md
+// §10 Don't: "Keine geborgten cJSON-Strings... über Callbackgrenzen
 // speichern"). Internally uses cJSON only as a parsing detail, fully
 // cleaned up before returning.
 class MaProtocolDecoder {

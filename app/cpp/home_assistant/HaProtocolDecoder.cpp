@@ -23,7 +23,7 @@ std::string print_owned(cJSON* value) {
 }
 
 // event.a[entity_id] (is_snapshot) or event.c[entity_id] (delta, possibly
-// wrapped in a "+" object — CPP_MIGRATION_PLAN.md Phase 0 finding: real
+// wrapped in a "+" object — C++ migration phase 0 finding: real
 // HA traffic wraps deltas as {"+": {...}}). "c" inside the effective
 // payload is a context id/object (string in snapshots, object in
 // deltas) — deliberately ignored here, never treated as another delta
@@ -148,7 +148,7 @@ DecodedMessage HaProtocolDecoder::decode(const std::string& raw_json) {
             }
         }
         // Recognized envelope, but not an entity snapshot/delta (e.g. a
-        // weather forecast event, CPP_MIGRATION_PLAN.md Phase 9) — pass
+        // weather forecast event, C++ migration phase 9) — pass
         // the raw event body through rather than discarding it.
         if (event && cJSON_IsObject(event)) {
             msg.kind = DecodedMessageKind::RawEvent;

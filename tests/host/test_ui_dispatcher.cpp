@@ -1,4 +1,4 @@
-// Contract tests for UiDispatcher (Phase 2 of CPP_MIGRATION_PLAN.md §10).
+// Contract tests for UiDispatcher (Phase 2 of docs/ARCHITECTURE.md §9).
 // No LVGL, no network — pure host-side verification of ordering,
 // coalescing, overflow policy, cancellation and stale-generation handling.
 

@@ -24,7 +24,7 @@ public:
     virtual void on_mqtt_message(const std::string& topic, const std::string& payload) = 0;
 };
 
-// MQTT sibling of IWebSocketTransport (CPP_MIGRATION_PLAN.md §19.5): bytes
+// MQTT sibling of IWebSocketTransport (docs/ARCHITECTURE.md §13.4): bytes
 // and lifecycle only, no Home Assistant knowledge. ESP32-P4: esp-mqtt.
 // Like the WebSocket transport, events from the library's own task are
 // buffered and delivered to the sink in dispatch_pending() on the UI thread.

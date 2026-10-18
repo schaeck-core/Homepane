@@ -131,7 +131,7 @@ void DashboardController::fetch_and_build_dashboard() {
 
         // A reload keeps the view on screen.
         const int view = session_ ? session_->current_view() : 0;
-        // §4 Shutdown-Reihenfolge, same as every other dashboard switch.
+        // ARCHITECTURE.md §3 Shutdown-Reihenfolge, same as every other dashboard switch.
         if (session_) {
             session_->shutdown();
             session_.reset();

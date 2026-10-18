@@ -1,6 +1,6 @@
 // Integration test for DashboardController — the live composition root
-// wired up for the cutover (CPP_MIGRATION_PLAN.md's "gebündelter
-// Cutover nach Phase 9"). Drives the full real stack — FakeWebSocketTransport
+// wired up for the cutover (the C++ migration's bundled
+// cutover after phase 9). Drives the full real stack — FakeWebSocketTransport
 // -> WebSocketConnection -> HaClient -> EntityStore/Coordinators/
 // WidgetFactory -> DashboardSession -> real headless LVGL — through the
 // SAME entry point app_facade.cpp uses live, so this is the first place
@@ -251,7 +251,7 @@ void test_reconnect_after_dashboard_built_does_not_refire_error_or_rebuild() {
 
     // A later disconnect (e.g. a network blip) must not tear down the
     // already-showing dashboard or fire the error path — that's what
-    // EntityStore's own `stale` state is for (§5/§7.5).
+    // EntityStore's own `stale` state is for (ARCHITECTURE.md §4/§6).
     fx->transport->simulate_closed("network blip");
     fx->controller->poll(fx->clock.now_ms());
 
@@ -263,7 +263,7 @@ void test_reconnect_after_dashboard_built_does_not_refire_error_or_rebuild() {
 void test_disconnect_before_any_render_is_a_safe_noop() {
     auto fx = make_fixture();
     // No render() call at all yet — the settings screen's "Reset
-    // Connection" button (CPP_MIGRATION_PLAN.md Phase 10's "Token"
+    // Connection" button (C++ migration phase 10's "Token"
     // consumer) can legitimately fire this before the dashboard has ever
     // connected (e.g. the very first boot's Setup flow never reached the
     // dashboard).

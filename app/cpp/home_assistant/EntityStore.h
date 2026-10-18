@@ -67,15 +67,15 @@ struct EntityRecord {
 // Owns entity_id -> EntityRecord for possibly multiple HA instances;
 // merges snapshots/deltas; notifies local observers. Never touches LVGL,
 // never holds a WidgetPtr — consumers reach it only through
-// SubscriptionHandle (CPP_MIGRATION_PLAN.md §3.1/§5/§6).
+// SubscriptionHandle (docs/ARCHITECTURE.md §2/§4/§5).
 class EntityStore {
 public:
     using ObserverFn = std::function<void(const EntityState&)>;
 
-    // Move-only RAII handle (§6.2): destruction (or explicit unsubscribe())
+    // Move-only RAII handle (ARCHITECTURE.md §5.2): destruction (or explicit unsubscribe())
     // detaches the observer, idempotently, and safely even if the
     // EntityStore was already destroyed first (defensive — normally the
-    // Store outlives its observers, per §4).
+    // Store outlives its observers, per ARCHITECTURE.md §3).
     class SubscriptionHandle {
     public:
         SubscriptionHandle() = default;
@@ -103,11 +103,11 @@ public:
 
     // Creates a `loading` record on first local need if none exists yet —
     // this is what lets widgets exist before the initial HA snapshot
-    // arrives (§5).
+    // arrives (ARCHITECTURE.md §4).
     const EntityState& ensure(const EntityKey& key);
 
     // Registers fn for updates to `key`. Does NOT invoke fn synchronously
-    // (§6.2: never inline into a half-constructed widget) — call
+    // (ARCHITECTURE.md §5.2: never inline into a half-constructed widget) — call
     // deliver_current() explicitly once the caller is ready to receive it.
     SubscriptionHandle observe(const EntityKey& key, ObserverFn fn);
 
@@ -125,7 +125,7 @@ public:
     void apply_delta(const EntityKey& key, const EntityChange& change, app::core::ConnectionEpoch epoch);
 
     // Disconnect: mark every record for this HA instance stale without
-    // discarding the last known value (§5/§7.5).
+    // discarding the last known value (ARCHITECTURE.md §4/§6).
     void mark_all_stale(const HaInstanceId& instance);
 
     const EntityRecord* find(const EntityKey& key) const;

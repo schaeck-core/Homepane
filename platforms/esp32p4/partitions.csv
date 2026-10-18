@@ -3,7 +3,7 @@
 #
 # Final layout for OTA — a partition table cannot be changed safely over the
 # air, so devices updated only via OTA keep this layout forever:
-#   ota_0 / ota_1  A/B app slots (Track U, CPP_MIGRATION_PLAN.md §19), 6 MB
+#   ota_0 / ota_1  A/B app slots (Track U, docs/ARCHITECTURE.md §13), 6 MB
 #                  each: the app is ~3.5 MB today, leave room to grow.
 #   c6fw_0/c6fw_1  ESP32-C6 co-processor firmware image the P4 pushes to the
 #                  C6 over SDIO (platforms/esp32c6_coprocessor/README.md),

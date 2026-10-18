@@ -17,7 +17,7 @@ namespace platform_simulator {
 // adapter forwards every fragment (checking lws_is_final_fragment()) up
 // through on_transport_fragment() instead of assuming `in` is always a
 // complete message — reassembly across fragments is WebSocketConnection's
-// job, not this adapter's (CPP_MIGRATION_PLAN.md Phase 3).
+// job, not this adapter's (C++ migration phase 3).
 class LwsTransport final : public app::net::IWebSocketTransport {
 public:
     LwsTransport();

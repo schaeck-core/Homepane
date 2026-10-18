@@ -238,7 +238,7 @@ struct DashboardSession::SwipeShots {
 };
 
 DashboardSession::~DashboardSession() {
-    // §9: destructors must not touch LVGL — shutdown() is the only place
+    // ARCHITECTURE.md §8: destructors must not touch LVGL — shutdown() is the only place
     // that does, and it must already have run by the time we get here.
     if (!shut_down_ && root_ && logger_) {
         logger_->log(LogLevel::Error,
@@ -446,7 +446,7 @@ void DashboardSession::wire_requirements(app::ui::Widget& widget) {
                     update.entity_state = &state;
                     w->on_data(update);
                 });
-            // §6.2: deliver the current (possibly still `loading`) state
+            // ARCHITECTURE.md §5.2: deliver the current (possibly still `loading`) state
             // now that create() has fully returned — never inline from
             // observe().
             coordinator_->deliver_current(entity_req->entity_id, handle);
@@ -484,7 +484,7 @@ void DashboardSession::shutdown() {
     if (shut_down_) return;
     shut_down_ = true;
 
-    // §4 Shutdown-Reihenfolge: cancel entity/query subscriptions first (no
+    // ARCHITECTURE.md §3 Shutdown-Reihenfolge: cancel entity/query subscriptions first (no
     // more on_data() calls can arrive for widgets about to be torn down),
     // then each widget's own UI resources (timers, etc.), then the LVGL
     // subtree (which nulls every widget's root_ via LV_EVENT_DELETE), and

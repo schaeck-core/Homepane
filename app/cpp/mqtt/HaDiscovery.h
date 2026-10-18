@@ -17,7 +17,7 @@ struct DeviceInfo {
 };
 
 struct EntityDef {
-    std::string component; // sensor, binary_sensor, event, button
+    std::string component; // sensor, binary_sensor, event, button, switch
     std::string object_id;
     std::string name;
     std::string device_class, unit, state_class, entity_category, icon;

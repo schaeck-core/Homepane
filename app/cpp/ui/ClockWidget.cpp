@@ -58,7 +58,7 @@ void ClockWidget::create(lv_obj_t* parent) {
 }
 
 void ClockWidget::shutdown_ui() {
-    // Explicit teardown in the UI context (§9) — do not rely on the
+    // Explicit teardown in the UI context (ARCHITECTURE.md §8) — do not rely on the
     // destructor to reach this; LVGL timers are not tied to LV_EVENT_DELETE
     // of any object, so track_root()'s automatic root_ nulling does not
     // clean this up on its own.

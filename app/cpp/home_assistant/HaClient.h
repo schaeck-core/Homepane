@@ -16,12 +16,12 @@
 
 namespace app::home_assistant {
 
-// CPP_MIGRATION_PLAN.md §7 state machine, the auth-relevant subset (the
+// docs/ARCHITECTURE.md §6 state machine, the auth-relevant subset (the
 // full diagram's transport-level states are WebSocketConnection's job,
 // Phase 3):
 //   Stopped -> Connecting -> TransportConnected -> Authenticating -> Ready
 //   any -> BackoffWait (transient disconnect, will auto-retry)
-//   any -> AuthFailed (auth_invalid: NOT a retryable network error, §7.3 —
+//   any -> AuthFailed (auth_invalid: NOT a retryable network error, ARCHITECTURE.md §6 —
 //          the underlying connection is closed and will not reconnect on
 //          its own; the caller must call start() again, e.g. after the
 //          user updates their token)
@@ -39,7 +39,7 @@ enum class HaClientState {
 // handshake, and correlates outgoing commands with their "result" by an
 // HA-protocol-level id (distinct from WebSocketConnection's own internal
 // SendHandle bookkeeping). Owns no LVGL, no widget references — see
-// CPP_MIGRATION_PLAN.md §3.1 HaClient.
+// docs/ARCHITECTURE.md §2 HaClient.
 class HaClient {
 public:
     // EntitySnapshot/EntityDelta/RawEvent only — never Result (that's
@@ -54,7 +54,7 @@ public:
              app::core::ILogger* logger = nullptr);
 
     // Every registered listener sees every EntitySnapshot/EntityDelta/
-    // RawEvent message (CPP_MIGRATION_PLAN.md Phase 9: EntitySubscriptionCoordinator
+    // RawEvent message (C++ migration phase 9: EntitySubscriptionCoordinator
     // and QueryCoordinator both need their own feed from the same
     // connection). Each listener filters for the kinds it cares about.
     // No removal — every current caller lives as long as HaClient itself
@@ -68,7 +68,7 @@ public:
 
     // `json_without_id` must be a JSON object without an "id" field —
     // HaClient injects one. result_cb fires exactly once: on a matching
-    // Result, on timeout, or on disconnect (CPP_MIGRATION_PLAN.md §7.4).
+    // Result, on timeout, or on disconnect (docs/ARCHITECTURE.md §6).
     // If not yet Ready, fails immediately with error_code "not_ready"
     // rather than queuing something HA would reject anyway. The returned
     // CancellationSource lets the caller cancel before any of those fire.

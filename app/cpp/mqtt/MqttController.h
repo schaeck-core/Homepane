@@ -34,8 +34,8 @@ struct Diagnostics {
     std::string reset_reason;         // why the panel last started ("panic": a crash)
 };
 
-// The panel as an MQTT device in Home Assistant (CPP_MIGRATION_PLAN.md
-// §19.5/19.6, Track U U2): connects, announces availability (+ last will),
+// The panel as an MQTT device in Home Assistant (docs/ARCHITECTURE.md
+// §13.4, Track U U2): connects, announces availability (+ last will),
 // publishes discovery for every entity (again whenever HA restarts), sends
 // sensor values when they change (thresholds and minimum intervals keep the
 // broker quiet) and handles commands (haptic test, restart). UI thread only.
@@ -53,6 +53,13 @@ public:
     void poll(uint64_t now_ms);
 
     void set_on_restart(std::function<void()> cb) { on_restart_ = std::move(cb); }
+    // The "Display" switch: on_set(false) turns the screen off (a touch
+    // wakes it), on_set(true) on; is_on reports it (sent on change).
+    void set_display(std::function<void(bool on)> on_set, std::function<bool()> is_on)
+    {
+        on_display_ = std::move(on_set);
+        display_on_ = std::move(is_on);
+    }
     bool connected() const { return connected_; }
     const DeviceInfo& device() const { return device_; }
     const std::vector<EntityDef>& entities() const { return entities_; }
@@ -86,6 +93,8 @@ private:
     DiagnosticsProvider diagnostics_;
     app::core::ILogger* logger_;
     std::function<void()> on_restart_;
+    std::function<void(bool)> on_display_;
+    std::function<bool()> display_on_;
 
     std::vector<EntityDef> entities_;
     std::map<std::string, Channel> channels_;

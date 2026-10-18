@@ -59,7 +59,10 @@ jobs:
         run: |
           . $IDF_PATH/export.sh
           cd platforms/esp32p4
-          idf.py build
+          # reconfigure: the C6 step configured this project before c6fw.bin
+          # existed, and the configure step decides whether it is flashed
+          idf.py reconfigure build
+          test -f build/flash_args && grep -q c6fw.bin build/flash_args || { echo "::error::The C6 image is missing from the P4 build"; exit 1; }
           cd build
           python -m esptool --chip esp32p4 merge_bin --output homepane-merged.bin @flash_args
 

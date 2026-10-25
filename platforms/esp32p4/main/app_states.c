@@ -1,6 +1,9 @@
 #include "lvgl/lvgl.h"
 #include "config.h"
 #include "views/views.h"
+#include "views/boot_screen.h"
+#include "ui_theme.h"
+#include "i18n.h"
 #include "views/settings/settings.h"
 #include "network.h"
 #include "esp_log.h"
@@ -14,11 +17,10 @@ bool isLoading = false;
 static const char *TAG = "app_states";
 
 /* ------------------------------------------------------------------
- * Splash-screen state
+ * Splash state: the start screen (app/views/boot_screen.c) while the
+ * saved Wi-Fi connects; it stays up for the dashboard after it.
  * ------------------------------------------------------------------ */
 typedef struct {
-    lv_obj_t   *status_label;
-    lv_obj_t   *error_btn;
     lv_timer_t *timer;
     int          ticks;
     bool         wait_wifi;
@@ -26,9 +28,8 @@ typedef struct {
 
 static splash_ctx_t s_splash;
 
-static void splash_open_settings_cb(lv_event_t *e)
+static void splash_open_settings(void)
 {
-    (void)e;
     settings_init();
     settings_open(lv_screen_active());
 }
@@ -51,17 +52,7 @@ static void splash_poll_cb(lv_timer_t *t)
     }
     if (ctx->wait_wifi && (st == NET_STATUS_ERROR || ctx->ticks >= 75)) {
         lv_timer_delete(ctx->timer); ctx->timer = NULL;
-        lv_label_set_text(ctx->status_label,
-            "WLAN-Verbindung fehlgeschlagen.\nNetzwerkeinstellungen pruefen.");
-        lv_obj_set_style_text_color(ctx->status_label, lv_color_hex(0xFF4444), 0);
-        lv_obj_clear_flag(ctx->error_btn, LV_OBJ_FLAG_HIDDEN);
-        return;
-    }
-    if (ctx->wait_wifi) {
-        static const char *const dots[] = {
-            "Verbinde.", "Verbinde..", "Verbinde...", "Verbinde"
-        };
-        lv_label_set_text(ctx->status_label, dots[ctx->ticks % 4]);
+        boot_screen_error(tr(TR_BOOT_WIFI_FAILED), tr(TR_BOOT_OPEN_SETTINGS), splash_open_settings);
     }
 }
 
@@ -69,35 +60,10 @@ void enter_splash_state(bool has_saved_ssid)
 {
     ESP_LOGI(TAG, "=> splash state (WiFi wait=%d)", has_saved_ssid);
     lv_obj_clean(lv_screen_active());
-    lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x111111), LV_PART_MAIN);
-    lv_obj_t *scr = lv_screen_active();
+    lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(UI_BG), LV_PART_MAIN);
+    boot_screen_show();
+    if (has_saved_ssid) boot_screen_step(BOOT_STEP_WIFI);
 
-    lv_obj_t *logo = lv_label_create(scr);
-    lv_label_set_text(logo, "HOMEPANE");
-    lv_obj_set_style_text_color(logo, lv_color_white(), 0);
-    lv_obj_align(logo, LV_ALIGN_CENTER, 0, -60);
-
-    lv_obj_t *status_lbl = lv_label_create(scr);
-    lv_label_set_text(status_lbl, has_saved_ssid ? "Verbinde." : "");
-    lv_obj_set_style_text_color(status_lbl, lv_color_hex(0xAAAAAA), 0);
-    lv_label_set_long_mode(status_lbl, LV_LABEL_LONG_WRAP);
-    lv_obj_set_width(status_lbl, LV_PCT(70));
-    lv_obj_set_style_text_align(status_lbl, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_align(status_lbl, LV_ALIGN_CENTER, 0, 60);
-
-    lv_obj_t *err_btn = lv_button_create(scr);
-    lv_obj_set_size(err_btn, 220, 48);
-    lv_obj_set_style_bg_color(err_btn, lv_color_hex(0x2962FF), 0);
-    lv_obj_set_style_radius(err_btn, 10, 0);
-    lv_obj_align(err_btn, LV_ALIGN_CENTER, 0, 130);
-    lv_obj_add_flag(err_btn, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_event_cb(err_btn, splash_open_settings_cb, LV_EVENT_CLICKED, NULL);
-    lv_obj_t *btn_lbl = lv_label_create(err_btn);
-    lv_label_set_text(btn_lbl, "Einstellungen oeffnen");
-    lv_obj_center(btn_lbl);
-
-    s_splash.status_label = status_lbl;
-    s_splash.error_btn    = err_btn;
     s_splash.ticks        = 0;
     s_splash.wait_wifi    = has_saved_ssid;
     s_splash.timer = lv_timer_create(splash_poll_cb, 200, &s_splash);

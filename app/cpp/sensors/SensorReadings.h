@@ -1,6 +1,8 @@
 #ifndef APP_CPP_SENSORS_SENSORREADINGS_H
 #define APP_CPP_SENSORS_SENSORREADINGS_H
 
+#include "../hardware/Capabilities.h"
+
 #include <cstdint>
 #include <functional>
 #include <optional>
@@ -8,10 +10,9 @@
 namespace app::sensors {
 
 // Everything the panel's planned extra hardware measures (see
-// docs/hardware/SENSORS.md): HLK-LD6004 mmWave radar (UART), SHT45
-// temperature/humidity and an ambient light sensor (I2C), four piezo
-// pressure sensors (one ADC envelope). Values a source does not have stay
-// empty.
+// docs/hardware/SENSORS.md): HLK-LD2410 / LD6004 mmWave radar (UART), SHTC3
+// temperature/humidity, later an ambient light sensor, BOS1921 piezo force
+// sensing (I2C). Values a source does not have stay empty.
 struct SensorReadings {
     // mmWave
     std::optional<bool> presence;
@@ -24,21 +25,24 @@ struct SensorReadings {
     std::optional<float> humidity_pct;
     std::optional<float> illuminance_lx;
     // piezo
-    std::optional<float> press_force_pct; // 0..100, envelope of the four sensors
+    std::optional<float> press_force_pct; // 0..100, of the four actuators
 };
 
 enum class PressGesture { Press, LongPress };
 
-// A source of sensor data: simulated now, the hardware drivers later.
-// Polled on the UI thread; implementations do their I/O elsewhere.
+// A source of sensor data: simulated in the simulator, the hardware drivers
+// on the device. Polled on the UI thread; implementations do their I/O
+// elsewhere.
 class ISensorSource {
 public:
     virtual ~ISensorSource() = default;
     virtual SensorReadings read(uint64_t now_ms) = 0;
     // Gestures detected since the last call (piezo presses).
     virtual void take_gestures(const std::function<void(PressGesture)>& sink) = 0;
-    // Haptic feedback (DRV2605L effect number); sources without one ignore it.
+    // Haptic feedback (effect number, 1 = strong click); sources without one ignore it.
     virtual void haptic(int effect) { (void)effect; }
+    // What the connected hardware offers (detected = false while probing).
+    virtual app::hardware::Capabilities capabilities() const = 0;
     // True for made-up data (shown in HA so nobody mistakes it for real).
     virtual bool simulated() const = 0;
 };

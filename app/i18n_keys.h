@@ -272,17 +272,13 @@ typedef enum {
     TR_SETTINGS_VERSION, /* Version {0} */
     TR_SETTINGS_UPDATE_AVAILABLE, /* Update {0} available */
     TR_SETTINGS_GENERAL, /* General */
-    TR_SETTINGS_GENERAL_SUMMARY, /* Language, sensors */
-    TR_SETTINGS_CLOCK, /* Clock & date */
-    TR_SETTINGS_CLOCK_SUMMARY, /* Time and date format */
+    TR_SETTINGS_GENERAL_SUMMARY, /* Device, room, language, time */
     TR_SETTINGS_WIFI, /* WiFi */
     TR_SETTINGS_HOMEASSISTANT, /* Home Assistant */
-    TR_SETTINGS_UPDATE, /* Update */
     TR_SETTINGS_DOORBELL, /* Doorbell */
     TR_SETTINGS_DOORBELL_SUMMARY, /* Trigger, camera, door opener */
     TR_SETTINGS_MUSICASSISTANT, /* Music Assistant */
     TR_SETTINGS_MUSICASSISTANT_SUMMARY, /* Players, server */
-    TR_SETTINGS_GENERAL_VOICE_OFF_TOO, /* The voice assistant was turned off as well. */
     TR_SETTINGS_GENERAL_SYSTEM_INFO, /* System information */
     TR_SETTINGS_GENERAL_DEVICE_NAME, /* Device name */
     TR_SETTINGS_GENERAL_ENTER_NAME, /* Enter name … */
@@ -290,17 +286,26 @@ typedef enum {
     TR_SETTINGS_GENERAL_TILE_ROWS, /* Tile rows */
     TR_SETTINGS_GENERAL_ROWS_COLS_MINUS_1, /* Columns − 1 */
     TR_SETTINGS_GENERAL_ROWS_COLS, /* Like columns */
-    TR_SETTINGS_GENERAL_MICROPHONE, /* Microphone */
     TR_SETTINGS_GENERAL_HAPTIC, /* Haptic feedback */
     TR_SETTINGS_GENERAL_MMWAVE, /* Presence sensor (mmWave) */
+    TR_SETTINGS_GENERAL_NOT_DETECTED, /* Not detected */
+    TR_SETTINGS_GENERAL_NO_HARDWARE, /* none */
     TR_SETTINGS_CLOCK_24H, /* 24-hour format */
     TR_SETTINGS_CLOCK_DATE_FORMAT, /* Date format */
     TR_SETTINGS_CLOCK_DATE_ORDERS, /* European
 American
 Asian */
     TR_SETTINGS_CLOCK_EXAMPLE, /* Looks like: {0} */
+    TR_SETTINGS_CLOCK_SOURCE, /* Time from */
+    TR_SETTINGS_CLOCK_SOURCE_OPTIONS, /* Local, then internet
+Local only */
+    TR_SETTINGS_CLOCK_SOURCE_HINT, /* Local: the router first, then Home Assistant.
+{0} */
+    TR_SETTINGS_CLOCK_SOURCE_NONE, /* Not set yet. */
+    TR_SETTINGS_CLOCK_SOURCE_ROUTER, /* Now from the router ({0}). */
+    TR_SETTINGS_CLOCK_SOURCE_HA, /* Now from Home Assistant. */
+    TR_SETTINGS_CLOCK_SOURCE_INTERNET, /* Now from the internet ({0}). */
     TR_SETTINGS_HA_VOICE_NOT_CONNECTED, /* Not connected to Home Assistant: the assistants cannot be li */
-    TR_SETTINGS_HA_MIC_ENABLED_TOO, /* The microphone was enabled as well (Settings > General). */
     TR_SETTINGS_HA_MQTT, /* MQTT device */
     TR_SETTINGS_HA_BROKER, /* Broker */
     TR_SETTINGS_HA_BROKER_DEFAULT, /* HA host (default) */
@@ -317,12 +322,11 @@ Asian */
     TR_SETTINGS_HA_SOUND, /* Sound */
     TR_SETTINGS_HA_VOLUME, /* Volume */
     TR_SETTINGS_HA_TOKEN, /* Token */
-    TR_SETTINGS_HA_RESET_DONE_TITLE, /* Connection reset */
     TR_SETTINGS_URL, /* URL */
     TR_SETTINGS_HA_STATUS_CONNECTED, /* Status: connected */
     TR_SETTINGS_HA_STATUS_DISCONNECTED, /* Status: not connected */
-    TR_SETTINGS_HA_RESET, /* Reset connection */
-    TR_SETTINGS_HA_RESET_HINT, /* Resetting requires signing in again. */
+    TR_SETTINGS_HA_RESET, /* Reset the panel */
+    TR_SETTINGS_HA_RESET_HINT, /* Deletes all settings; the panel restarts and is set up again */
     TR_SETTINGS_UPDATE_NOT_CHECKED, /* Not checked yet. */
     TR_SETTINGS_UPDATE_CHECKING, /* Checking for updates … */
     TR_SETTINGS_UPDATE_FIRMWARE, /* Firmware */
@@ -364,7 +368,8 @@ Please choose a network. */
     TR_SETTINGS_GENERAL_SYSINFO, /* Device: {0}
 Version: {1}
 LVGL: {2}
-Build: {3} */
+Build: {3}
+Hardware: {4} */
     TR_SETTINGS_HA_NO_PIPELINE, /* No voice assistant is set up in Home Assistant (Settings > V */
     TR_SETTINGS_HA_MQTT_STATUS, /* {0}  ·  {1} */
     TR_SETTINGS_HA_AREA_DENIED, /* Home Assistant refused to set the panel's area (the panel's  */
@@ -378,10 +383,6 @@ Shimmer
 Blip
 Switch
 Off */
-    TR_SETTINGS_HA_RESET_DONE, /* The Home Assistant connection has been reset.
-
-Restart the p */
-    TR_SETTINGS_HA_RESET_TOKEN_KEPT, /* The Home Assistant connection has been reset, but Home Assis */
     TR_SETTINGS_WIFI_CONNECTED_TO, /* Connected to {0} */
     TR_SETTINGS_WIFI_IP, /* IP address: {0} */
     TR_SETTINGS_WIFI_CONNECTING_TO, /* Connecting to {0} … */
@@ -444,8 +445,6 @@ Please check the network an */
     TR_DOORBELL_OPEN_FAILED, /* Could not open the door */
     TR_SCREENSAVER_SYMBOL_PICTURE, /* Symbol picture */
     TR_SCREENSAVER_INSIDE, /* Inside {0} */
-    TR_SETTINGS_SCREENSAVER, /* Screensaver */
-    TR_SETTINGS_SCREENSAVER_SUMMARY, /* Picture, events, times */
     TR_SETTINGS_SCREENSAVER_AFTER, /* Show after */
     TR_SETTINGS_SCREENSAVER_AFTER_OPTIONS, /* Off
 30 s
@@ -481,6 +480,7 @@ Please check the network an */
     TR_MUSIC_STATE_PAUSED, /* Paused */
     TR_MUSIC_STATE_IDLE, /* Ready */
     TR_MUSIC_STATE_OFFLINE, /* Not connected */
+    TR_MUSIC_STATE_STARTING, /* Loading … */
     TR_MUSIC_SUBTITLE, /* Music Assistant · {0} */
     TR_MUSIC_NOTHING, /* Nothing in the queue */
     TR_MUSIC_NOTHING_HINT, /* Pick music with the search */
@@ -578,6 +578,35 @@ Own installation */
     TR_MUSIC_NO_GROUP, /* Music Assistant cannot play this player together with anothe */
     TR_MUSIC_TAB_GROUP, /* Play along */
     TR_MUSIC_TAB_SWITCH, /* Switch player */
+    TR_BOOT_WIFI, /* Connecting to Wi-Fi … */
+    TR_BOOT_HA, /* Connecting to Home Assistant … */
+    TR_BOOT_DASHBOARD, /* Loading the dashboard … */
+    TR_BOOT_READY, /* Ready */
+    TR_BOOT_VERSION, /* Version {0} */
+    TR_BOOT_WIFI_FAILED, /* The Wi-Fi connection failed.
+Please check the network settin */
+    TR_BOOT_OPEN_SETTINGS, /* Open settings */
+    TR_SETTINGS_GENERAL_QR_PREVIEW, /* Setup QR code (developer) */
+    TR_SETUP_PREVIEW_CLOSE, /* Close preview */
+    TR_RESET_ASK_TITLE, /* Reset the panel? */
+    TR_RESET_ASK_TEXT, /* All settings are deleted: Home Assistant, Wi-Fi, dashboard,  */
+    TR_RESET_CANCEL, /* Cancel */
+    TR_RESET_CONFIRM, /* Reset */
+    TR_RESET_STEP_HA, /* Signing out of Home Assistant … */
+    TR_RESET_STEP_SETTINGS, /* Deleting the settings … */
+    TR_RESET_STEP_RESTART, /* Restarting … */
+    TR_SETTINGS_HA_DASHBOARD_UPDATES, /* Dashboard changes */
+    TR_SETTINGS_HA_UPDATES_LIVE, /* At once */
+    TR_SETTINGS_HA_UPDATES_SETTLED, /* After editing */
+    TR_SETTINGS_HA_UPDATES_HINT, /* Home Assistant saves every change in its dashboard editor ri */
+    TR_SETTINGS_DASHBOARD, /* Dashboard */
+    TR_SETTINGS_DASHBOARD_SUMMARY, /* Which one, mode, tile rows */
+    TR_SETTINGS_VOICE, /* Voice assistant */
+    TR_SETTINGS_VOICE_SUMMARY, /* Wake word, assistant, sounds */
+    TR_SETTINGS_DISPLAY, /* Display */
+    TR_SETTINGS_DISPLAY_SUMMARY, /* Brightness, screensaver */
+    TR_SETTINGS_DISPLAY_BRIGHTNESS, /* Brightness */
+    TR_SETTINGS_SYSTEM, /* System */
     TR__COUNT
 } tr_key_t;
 

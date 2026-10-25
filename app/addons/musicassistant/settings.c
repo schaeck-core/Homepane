@@ -141,7 +141,7 @@ static void render(void *user)
     }
     lv_dropdown_set_options(s_player_dd, opts);
     free(opts);
-    lv_dropdown_set_selected(s_player_dd, sel, LV_ANIM_OFF);
+    lv_dropdown_set_selected(s_player_dd, sel);
     settings_dropdown_show_cut(s_player_dd, s_player_shown, sizeof(s_player_shown));
 }
 
@@ -251,7 +251,7 @@ static lv_obj_t *create_musicassistant_settings_page(lv_obj_t *menu)
     lv_obj_t *install = lv_dropdown_create(row);
     lv_dropdown_set_options(install, tr(TR_SETTINGS_MA_INSTALL_OPTIONS));
     lv_obj_set_width(install, 320);
-    lv_dropdown_set_selected(install, addon_musicassistant_is_addon() ? 0 : 1, LV_ANIM_OFF);
+    lv_dropdown_set_selected(install, addon_musicassistant_is_addon() ? 0 : 1);
     lv_obj_add_event_cb(install, install_changed_cb, LV_EVENT_VALUE_CHANGED, NULL);
     row = row_with_texts(page, LI_GLOBE, tr(TR_SETTINGS_URL), "", &s_url_hint);
     s_url = text_field(row, "musicassistant_url", "ws://musicassistant.local:8095/ws", 300, false);

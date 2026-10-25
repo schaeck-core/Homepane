@@ -154,12 +154,7 @@ static void conn_overlay_show(const char *ssid)
     lv_obj_center(box);
     lv_obj_set_flex_align(box, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 
-    s_conn_spinner = lv_spinner_create(box);
-    lv_obj_set_size(s_conn_spinner, 60, 60);
-    lv_obj_set_style_arc_color(s_conn_spinner, lv_color_hex(UI_ACCENT), LV_PART_INDICATOR);
-    lv_obj_set_style_arc_width(s_conn_spinner, 5, LV_PART_INDICATOR);
-    lv_obj_set_style_arc_color(s_conn_spinner, lv_color_hex(UI_SURFACE2), LV_PART_MAIN);
-    lv_obj_set_style_arc_width(s_conn_spinner, 5, LV_PART_MAIN);
+    s_conn_spinner = ui_loader(box, 16);
 
     char name[40];
     snprintf(name, sizeof(name), "%.32s", ssid ? ssid : "");

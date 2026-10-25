@@ -13,6 +13,7 @@
 #include "config.h"
 #include "websocket_client.h"
 #include "cpp/app_facade.h"
+#include "components/loading_spinner.h"
 #include "views/views.h"
 
 struct ResponseData {
@@ -57,6 +58,7 @@ static size_t writeResponseCallback(void *contents, size_t size, size_t nmemb, v
 #ifndef ESP_PLATFORM
 typedef struct {
     char *access_token;
+    char *refresh_token; /* may be NULL */
     char *client_name;
 } PairingRequest;
 
@@ -88,11 +90,30 @@ static void pairing_on_error(const char *message) {
 
 static void start_pairing_on_ui_thread(void *ctx_ptr) {
     PairingRequest *ctx = (PairingRequest *)ctx_ptr;
+    /* the config belongs to the UI thread too */
+    updateConfig("haas_access_token", ctx->access_token);
+    if (ctx->refresh_token) updateConfig("haas_refresh_token", ctx->refresh_token);
+    saveConfig();
     app_cpp_pairing_exchange_long_lived_token(getConfig("haas_url"), ctx->access_token, ctx->client_name,
                                                pairing_on_success, pairing_on_error);
     free(ctx->access_token);
+    free(ctx->refresh_token);
     free(ctx->client_name);
     free(ctx);
+}
+
+/* The loading overlay while the login is exchanged: LVGL only on the UI
+ * thread (handleOAuthRedirect runs on an MHD worker). */
+static void show_pairing_overlay(void *arg) {
+    (void)arg;
+    if (!loadingOverlay) loadingOverlay = loading_spinner_create(lv_screen_active(), NULL);
+}
+
+static void hide_pairing_overlay(void *arg) {
+    (void)arg;
+    isLoading = false;
+    if (loadingOverlay) lv_obj_del(loadingOverlay);
+    loadingOverlay = NULL;
 }
 
 static enum MHD_Result handleOAuthRedirect(struct MHD_Connection *connection, const char *url) {
@@ -107,17 +128,7 @@ static enum MHD_Result handleOAuthRedirect(struct MHD_Connection *connection, co
         if(!isLoading){
             isLoading = true;
 
-            loadingOverlay = lv_obj_create(lv_screen_active());
-            lv_obj_remove_style_all(loadingOverlay);  // No borders/padding
-            lv_obj_set_size(loadingOverlay, LV_PCT(100), LV_PCT(100));
-            lv_obj_set_style_bg_color(loadingOverlay, lv_color_black(), 0);
-            lv_obj_set_style_bg_opa(loadingOverlay, LV_OPA_70, 0);
-
-            lv_obj_t * spinner = lv_spinner_create(loadingOverlay);
-            lv_obj_set_size(spinner, 100, 100);
-            lv_obj_center(spinner);
-            lv_spinner_set_anim_params(spinner, 2000, 200);
-            //lv_obj_set_style_arc_color(spinner, lv_palette_darken(LV_PALETTE_GREY, 3), LV_PART_INDICATOR);
+            app_cpp_post_to_ui(show_pairing_overlay, NULL);
 
             char* data;
             char* haas_url;
@@ -126,7 +137,7 @@ static enum MHD_Result handleOAuthRedirect(struct MHD_Connection *connection, co
             asprintf(&data, "%s%s%s%s%s", "grant_type=authorization_code&code=", authorization_code, "&client_id=http%3A%2F%2F", getLocalIp(), "%3A8989");
             asprintf(&haas_url, "%s%s", getConfig("haas_url"), "/auth/token");
 
-            struct ResponseData response;
+            struct ResponseData response = {0}; /* the write callback reallocs payload */
             CURL *curl = curl_easy_init();
             if(curl) {
                 curl_easy_setopt(curl, CURLOPT_URL, haas_url);
@@ -145,41 +156,29 @@ static enum MHD_Result handleOAuthRedirect(struct MHD_Connection *connection, co
                 if (res != CURLE_OK) {
                     fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
                 } else {
-                    printf("Received JSON:\n%s\n", response.payload);
+                    printf("Received the token response\n"); /* not its content: it holds the tokens */
 
                     // Parse the JSON response
                     cJSON *json = cJSON_Parse(response.payload);
                     if (json == NULL) {
                         fprintf(stderr, "Failed to parse JSON.\n");
                     } else {
-                        // Example: extract "access_token"
                         cJSON *accessToken = cJSON_GetObjectItemCaseSensitive(json, "access_token");
-                        if (cJSON_IsString(accessToken) && (accessToken->valuestring != NULL)) {
+                        cJSON *refreshToken = cJSON_GetObjectItemCaseSensitive(json, "refresh_token");
+                        if (cJSON_IsString(accessToken) && accessToken->valuestring) {
                             printf("Access token received\n");
-                            updateConfig("haas_access_token", accessToken->valuestring);
+                            PairingRequest *ctx = (PairingRequest *)calloc(1, sizeof(PairingRequest));
+                            ctx->access_token = strdup(accessToken->valuestring);
+                            if (cJSON_IsString(refreshToken) && refreshToken->valuestring)
+                                ctx->refresh_token = strdup(refreshToken->valuestring);
+                            asprintf(&ctx->client_name, "LVGL %s", getLocalIp());
+                            app_cpp_post_to_ui(start_pairing_on_ui_thread, ctx);
+                            pairing_started = true;
                         } else {
                             printf("No access_token found in JSON.\n");
                         }
 
-                        cJSON *refreshToken = cJSON_GetObjectItemCaseSensitive(json, "refresh_token");
-                        if (cJSON_IsString(refreshToken) && (refreshToken->valuestring != NULL)) {
-                            printf("Refresh token received\n");
-                            updateConfig("haas_refresh_token", refreshToken->valuestring);
-                        } else {
-                            printf("No refresh_token found in JSON.\n");
-                        }
-
-                        if (cJSON_IsString(accessToken) && accessToken->valuestring) {
-                            PairingRequest *ctx = (PairingRequest *)malloc(sizeof(PairingRequest));
-                            ctx->access_token = strdup(accessToken->valuestring);
-                            asprintf(&ctx->client_name, "LVGL %s", getLocalIp());
-                            app_cpp_post_to_ui(start_pairing_on_ui_thread, ctx);
-                            pairing_started = true;
-                        }
-
                         cJSON_Delete(json);
-
-                        saveConfig();
                     }
                 }
 
@@ -195,11 +194,7 @@ static enum MHD_Result handleOAuthRedirect(struct MHD_Connection *connection, co
             // pairing_on_error() own the overlay/isLoading cleanup once it
             // truly completes; otherwise (curl failure, unparseable
             // response, missing access_token) clean up right away.
-            if (!pairing_started) {
-                isLoading = false;
-                if (loadingOverlay) lv_obj_del(loadingOverlay);
-                loadingOverlay = NULL;
-            }
+            if (!pairing_started) app_cpp_post_to_ui(hide_pairing_overlay, NULL);
         }
     }
 
@@ -214,6 +209,23 @@ static enum MHD_Result handleOAuthRedirect(struct MHD_Connection *connection, co
 #endif
 
 #ifndef ESP_PLATFORM
+/* /ha: the setup screen's QR code holds this short link; the panel sends
+ * the phone on to Home Assistant's login. */
+static enum MHD_Result handleHaRedirect(struct MHD_Connection *connection)
+{
+    char url[384];
+    const char *auth_base = getConfig("haas_url");
+    if (!auth_base || !auth_base[0]) auth_base = "http://homeassistant.local:8123";
+    snprintf(url, sizeof(url),
+             "%s/auth/authorize?client_id=http%%3A%%2F%%2F%s%%3A8989&redirect_uri=http%%3A%%2F%%2F%s%%3A8989%%2Foauth2callback",
+             auth_base, getLocalIp(), getLocalIp());
+    struct MHD_Response *response = MHD_create_response_from_buffer_static(0, "");
+    MHD_add_response_header(response, "Location", url);
+    enum MHD_Result ret = MHD_queue_response(connection, MHD_HTTP_FOUND, response);
+    MHD_destroy_response(response);
+    return ret;
+}
+
 static enum MHD_Result handleRoutes(void *cls,
                                             struct MHD_Connection *connection,
                                             const char *url,
@@ -226,6 +238,10 @@ static enum MHD_Result handleRoutes(void *cls,
     if (strcmp(url, "/oauth2callback") == 0)
     {
         return handleOAuthRedirect(connection, url);
+    }
+    if (strcmp(url, "/ha") == 0)
+    {
+        return handleHaRedirect(connection);
     }
     enum MHD_Result ret;
 

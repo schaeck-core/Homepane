@@ -8,6 +8,7 @@
 #include "../../i18n.h"
 
 #include "../../ui_kit.h"
+#include "lvgl/src/misc/cache/instance/lv_image_cache.h" // lv_image_cache_drop(): private API since LVGL 9.4
 
 #include <algorithm>
 #include <cctype>
@@ -526,7 +527,7 @@ void Screensaver::render_progress()
         lv_obj_t* fill = lv_obj_get_child(lv_obj_get_child(segments_, static_cast<int32_t>(i)), 0);
         const int shown_i = card_ - first_card();
         const int32_t pct = static_cast<int>(i) < shown_i ? 100 : static_cast<int>(i) == shown_i ? progress : 0;
-        if (lv_obj_get_style_width(fill, 0) != lv_pct(pct)) lv_obj_set_width(fill, lv_pct(pct));
+        if (lv_obj_get_style_width(fill, LV_PART_MAIN) != lv_pct(pct)) lv_obj_set_width(fill, lv_pct(pct));
     }
 }
 

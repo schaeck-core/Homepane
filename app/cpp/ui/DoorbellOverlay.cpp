@@ -6,6 +6,7 @@
 #include "../../i18n.h"
 
 #include "../../ui_kit.h"
+#include "lvgl/src/misc/cache/instance/lv_image_cache.h" // lv_image_cache_drop(): private API since LVGL 9.4
 
 #include <cstdio>
 

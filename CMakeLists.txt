@@ -178,6 +178,7 @@ add_executable(main
     ${PROJECT_SOURCE_DIR}/app/error_handler.c
     # Views
     ${PROJECT_SOURCE_DIR}/app/views/initialization.c
+    ${PROJECT_SOURCE_DIR}/app/views/boot_screen.c
     ${PROJECT_SOURCE_DIR}/app/views/network_setup.c
     ${PROJECT_SOURCE_DIR}/app/views/setup_frame.c
     ${PROJECT_SOURCE_DIR}/app/generated/builtin_pictures.c
@@ -185,6 +186,8 @@ add_executable(main
     ${PROJECT_SOURCE_DIR}/app/views/setup.c
     ${PROJECT_SOURCE_DIR}/app/views/dashboard.c
     ${PROJECT_SOURCE_DIR}/app/views/settings/settings.c
+    ${PROJECT_SOURCE_DIR}/app/views/settings/factory_reset.c
+    ${PROJECT_SOURCE_DIR}/app/views/settings/voice.c
     ${PROJECT_SOURCE_DIR}/app/views/settings/settings_tab.c
     ${PROJECT_SOURCE_DIR}/app/views/settings/general.c
     ${PROJECT_SOURCE_DIR}/app/views/settings/clock.c
@@ -472,6 +475,17 @@ add_executable(ma_player_store_tests
 target_include_directories(ma_player_store_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_link_libraries(ma_player_store_tests PRIVATE cjson)
 
+add_executable(ma_controller_tests
+    ${PROJECT_SOURCE_DIR}/tests/host/test_ma_controller.cpp
+    ${PROJECT_SOURCE_DIR}/app/cpp/music_assistant/MaController.cpp
+    ${PROJECT_SOURCE_DIR}/app/cpp/music_assistant/MaClient.cpp
+    ${PROJECT_SOURCE_DIR}/app/cpp/music_assistant/MaProtocolDecoder.cpp
+    ${PROJECT_SOURCE_DIR}/app/cpp/music_assistant/MaPlayerStore.cpp
+    ${PROJECT_SOURCE_DIR}/app/cpp/net/WebSocketConnection.cpp
+)
+target_include_directories(ma_controller_tests PRIVATE ${PROJECT_SOURCE_DIR})
+target_link_libraries(ma_controller_tests PRIVATE cjson)
+
 add_executable(image_queue_tests
     ${PROJECT_SOURCE_DIR}/tests/host/test_image_queue.cpp
     ${PROJECT_SOURCE_DIR}/app/cpp/media/ImageLoader.cpp
@@ -576,6 +590,13 @@ add_executable(improv_serial_tests
     ${PROJECT_SOURCE_DIR}/app/cpp/net/ImprovSerial.cpp
 )
 target_include_directories(improv_serial_tests PRIVATE ${PROJECT_SOURCE_DIR})
+
+# Time sync: SNTP packets and HA's HTTP Date header.
+add_executable(time_sync_tests
+    ${PROJECT_SOURCE_DIR}/tests/host/test_time_sync.cpp
+    ${PROJECT_SOURCE_DIR}/app/cpp/net/TimeSync.cpp
+)
+target_include_directories(time_sync_tests PRIVATE ${PROJECT_SOURCE_DIR})
 
 add_executable(mqtt_tests
     ${PROJECT_SOURCE_DIR}/tests/host/test_mqtt.cpp
@@ -960,6 +981,7 @@ add_test(NAME ha_client_tests COMMAND ha_client_tests)
 add_test(NAME ma_protocol_decoder_tests COMMAND ma_protocol_decoder_tests)
 add_test(NAME ma_client_tests COMMAND ma_client_tests)
 add_test(NAME ma_player_store_tests COMMAND ma_player_store_tests WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+add_test(NAME ma_controller_tests COMMAND ma_controller_tests WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_test(NAME image_queue_tests COMMAND image_queue_tests WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_test(NAME entity_store_tests COMMAND entity_store_tests)
 add_test(NAME entity_subscription_coordinator_tests COMMAND entity_subscription_coordinator_tests)
@@ -972,6 +994,7 @@ add_test(NAME pairing_controller_tests COMMAND pairing_controller_tests)
 add_test(NAME wifi_controller_tests COMMAND wifi_controller_tests)
 add_test(NAME update_controller_tests COMMAND update_controller_tests)
 add_test(NAME improv_serial_tests COMMAND improv_serial_tests)
+add_test(NAME time_sync_tests COMMAND time_sync_tests)
 add_test(NAME voice_tests COMMAND voice_tests)
 add_test(NAME setting_rules_tests COMMAND setting_rules_tests)
 add_test(NAME voice_controller_tests COMMAND voice_controller_tests)

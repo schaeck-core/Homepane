@@ -29,6 +29,8 @@ extern lv_font_t *font_manrope_600_96;
 extern lv_font_t *font_manrope_600_160;
 // Manrope 700, 44 px (the screensaver's event title)
 extern lv_font_t *font_manrope_700_44;
+// Manrope 700, 56 px: the letters of "homepane" only (the wordmark)
+extern lv_font_t *font_manrope_700_56;
 
 // Lucide line icons (design guide): 18, 24, 28, 36, 48, 56 px; glyphs in
 // app/lucide_icons.h (LI_*)

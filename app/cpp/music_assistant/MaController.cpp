@@ -156,7 +156,43 @@ void MaController::reload()
 
 void MaController::on_event(const std::string& type, const std::string& object_id, const std::string& data_json)
 {
-    if (store_.apply_event(type, object_id, data_json, now_())) notify();
+    if (store_.apply_event(type, object_id, data_json, now_())) {
+        check_start();
+        notify();
+    }
+}
+
+void MaController::begin_start(const MaQueueItem& item)
+{
+    const MaQueue* q = queue();
+    start_.active = true;
+    start_.item = item;
+    start_.from = q && q->current ? q->current->queue_item_id : "";
+    start_.since = now_();
+    notify();
+}
+
+// It started: the queue plays another item than before.
+void MaController::check_start()
+{
+    if (!start_.active) return;
+    const MaQueue* q = queue();
+    if (q && q->state == "playing" && q->current && q->current->queue_item_id != start_.from) start_.active = false;
+}
+
+// MA refused it. Its answer often comes only once the music plays (or after
+// our command timeout): neither ends the wait, the queue's events do.
+void MaController::start_failed(const MaResultMessage& r)
+{
+    if (r.success || r.error_message == "timeout" || !start_.active) return;
+    start_.active = false;
+    notify();
+}
+
+const MaQueueItem* MaController::starting() const
+{
+    if (!start_.active || now_() - start_.since > kStartTimeout) return nullptr;
+    return &start_.item;
 }
 
 void MaController::send(const std::string& command, const std::string& args_json)
@@ -387,16 +423,25 @@ void MaController::recommendation_items(const Folder& folder, ItemsDone done)
 void MaController::play_media(const MaQueueItem& item, Enqueue how)
 {
     const char* option = how == Enqueue::Replace ? "replace" : how == Enqueue::Next ? "next" : how == Enqueue::Add ? "add" : "play";
-    send("player_queues/play_media", args({{"queue_id", queue_id()}, {"media", item.uri}, {"option", option}}));
+    if (how != Enqueue::Play && how != Enqueue::Replace) {
+        send("player_queues/play_media", args({{"queue_id", queue_id()}, {"media", item.uri}, {"option", option}}));
+        return;
+    }
+    begin_start(item);
+    client_.send_command("player_queues/play_media", args({{"queue_id", queue_id()}, {"media", item.uri}, {"option", option}}),
+                         [this](const MaResultMessage& r) { start_failed(r); });
 }
 
 void MaController::play_shuffled(const MaQueueItem& item)
 {
     // in this order: MA shuffles what comes into a shuffled queue
     const std::string queue = queue_id(), uri = item.uri;
+    begin_start(item);
     client_.send_command("player_queues/shuffle", with(args({{"queue_id", queue}}), "shuffle_enabled", cJSON_CreateBool(true)),
                          [this, queue, uri](const MaResultMessage&) {
-                             send("player_queues/play_media", args({{"queue_id", queue}, {"media", uri}, {"option", "replace"}}));
+                             client_.send_command("player_queues/play_media",
+                                                  args({{"queue_id", queue}, {"media", uri}, {"option", "replace"}}),
+                                                  [this](const MaResultMessage& r) { start_failed(r); });
                          });
 }
 

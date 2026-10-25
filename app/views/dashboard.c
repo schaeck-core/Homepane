@@ -19,6 +19,7 @@
 #include "../utils.h"
 #include "../cpp/app_facade.h"
 #include "views.h"
+#include "boot_screen.h"
 #include "settings/settings.h"
 
 lv_obj_t *menu = NULL;
@@ -33,6 +34,7 @@ lv_obj_t *menuContent = NULL;
 static lv_obj_t *s_title;
 static lv_obj_t *s_dots;
 static lv_obj_t *s_temp;
+static lv_obj_t *s_hum_icon, *s_hum;
 static lv_obj_t *s_mic;
 static lv_timer_t *s_header_timer;
 static lv_obj_t *s_picker; /* the views' / dashboards' list while open */
@@ -151,12 +153,33 @@ static void header_refresh_cb(lv_timer_t *t)
     if (voice) lv_obj_remove_flag(s_mic, LV_OBJ_FLAG_HIDDEN);
     else lv_obj_add_flag(s_mic, LV_OBJ_FLAG_HIDDEN);
 
+    /* room temperature and humidity: only with the panel's own sensor */
     const float temp = app_cpp_room_temperature();
+    lv_obj_t *temp_box = lv_obj_get_parent(s_temp);
+    if (temp != temp) {
+        if (!lv_obj_has_flag(temp_box, LV_OBJ_FLAG_HIDDEN)) lv_obj_add_flag(temp_box, LV_OBJ_FLAG_HIDDEN);
+        return;
+    }
+    if (lv_obj_has_flag(temp_box, LV_OBJ_FLAG_HIDDEN)) lv_obj_remove_flag(temp_box, LV_OBJ_FLAG_HIDDEN);
     char buf[24];
-    if (temp == temp) snprintf(buf, sizeof(buf), "%.1f°", (double)temp);
-    else snprintf(buf, sizeof(buf), "–");
+    snprintf(buf, sizeof(buf), "%.1f°", (double)temp);
     for (char *c = buf; *c; ++c) if (*c == '.') *c = ','; /* German decimal comma */
     if (strcmp(lv_label_get_text(s_temp), buf) != 0) lv_label_set_text(s_temp, buf);
+
+    const float hum = app_cpp_room_humidity();
+    const bool show_hum = hum == hum;
+    if (show_hum == lv_obj_has_flag(s_hum, LV_OBJ_FLAG_HIDDEN)) {
+        if (show_hum) {
+            lv_obj_remove_flag(s_hum_icon, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(s_hum, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_obj_add_flag(s_hum_icon, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(s_hum, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+    if (!show_hum) return;
+    snprintf(buf, sizeof(buf), "%.0f %%", (double)hum);
+    if (strcmp(lv_label_get_text(s_hum), buf) != 0) lv_label_set_text(s_hum, buf);
 }
 
 static void header_delete_cb(lv_event_t *e)
@@ -164,7 +187,7 @@ static void header_delete_cb(lv_event_t *e)
     (void)e;
     if (s_header_timer) lv_timer_delete(s_header_timer);
     s_header_timer = NULL;
-    s_title = s_dots = s_temp = s_mic = NULL;
+    s_title = s_dots = s_temp = s_hum_icon = s_hum = s_mic = NULL;
     s_shown_view = s_shown_views = -1;
 }
 
@@ -326,7 +349,7 @@ static void render_header_content(lv_obj_t *header)
     lv_obj_t *left = ui_box(header);
     lv_obj_remove_flag(left, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_add_flag(left, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_set_size(left, 360 - 8, UI_HEADER_H);
+    lv_obj_set_size(left, 320 - 8, UI_HEADER_H);
     lv_obj_align(left, LV_ALIGN_LEFT_MID, 0, 0);
     lv_obj_set_flex_flow(left, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(left, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
@@ -339,7 +362,7 @@ static void render_header_content(lv_obj_t *header)
     lv_obj_set_flex_align(title_row, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_set_style_pad_column(title_row, 8, 0);
     s_title = ui_label(title_row, UI_FONT_TITLE, UI_TEXT, "");
-    lv_obj_set_style_max_width(s_title, 310, 0);
+    lv_obj_set_style_max_width(s_title, 270, 0);
     lv_label_set_long_mode(s_title, LV_LABEL_LONG_MODE_DOTS);
     ui_label(title_row, UI_ICON_S, UI_TEXT3, LI_CHEVRON_DOWN);
     s_dots = ui_box(left);
@@ -349,7 +372,7 @@ static void render_header_content(lv_obj_t *header)
 
     /* room temperature + settings */
     lv_obj_t *right = ui_box(header);
-    lv_obj_set_size(right, 320, UI_HEADER_H); /* fixed: content width was taken before the text existed */
+    lv_obj_set_size(right, 360, UI_HEADER_H); /* fixed: content width was taken before the text existed */
     lv_obj_align(right, LV_ALIGN_RIGHT_MID, 0, 0);
     lv_obj_set_flex_flow(right, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(right, LV_FLEX_ALIGN_END, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
@@ -362,6 +385,12 @@ static void render_header_content(lv_obj_t *header)
     lv_obj_set_style_pad_column(temp, 8, 0);
     ui_label(temp, UI_ICON_BUTTON, UI_TEXT2, LI_HOUSE);
     s_temp = ui_label(temp, UI_FONT_BODY, UI_TEXT, "–");
+    s_hum_icon = ui_label(temp, UI_ICON_BUTTON, UI_TEXT2, LI_DROPLET);
+    lv_obj_set_style_pad_left(s_hum_icon, 8, 0); /* a little apart from the temperature */
+    s_hum = ui_label(temp, UI_FONT_BODY, UI_TEXT, "–");
+    lv_obj_add_flag(s_hum_icon, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(s_hum, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(temp, LV_OBJ_FLAG_HIDDEN); /* until there is a reading */
 
     /* push-to-talk (voice assistant), only when it is enabled */
     s_mic = ui_box(right);
@@ -399,7 +428,61 @@ static void on_dashboard_ready(void)
         loading_spinner_delete(loadingOverlay);
         loadingOverlay = NULL;
     }
+    boot_screen_finish();
     LVGL_UNLOCK();
+}
+
+/* ── No connection: a page with a way out (the settings: another address,
+ * or resetting the panel when its token is no longer valid) ── */
+
+static void error_retry_async(void *arg)
+{
+    (void)arg;
+    dashboard_render(lv_screen_active());
+}
+
+static void error_retry_cb(lv_event_t *e)
+{
+    lv_obj_delete_async(lv_event_get_user_data(e));
+    lv_async_call(error_retry_async, NULL); /* after this event: it rebuilds the screen */
+}
+
+static void error_settings_cb(lv_event_t *e)
+{
+    lv_obj_delete_async(lv_event_get_user_data(e));
+    settings_open(lv_screen_active());
+}
+
+static void error_screen_show(void)
+{
+    lv_obj_t *page = ui_box(lv_screen_active());
+    lv_obj_set_size(page, LV_PCT(100), LV_PCT(100));
+    lv_obj_set_style_bg_color(page, lv_color_hex(UI_BG), 0);
+    lv_obj_set_style_bg_opa(page, LV_OPA_COVER, 0);
+    lv_obj_add_flag(page, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(page, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_style_pad_all(page, UI_EDGE, 0);
+    lv_obj_set_flex_flow(page, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(page, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    lv_obj_t *body = ui_box(page);
+    lv_obj_set_size(body, LV_PCT(100), 0);
+    lv_obj_set_flex_grow(body, 1);
+    lv_obj_set_flex_flow(body, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(body, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_row(body, 20, 0);
+    ui_bubble(body, 96, UI_ICON_BUTTON, LI_TRIANGLE_ALERT, UI_LOOK_WARN);
+    lv_obj_t *text = ui_label(body, UI_FONT_BODY, UI_TEXT2, tr(TR_SETUP_SERVER_FAILED));
+    lv_obj_set_width(text, 560);
+    lv_label_set_long_mode(text, LV_LABEL_LONG_WRAP);
+    lv_obj_set_style_text_align(text, LV_TEXT_ALIGN_CENTER, 0);
+
+    lv_obj_t *buttons = ui_box(page);
+    lv_obj_set_size(buttons, LV_PCT(100), LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(buttons, LV_FLEX_FLOW_ROW);
+    lv_obj_set_style_pad_column(buttons, UI_GAP, 0);
+    ui_action_button(buttons, tr(TR_SETTINGS_TITLE), UI_LOOK_INFO, error_settings_cb, page);
+    ui_action_button(buttons, tr(TR_SETUP_RETRY), UI_LOOK_ON, error_retry_cb, page);
 }
 
 static void callback_ws_error(void)
@@ -410,16 +493,8 @@ static void callback_ws_error(void)
         loading_spinner_delete(loadingOverlay);
         loadingOverlay = NULL;
     }
-    // Fehler-Overlay anzeigen
-    lv_obj_t *errorOverlay = lv_obj_create(lv_screen_active());
-    lv_obj_remove_style_all(errorOverlay);
-    lv_obj_set_size(errorOverlay, LV_PCT(100), LV_PCT(100));
-    lv_obj_set_style_bg_color(errorOverlay, lv_color_black(), 0);
-    lv_obj_set_style_bg_opa(errorOverlay, LV_OPA_70, 0);
-    lv_obj_t *label = lv_label_create(errorOverlay);
-    lv_label_set_text(label, tr(TR_SETUP_SERVER_FAILED));
-    lv_obj_set_style_text_color(label, lv_color_white(), 0);
-    lv_obj_center(label);
+    boot_screen_hide();
+    error_screen_show();
     LVGL_UNLOCK();
 }
 
@@ -431,7 +506,12 @@ void dashboard_render(lv_obj_t *parent)
     lv_obj_clean(parent);
 
     isLoading = true;
-    loadingOverlay = loading_spinner_create(lv_screen_active(), NULL);
+    if (boot_screen_active()) { /* the first dashboard since the start */
+        boot_screen_show();
+        boot_screen_step(BOOT_STEP_HA);
+    } else {
+        loadingOverlay = loading_spinner_create(lv_screen_active(), NULL);
+    }
 
     /* Screen: true black, 16 edge; header 64, then the tiles (gap 12). */
     lv_obj_set_style_bg_color(parent, lv_color_hex(UI_BG), LV_PART_MAIN);

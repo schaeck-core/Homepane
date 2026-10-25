@@ -174,12 +174,23 @@ void DashboardController::on_ha_event(const DecodedMessage& msg) {
     const std::string changed = cJSON_IsString(path) ? path->valuestring : "";
     cJSON_Delete(root);
     if (!same_dashboard(changed, dashboard_url_path_)) return;
-    if (logger_) logger_->log(LogLevel::Info, "DashboardController: dashboard changed in HA, reloading");
-    reload();
+    const uint32_t delay = change_delay_ ? change_delay_() : 0;
+    if (delay == 0) {
+        if (logger_) logger_->log(LogLevel::Info, "DashboardController: dashboard changed in HA, reloading");
+        reload();
+        return;
+    }
+    // every further change starts the wait again
+    reload_at_ = clock_.now_ms() + delay;
+    if (logger_) logger_->log(LogLevel::Info, "DashboardController: dashboard changed in HA, reloading once editing ends");
 }
 
 void DashboardController::poll(uint64_t now_ms) {
     if (!client_) return;
+    if (reload_at_ && now_ms >= reload_at_) {
+        reload_at_ = 0;
+        reload();
+    }
     client_->poll(now_ms);
     coordinator_->poll(now_ms);
     query_coordinator_->poll(now_ms);

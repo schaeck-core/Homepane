@@ -99,6 +99,7 @@ void MusicPullGesture::on_tick()
             // the header's button under the finger (the views menu, ...) gets no tap
             lv_indev_reset(indev_, nullptr);
             lv_indev_wait_release(indev_);
+            if (on_pull_start_) on_pull_start_(); // the reset also ended the page's scroll
             player->begin_pull();
         } else {
             if (std::abs(p.x - start_.x) > 2 * kStartDy && std::abs(p.x - start_.x) > 2 * dy) candidate_ = false; // across: not ours

@@ -4,10 +4,10 @@
 #include "lvgl/lvgl.h"
 
 /**
- * @brief Create a modern loading overlay with animated spinner
+ * @brief Create the loading overlay
  *
- * Creates a full-screen semi-transparent overlay with a custom animated spinner.
- * The spinner features three rotating circles in a circular pattern for a modern look.
+ * A full-screen overlay on the screen's black with the logo loader (the logo
+ * builds up, then its lit pane pulses: ui_loader() in ui_kit.h).
  *
  * @param parent Parent object (use NULL or lv_screen_active() for full screen)
  * @param text Optional text to display below spinner (can be NULL)
@@ -18,7 +18,7 @@ lv_obj_t* loading_spinner_create(lv_obj_t* parent, const char* text);
 /**
  * @brief Delete the loading spinner overlay
  *
- * Safely removes the loading spinner and cleans up all animations.
+ * Removes the overlay; its animations go with it (lv_obj_delete() works too).
  *
  * @param overlay The overlay object returned by loading_spinner_create()
  */

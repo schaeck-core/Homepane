@@ -24,6 +24,8 @@ public:
     void set_zone(lv_obj_t* zone);
     // the dashboard's shown page is scrolled to its top
     void set_at_top(std::function<bool()> fn) { at_top_ = std::move(fn); }
+    // the pull took the press over: the dashboard tidies its scrolling up
+    void set_on_pull_start(std::function<void()> fn) { on_pull_start_ = std::move(fn); }
     void on_tick();
 
 private:
@@ -31,6 +33,7 @@ private:
 
     PlayerFn player_;
     std::function<bool()> at_top_;
+    std::function<void()> on_pull_start_;
     lv_obj_t* zone_ = nullptr;
     lv_timer_t* timer_ = nullptr;
     lv_indev_t* indev_ = nullptr; // the device of the press being watched

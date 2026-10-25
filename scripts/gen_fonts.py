@@ -176,6 +176,8 @@ def main():
     # The screensaver's event title (700, 44 px)
     bold = os.path.join(MANROPE, 'Manrope-Bold.ttf')
     convert(args.lv_font_conv, bold, 44, text, 'font_manrope_700_44_c', roboto_medium)
+    # The wordmark on the start screen (700, 56 px): the letters of "homepane" only
+    convert(args.lv_font_conv, bold, 56, '0x61,0x65,0x68,0x6D,0x6E,0x6F,0x70', 'font_manrope_700_56_c')
 
 if __name__ == '__main__':
     main()

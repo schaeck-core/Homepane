@@ -28,6 +28,10 @@
 #define UI_BAR         0x34322E /* chart bars, dashed empty line */
 #define UI_MUTED       0x5E5A54 /* placeholder art */
 #define UI_INACTIVE    0x4A4842 /* inactive page dots, unchecked boxes */
+/* The logo (3 x 3 panes, the top right one lit): on dark and on light ground */
+#define UI_LOGO_PANE        0x3A3833
+#define UI_LOGO_PANE_LIGHT  0xBDB8AF
+#define UI_LOGO_LIT_LIGHT   0xB08B4F /* sand, darker for a light ground */
 
 /* Sizes */
 #define UI_EDGE        16  /* screen edge */

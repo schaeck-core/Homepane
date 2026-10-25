@@ -20,7 +20,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "slave_ota.h"
-#include "esp_sntp.h"
+#include "EspTimeSync.h"
+#include <time.h>
 #else
 #include <ifaddrs.h>
 #include <netdb.h>
@@ -30,19 +31,19 @@
 static const char *TAG = "network";
 
 #ifdef ESP_PLATFORM
-static bool s_sntp_started = false;
+static bool s_tz_set = false;
 
-static void start_sntp_once(void) {
-    if (s_sntp_started) return;
-    s_sntp_started = true;
-    esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    esp_sntp_setservername(0, "pool.ntp.org");
-    esp_sntp_init();
-    /* Apply timezone: read from config, default = Central European Time */
-    const char *tz = getConfig("timezone");
-    setenv("TZ", tz ? tz : "CET-1CEST,M3.5.0,M10.5.0/3", 1);
-    tzset();
-    ESP_LOGI(TAG, "SNTP started, TZ=%s", tz ? tz : "CET-1CEST,M3.5.0,M10.5.0/3");
+/* Network up: router, Home Assistant, the internet last (EspTimeSync) */
+static void start_time_sync(void) {
+    if (!s_tz_set) {
+        s_tz_set = true;
+        /* Apply timezone: read from config, default = Central European Time */
+        const char *tz = getConfig("timezone");
+        setenv("TZ", tz ? tz : "CET-1CEST,M3.5.0,M10.5.0/3", 1);
+        tzset();
+        ESP_LOGI(TAG, "TZ=%s", tz ? tz : "CET-1CEST,M3.5.0,M10.5.0/3");
+    }
+    esp_time_sync_start();
 }
 #endif
 
@@ -108,6 +109,7 @@ static esp_err_t network_wifi_core_init(void)
         ESP_LOGE(TAG, "esp_netif_init failed: %s", esp_err_to_name(err));
         return err;
     }
+    esp_time_sync_init(); /* before any DHCP: asks for the router's NTP server */
 
     err = esp_event_loop_create_default();
     if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) {
@@ -301,7 +303,7 @@ static void ip_event_handler(void *arg, esp_event_base_t event_base,
 
         s_network_info.status = NET_STATUS_CONNECTED;
         s_network_info.type = NET_TYPE_ETHERNET;
-        start_sntp_once();
+        start_time_sync();
 
         if (s_network_event_group) {
             xEventGroupSetBits(s_network_event_group, ETH_CONNECTED_BIT);
@@ -340,7 +342,7 @@ static void ip_event_handler(void *arg, esp_event_base_t event_base,
                 snprintf(s_network_info.ssid, sizeof(s_network_info.ssid), "%s", (const char*)ap.ssid);
             }
         }
-        start_sntp_once();
+        start_time_sync();
 
         if (s_network_event_group) {
             xEventGroupSetBits(s_network_event_group, WIFI_CONNECTED_BIT);
@@ -384,6 +386,7 @@ bool network_ethernet_init(void)
     }
 
     // Create netif for Ethernet
+    esp_time_sync_init(); /* before DHCP: asks for the router's NTP server */
     esp_netif_config_t cfg = ESP_NETIF_DEFAULT_ETH();
     s_eth_netif = esp_netif_new(&cfg);
 

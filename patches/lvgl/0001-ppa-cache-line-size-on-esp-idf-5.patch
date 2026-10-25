@@ -1,0 +1,30 @@
+diff --git a/src/draw/espressif/ppa/lv_draw_ppa_buf.c b/src/draw/espressif/ppa/lv_draw_ppa_buf.c
+index 832b076d8..c632fe192 100644
+--- a/src/draw/espressif/ppa/lv_draw_ppa_buf.c
++++ b/src/draw/espressif/ppa/lv_draw_ppa_buf.c
+@@ -12,6 +12,7 @@
+ #if LV_USE_PPA
+ #include LV_STDINT_INCLUDE
+ #include "../../lv_draw_buf_private.h"
++#include <esp_memory_utils.h>
+ 
+ /*********************
+  *      DEFINES
+@@ -42,9 +43,16 @@ void lv_draw_buf_ppa_init_handlers(void)
+  *   STATIC FUNCTIONS
+  *********************/
+ 
++/* Homepane: esp_cache_get_line_size_by_addr() is not in ESP-IDF 5.5. PSRAM
++ * goes through the L2 cache, internal RAM through L1 only. */
++static size_t cache_line_size(const void * addr)
++{
++    return esp_ptr_external_ram(addr) ? CONFIG_CACHE_L2_CACHE_LINE_SIZE : CONFIG_CACHE_L1_CACHE_LINE_SIZE;
++}
++
+ static void cache_msync_rows(const lv_draw_buf_t * draw_buf, const lv_area_t * area, uint32_t dir)
+ {
+-    size_t line = esp_cache_get_line_size_by_addr(draw_buf->data);
++    size_t line = cache_line_size(draw_buf->data);
+     if(line == 0) return; /* Not cached */
+ 
+     size_t start = 0;

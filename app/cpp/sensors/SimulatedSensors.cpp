@@ -23,6 +23,17 @@ float unit(uint32_t h) { return (h & 0xFFFFFF) / float(0xFFFFFF); } // 0..1
 constexpr uint64_t kCycleMs = 6 * 60 * 1000;
 } // namespace
 
+app::hardware::Capabilities SimulatedSensors::planned_hardware()
+{
+    app::hardware::Capabilities c;
+    c.detected = true;
+    c.haptics = c.force = true;
+    c.temperature = c.humidity = true;
+    c.presence = c.target_count = c.target_position = true;
+    c.parts = "BOS1921, SHTC3, LD6004 (simulated)";
+    return c;
+}
+
 // Smooth value noise in -1..1 (interpolated random points every 20 s).
 float SimulatedSensors::noise(uint64_t t_ms, uint32_t channel) const
 {
@@ -88,6 +99,26 @@ SensorReadings SimulatedSensors::read(uint64_t now_ms)
         force = 90.0f;
     }
     r.press_force_pct = force;
+
+    // only what the pretended hardware measures
+    if (!caps_.presence) {
+        r.presence.reset();
+        r.distance_m.reset();
+    }
+    if (!caps_.target_count) r.target_count.reset();
+    if (!caps_.target_position) {
+        r.target_x_m.reset();
+        r.target_y_m.reset();
+        r.target_z_m.reset();
+        r.speed_mps.reset();
+    }
+    if (!caps_.temperature) r.temperature_c.reset();
+    if (!caps_.humidity) r.humidity_pct.reset();
+    if (!caps_.illuminance) r.illuminance_lx.reset();
+    if (!caps_.force) {
+        r.press_force_pct.reset();
+        gestures_.clear();
+    }
     return r;
 }
 

@@ -192,12 +192,7 @@ void setup_render(lv_obj_t *parent)
 
     setup_frame_t f = frame();
     lv_obj_set_flex_align(f.content, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_t *spinner = lv_spinner_create(f.content);
-    lv_obj_set_size(spinner, 72, 72);
-    lv_obj_set_style_arc_width(spinner, 6, LV_PART_MAIN);
-    lv_obj_set_style_arc_width(spinner, 6, LV_PART_INDICATOR);
-    lv_obj_set_style_arc_color(spinner, lv_color_hex(UI_SURFACE2), LV_PART_MAIN);
-    lv_obj_set_style_arc_color(spinner, lv_color_hex(UI_ACCENT), LV_PART_INDICATOR);
+    ui_loader(f.content, 20);
     ui_label(f.content, UI_FONT_LABEL, UI_TEXT2, tr(TR_SETUP_LOADING_DASHBOARDS));
 
     const char *ha_url = getConfig("haas_url");

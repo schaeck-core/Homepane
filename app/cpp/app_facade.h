@@ -78,6 +78,20 @@ void app_cpp_dashboard_reload(void);
 
 // The panel's own room temperature (its sensor), NAN without a reading.
 float app_cpp_room_temperature(void);
+// The panel's own relative humidity in %, NAN without a reading.
+float app_cpp_room_humidity(void);
+
+// Extra hardware found at boot (docs/plans/HARDWARE_CAPABILITIES.md): false
+// while probing and when the part is missing. Settings grey out what is
+// missing, the rest of the UI leaves it out.
+typedef enum {
+    APP_CPP_HW_HAPTICS,  // BOS1921: haptic feedback, press force
+    APP_CPP_HW_PRESENCE, // mmWave (LD2410 / LD6004)
+    APP_CPP_HW_CLIMATE,  // SHTC3: temperature, humidity
+} app_cpp_hw_t;
+bool app_cpp_hw_has(app_cpp_hw_t what);
+// The detected chips for system info, e.g. "SHTC3, LD2410"; "" for none.
+const char* app_cpp_hw_parts(void);
 
 // A single entry of the C++ Setup consumer's parsed dashboard list — see
 // app_cpp_setup_fetch_panels() below. `title`/`url_path` point into
@@ -199,6 +213,17 @@ bool app_cpp_ha_connected(void);
 // dashboard's connection signed in with), before a reset forgets it. done
 // (UI thread) gets false when HA could not be reached or refused.
 void app_cpp_ha_revoke_token(void (*done)(bool ok, void* user), void* user);
+
+// Deletes every setting (the config file, in memory too, and on the device
+// the Wi-Fi credentials ESP-IDF keeps in NVS) and ends the dashboard
+// connection. Restart afterwards (app_cpp_restart): the app still runs.
+void app_cpp_factory_reset(void);
+// Restarts the panel; false where it cannot (the simulator).
+bool app_cpp_restart(void);
+
+// The backlight takes config display_brightness (%) now (no-op in the
+// simulator).
+void app_cpp_display_brightness_apply(void);
 
 // ── Firmware updates (UpdateController, Track U Phase U1) ────────────────
 // Source: HOMEPANE_OTA_MANIFEST_URL (app/cpp/update/UpdateSource.h, fixed
@@ -345,6 +370,13 @@ const char* app_cpp_entity_name(int i);
 void app_cpp_datetime_apply_settings(void);
 void app_cpp_clock_text(char* buf, size_t size);
 void app_cpp_datetime_example(char* buf, size_t size);
+
+// Where the clock came from last (Settings > Clock): 0 not set yet, 1 the
+// router, 2 Home Assistant, 3 the internet; `server` gets the address that
+// answered. -1: the platform keeps its own time (simulator).
+int app_cpp_time_source(char* server, size_t size);
+// The time_source setting changed: ask again at once.
+void app_cpp_time_sync_now(void);
 
 // The longest step of app_cpp_poll since the last reset (developer
 // measurements): its name, *ms its duration.

@@ -41,6 +41,8 @@
 #include "../../platforms/esp32p4/main/EspWifiAdapter.h"
 #include "../../platforms/esp32p4/main/EspVoiceAudio.h"
 #include "../../platforms/esp32p4/main/EspMqttTransport.h"
+#include "../../platforms/esp32p4/main/EspSensors.h"
+#include "../../platforms/esp32p4/main/EspTimeSync.h"
 #include "esp_heap_caps.h"
 #include "esp_mac.h"
 #include "esp_system.h"
@@ -198,9 +200,14 @@ app::voice::VoiceController g_voiceController(
     },
     &g_logger);
 
-// ── MQTT device (Track U U2) with simulated sensors until the hardware is
-// connected (docs/hardware/SENSORS.md) ──────────────────────────────────
+// ── MQTT device (Track U U2) with the panel's extra hardware: probed at
+// boot on the device, simulated in the simulator (docs/hardware/SENSORS.md,
+// docs/plans/HARDWARE_CAPABILITIES.md) ────────────────────────────────────
+#ifdef ESP_PLATFORM
+platform_esp32p4::EspSensors g_sensors;
+#else
 app::sensors::SimulatedSensors g_sensors;
+#endif
 #ifdef ESP_PLATFORM
 platform_esp32p4::EspMqttTransport g_mqttTransport;
 #else
@@ -366,6 +373,9 @@ void app_cpp_create(void) {
 #endif
     g_dashboardController = std::make_unique<app::application::DashboardController>(g_clock, g_wallClock, &g_logger,
                                                                                      std::move(transport));
+    // HA's editor saves every card edit at once: by default the dashboard
+    // follows once editing ended (a minute without changes)
+    g_dashboardController->set_change_delay([] { return config_or("dashboard_updates", "settled") == "live" ? 0u : 60000u; });
 
 #ifdef ESP_PLATFORM
     auto setupTransport = std::make_unique<platform_esp32p4::EspWebSocketTransport>();
@@ -417,6 +427,13 @@ extern "C" void enter_complete_state(void) {
 
 void app_cpp_start(void) {
     app_cpp_datetime_apply_settings();
+#ifdef ESP_PLATFORM
+    g_sensors.start(); // after the BSP's I2C bus is up (display/touch)
+#else
+    // HOMEPANE_HW=none / no-haptics,ld2410,...: the simulator without parts of the hardware
+    if (const char* hw = std::getenv("HOMEPANE_HW"))
+        g_sensors.set_capabilities(app::hardware::apply_override(app::sensors::SimulatedSensors::planned_hardware(), hw));
+#endif
     g_application.start();
     g_mqttController.set_on_restart([] { g_updateAdapter.restart(); });
 #ifdef ESP_PLATFORM
@@ -507,6 +524,7 @@ void app_cpp_poll(void) {
     timed("wifi", [] { g_wifiController.poll(g_clock.now_ms()); });
     timed("update", [] { g_updateController.poll(g_clock.now_ms()); });
     timed("voice", [] { g_voiceController.poll(g_clock.now_ms()); });
+#ifndef ESP_PLATFORM
     {
         // time of day for the simulated light curve
         std::time_t now = std::time(nullptr);
@@ -514,6 +532,7 @@ void app_cpp_poll(void) {
         localtime_r(&now, &tm);
         g_sensors.set_seconds_of_day(static_cast<uint32_t>(tm.tm_hour * 3600 + tm.tm_min * 60 + tm.tm_sec));
     }
+#endif
     timed("mqtt", [] { g_mqttController.poll(g_clock.now_ms()); });
     timed("device link", [] { g_deviceLink.poll(g_clock.now_ms()); });
 }
@@ -568,6 +587,27 @@ bool app_cpp_ha_connected(void) {
 float app_cpp_room_temperature(void) {
     const auto r = g_sensors.read(g_clock.now_ms());
     return r.temperature_c ? *r.temperature_c : NAN;
+}
+
+float app_cpp_room_humidity(void) {
+    const auto r = g_sensors.read(g_clock.now_ms());
+    return r.humidity_pct ? *r.humidity_pct : NAN;
+}
+
+bool app_cpp_hw_has(app_cpp_hw_t what) {
+    const auto c = g_sensors.capabilities();
+    switch (what) {
+        case APP_CPP_HW_HAPTICS: return c.haptics;
+        case APP_CPP_HW_PRESENCE: return c.presence;
+        case APP_CPP_HW_CLIMATE: return c.temperature;
+    }
+    return false;
+}
+
+const char* app_cpp_hw_parts(void) {
+    static std::string parts;
+    parts = g_sensors.capabilities().parts;
+    return parts.c_str();
 }
 
 void app_cpp_dashboard_reload(void) {
@@ -674,6 +714,9 @@ void app_cpp_music_assistant_connect(const char* ws_url, const char* username, c
     g_musicPull.set_at_top([] {
         auto* session = g_dashboardController ? g_dashboardController->session() : nullptr;
         return session && session->at_top();
+    });
+    g_musicPull.set_on_pull_start([] {
+        if (auto* session = g_dashboardController ? g_dashboardController->session() : nullptr) session->settle_top();
     });
     g_maClient->start(ws_url ? ws_url : "");
 }
@@ -847,6 +890,39 @@ namespace {
 std::vector<app::application::PanelOption> g_dashboards;
 app::core::CancellationSource g_dashboardsFetch;
 } // namespace
+
+void app_cpp_factory_reset(void) {
+    app_cpp_dashboard_disconnect();
+    // in memory first: nothing can write the old values back before the restart
+    releaseConfig();
+#ifdef ESP_PLATFORM
+    std::remove(get_config_path());
+#else
+    std::remove(CONFIG_FILE_PATH);
+#endif
+#ifdef ESP_PLATFORM
+    esp_wifi_restore();
+#endif
+}
+
+#ifdef ESP_PLATFORM
+extern "C" void app_display_apply_brightness(void);
+#endif
+
+void app_cpp_display_brightness_apply(void) {
+#ifdef ESP_PLATFORM
+    app_display_apply_brightness();
+#endif
+}
+
+bool app_cpp_restart(void) {
+#ifdef ESP_PLATFORM
+    g_updateAdapter.restart();
+    return true;
+#else
+    return false;
+#endif
+}
 
 void app_cpp_ha_revoke_token(void (*done)(bool ok, void* user), void* user) {
     auto* client = g_dashboardController ? g_dashboardController->ha_client() : nullptr;
@@ -1345,6 +1421,22 @@ void app_cpp_eventcalendar_detect(void (*done)(void* user, bool found, const cha
 
 void app_cpp_datetime_apply_settings(void) {
     app::core::set_datetime_format(app::core::datetime_format_from(getConfig("time_format"), getConfig("date_format")));
+}
+
+int app_cpp_time_source(char* server, size_t size) {
+#ifdef ESP_PLATFORM
+    return esp_time_sync_source(server, size);
+#else
+    (void)server;
+    (void)size;
+    return -1; // the computer keeps its own time
+#endif
+}
+
+void app_cpp_time_sync_now(void) {
+#ifdef ESP_PLATFORM
+    esp_time_sync_start();
+#endif
 }
 
 void app_cpp_clock_text(char* buf, size_t size) {

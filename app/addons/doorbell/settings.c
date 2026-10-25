@@ -99,7 +99,7 @@ static void fill_picker(picker_t *pk, bool ok)
     }
     lv_dropdown_set_options(pk->dd, opts);
     free(opts);
-    lv_dropdown_set_selected(pk->dd, sel, LV_ANIM_OFF);
+    lv_dropdown_set_selected(pk->dd, sel);
     lv_obj_remove_state(pk->dd, LV_STATE_DISABLED);
     show_selected(pk);
 }

@@ -6,6 +6,8 @@
  * - Time format (12h / 24h)
  * - Date format: European, American or Asian order (the language gives
  *   the words; app/cpp/core/DateText)
+ * - Where the time comes from: the router and Home Assistant, the internet
+ *   only last or never (app/cpp/net/TimeSync.h)
  */
 
 #include "../../lucide_icons.h"
@@ -24,6 +26,10 @@
 // Date format options (TR_SETTINGS_CLOCK_DATE_ORDERS order)
 static const char *date_format_codes[] = {"eu", "us", "iso"};
 static const int date_format_count = 3;
+
+// Time source options (TR_SETTINGS_CLOCK_SOURCE_OPTIONS order)
+static const char *time_source_codes[] = {"auto", "local"};
+static const int time_source_count = 2;
 
 // UI elements
 static lv_obj_t *time_format_switch = NULL;
@@ -72,10 +78,42 @@ static void date_format_changed_cb(lv_event_t *e)
     }
 }
 
-static lv_obj_t* create_clock_page(lv_obj_t *menu)
+static void time_source_changed_cb(lv_event_t *e)
 {
-    lv_obj_t *page = settings_page_create(menu);
+    uint32_t sel = lv_dropdown_get_selected(lv_event_get_target(e));
+    if (sel < (uint32_t)time_source_count) {
+        updateConfig("time_source", time_source_codes[sel]);
+        saveConfig();
+        app_cpp_time_sync_now();
+        printf("[Settings] Time source changed to: %s\n", time_source_codes[sel]);
+    }
+}
 
+/* "Local: the router first, ..." and where the time came from last */
+static void time_source_hint(lv_obj_t *page)
+{
+    char server[96] = "";
+    const int source = app_cpp_time_source(server, sizeof(server));
+    char now[160] = "";
+    const char *server_arg[] = {server};
+    if (source == 0) snprintf(now, sizeof(now), "%s", tr(TR_SETTINGS_CLOCK_SOURCE_NONE));
+    else if (source == 1) tr_format(now, sizeof(now), TR_SETTINGS_CLOCK_SOURCE_ROUTER, server_arg, 1);
+    else if (source == 2) snprintf(now, sizeof(now), "%s", tr(TR_SETTINGS_CLOCK_SOURCE_HA));
+    else if (source == 3) tr_format(now, sizeof(now), TR_SETTINGS_CLOCK_SOURCE_INTERNET, server_arg, 1);
+
+    lv_obj_t *row = settings_row_create(page);
+    lv_obj_t *hint = lv_label_create(row);
+    lv_obj_set_style_text_font(hint, font_manrope_500_18, 0);
+    lv_obj_set_style_text_color(hint, lv_color_hex(UI_TEXT2), 0);
+    lv_obj_set_flex_grow(hint, 1);
+    lv_label_set_long_mode(hint, LV_LABEL_LONG_WRAP);
+    const char *args[] = {now};
+    char text[320];
+    lv_label_set_text(hint, tr_format(text, sizeof(text), TR_SETTINGS_CLOCK_SOURCE_HINT, args, 1));
+}
+
+void settings_clock_rows(lv_obj_t *page)
+{
     // === Time format setting ===
     lv_obj_t *time_cont = settings_row_create(page);
 
@@ -124,7 +162,7 @@ static lv_obj_t* create_clock_page(lv_obj_t *menu)
     if (date_fmt) {
         for (int i = 0; i < date_format_count; i++) {
             if (strcmp(date_fmt, date_format_codes[i]) == 0) {
-                lv_dropdown_set_selected(date_format_dropdown, i, LV_ANIM_OFF);
+                lv_dropdown_set_selected(date_format_dropdown, i);
                 break;
             }
         }
@@ -142,23 +180,13 @@ static lv_obj_t* create_clock_page(lv_obj_t *menu)
     lv_obj_add_event_cb(example_label, example_deleted_cb, LV_EVENT_DELETE, NULL);
     apply_format();
 
-    return page;
-}
-
-static const settings_tab_t clock_tab = {
-    .name = "Clock & Date",
-    .create_page = create_clock_page,
-    .name_key = TR_SETTINGS_CLOCK,
-    .summary_key = TR_SETTINGS_CLOCK_SUMMARY,
-    .line_icon = LI_CLOCK,
-};
-
-void settings_clock_init(void)
-{
-    settings_register_tab(&clock_tab);
-}
-
-const settings_tab_t* settings_clock_get_tab(void)
-{
-    return &clock_tab;
+    // === Time source ===
+    lv_obj_t *source_row = settings_icon_row(page, LI_GLOBE, tr(TR_SETTINGS_CLOCK_SOURCE));
+    lv_obj_t *source_dd = settings_dropdown(source_row, tr(TR_SETTINGS_CLOCK_SOURCE_OPTIONS));
+    const char *source = getConfig("time_source");
+    for (int i = 0; source && i < time_source_count; i++) {
+        if (strcmp(source, time_source_codes[i]) == 0) lv_dropdown_set_selected(source_dd, i);
+    }
+    lv_obj_add_event_cb(source_dd, time_source_changed_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    time_source_hint(page);
 }

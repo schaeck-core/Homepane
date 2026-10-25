@@ -19,7 +19,8 @@ dependencies:
   #   public: true
   # Exact versions (= dependencies.lock): a component manager that
   # re-solves (fresh CI checkout) must not pick newer releases; e.g.
-  # esp_lvgl_port >= 2.8 needs LVGL >= 9.3, the lvgl submodule is 9.2-dev.
+  # The lvgl submodule (v9.6.0, ../../lvgl via EXTRA_COMPONENT_DIRS) replaces
+  # the registry's lvgl/lvgl, whatever version is pinned for it here.
   # Bump deliberately, together with the lock file.
   espressif/esp_lvgl_port: '==2.7.0'
   espressif/esp_lcd_touch: '==1.2.1'

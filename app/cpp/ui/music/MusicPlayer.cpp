@@ -8,6 +8,7 @@
 #include "../../../lucide_icons.h"
 #include "../../../ui_kit.h"
 #include "../../../ui_theme.h"
+#include "lvgl/src/misc/cache/instance/lv_image_cache.h" // lv_image_cache_drop(): private API since LVGL 9.4
 
 #include <algorithm>
 #include <cmath>
@@ -208,7 +209,8 @@ void MusicPlayer::on_root_deleted()
     rooms_key_.clear();
     queue_page_.reset();
     browse_page_.reset();
-    root_ = title_ = subtitle_ = cover_ = cover_icon_ = track_ = artist_ = fav_ = nullptr;
+    root_ = title_ = subtitle_ = cover_ = cover_icon_ = starting_ = track_ = artist_ = fav_ = nullptr;
+    starting_shown_ = false;
     progress_ = progress_fill_ = elapsed_ = duration_ = shuffle_ = play_icon_ = repeat_ = nullptr;
     volume_ = volume_fill_ = volume_value_ = rooms_label_ = rooms_ = empty_ = nullptr;
 }
@@ -274,6 +276,14 @@ void MusicPlayer::build()
     lv_obj_set_style_radius(cover_, UI_R_TILE, 0); // the picture's corners (no clip_corner layer)
     lv_obj_add_flag(cover_, LV_OBJ_FLAG_HIDDEN);
     lv_obj_center(cover_);
+    // music asked for that MA still loads (Spotify, YouTube: often seconds):
+    // the logo loader over its cover, so the tap visibly took
+    starting_ = ui_box(art);
+    lv_obj_set_size(starting_, LV_PCT(100), LV_PCT(100));
+    lv_obj_set_style_radius(starting_, UI_R_TILE, 0);
+    lv_obj_set_style_bg_color(starting_, lv_color_hex(UI_BG), 0);
+    lv_obj_set_style_bg_opa(starting_, LV_OPA_60, 0);
+    lv_obj_add_flag(starting_, LV_OBJ_FLAG_HIDDEN); // the loader in it while shown (render)
 
     lv_obj_t* info = ui_box(now);
     lv_obj_set_flex_grow(info, 1);
@@ -450,9 +460,10 @@ void MusicPlayer::on_volume_drag(lv_event_t* e)
 void MusicPlayer::on_tick()
 {
     // the position, between the server's updates
+    if ((ma_.starting() != nullptr) != starting_shown_) render(); // it played, or gave up
     const auto* q = ma_.queue();
-    const double dur = q && q->current ? q->current->duration : 0;
-    const double el = ma_.elapsed();
+    const double dur = starting_shown_ ? 0 : q && q->current ? q->current->duration : 0;
+    const double el = starting_shown_ ? 0 : ma_.elapsed();
     lv_label_set_text(elapsed_, dur > 0 || el > 0 ? music_time(el).c_str() : "");
     lv_label_set_text(duration_, dur > 0 ? music_time(dur).c_str() : "");
     lv_obj_update_layout(progress_);
@@ -466,9 +477,20 @@ void MusicPlayer::render()
     using app::music_assistant::MaPlayer;
     const MaPlayer* p = ma_.player();
     const auto* q = ma_.queue();
-    const MaQueueItem* item = q && q->current ? &*q->current : nullptr;
+    // music asked for that does not play yet: shown already, with a loader
+    const MaQueueItem* starting = ma_.starting();
+    const MaQueueItem* item = starting ? starting : q && q->current ? &*q->current : nullptr;
+    if (starting && !starting_shown_) {
+        lv_obj_center(ui_loader(starting_, 22)); // it builds up, then pulses
+        lv_obj_remove_flag(starting_, LV_OBJ_FLAG_HIDDEN);
+    } else if (!starting && starting_shown_) {
+        lv_obj_add_flag(starting_, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clean(starting_); // its animations go with it
+    }
+    starting_shown_ = starting != nullptr;
 
-    const char* state = !ma_.ready()                                   ? tr(TR_MUSIC_STATE_OFFLINE)
+    const char* state = starting                                        ? tr(TR_MUSIC_STATE_STARTING)
+                        : !ma_.ready()                                   ? tr(TR_MUSIC_STATE_OFFLINE)
                         : q && q->state == "playing"                    ? tr(TR_MUSIC_STATE_PLAYING)
                         : q && q->state == "paused"                     ? tr(TR_MUSIC_STATE_PAUSED)
                                                                        : tr(TR_MUSIC_STATE_IDLE);

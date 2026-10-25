@@ -95,26 +95,15 @@ static void show_network(bool autoskip)
 
 // ── Home Assistant ───────────────────────────────────────────────────────────
 
-static char *oauth_url(const char *base)
-{
-    char *result = NULL;
-    const char *ip = getLocalIp();
-    if (asprintf(&result, "%s/auth/authorize?client_id=http%%3A%%2F%%2F%s%%3A8989&redirect_uri=http%%3A%%2F%%2F%s%%3A8989%%2Foauth2callback",
-                 base, ip, ip) < 0) {
-        return NULL;
-    }
-    return result;
-}
-
+/* The QR code holds a short link to the panel, which sends the phone on to
+ * Home Assistant's login (/ha in the web server): a short text keeps the
+ * modules big enough for dots and the logo in the middle. */
 static void update_qr(void)
 {
     if (!s_qr) return;
-    const char *base = getConfig("haas_url");
-    char *url = oauth_url(base ? base : "");
-    if (url) {
-        lv_qrcode_update(s_qr, url, strlen(url));
-        free(url);
-    }
+    char url[64];
+    snprintf(url, sizeof(url), "http://%s:8989/ha", getLocalIp());
+    ui_qr_set(s_qr, url);
 }
 
 // "192.0.2.5:8123" -> "http://192.0.2.5:8123"; no trailing slash.
@@ -226,6 +215,39 @@ static void qr_step(lv_obj_t *parent, const char *number, const char *text)
     lv_label_set_long_mode(l, LV_LABEL_LONG_WRAP);
 }
 
+/* The card with the QR code (the short login link) and the three steps. */
+static lv_obj_t *qr_card(lv_obj_t *parent, lv_obj_t **qr)
+{
+    lv_obj_t *card = ui_box(parent);
+    lv_obj_set_size(card, LV_PCT(100), LV_SIZE_CONTENT);
+    lv_obj_set_style_radius(card, UI_R_TILE, 0);
+    lv_obj_set_style_bg_opa(card, LV_OPA_COVER, 0);
+    lv_obj_set_style_bg_color(card, lv_color_hex(UI_SURFACE), 0);
+    lv_obj_set_style_pad_all(card, 20, 0);
+    lv_obj_set_flex_flow(card, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(card, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_column(card, 24, 0);
+
+    // light quiet zone around the code: phones read it more reliably
+    lv_obj_t *qr_box = ui_box(card);
+    lv_obj_set_size(qr_box, 264, 264);
+    lv_obj_set_style_radius(qr_box, 16, 0);
+    lv_obj_set_style_bg_opa(qr_box, LV_OPA_COVER, 0);
+    lv_obj_set_style_bg_color(qr_box, lv_color_hex(UI_TEXT), 0);
+    *qr = ui_qr(qr_box, 232);
+    lv_obj_center(*qr);
+
+    lv_obj_t *steps = ui_box(card);
+    lv_obj_set_size(steps, 0, LV_SIZE_CONTENT);
+    lv_obj_set_flex_grow(steps, 1);
+    lv_obj_set_flex_flow(steps, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_row(steps, 18, 0);
+    qr_step(steps, "1", tr(TR_SETUP_QR_STEP1));
+    qr_step(steps, "2", tr(TR_SETUP_QR_STEP2));
+    qr_step(steps, "3", tr(TR_SETUP_QR_STEP3));
+    return card;
+}
+
 static void ha_back_cb(lv_event_t *e) { (void)e; show_network(false); }
 static void ha_token_cb(lv_event_t *e) { (void)e; show_token(); }
 
@@ -236,37 +258,8 @@ static void show_home_assistant(void)
                                          tr(TR_SETUP_HA_HINT), ha_back_cb);
     s_url_ta = field_row(f.content, tr(TR_SETUP_ADDRESS), getConfig("haas_url"), "http://homeassistant.local:8123");
 
-    lv_obj_t *card = ui_box(f.content);
-    lv_obj_set_size(card, LV_PCT(100), LV_SIZE_CONTENT);
-    lv_obj_set_style_radius(card, UI_R_TILE, 0);
-    lv_obj_set_style_bg_opa(card, LV_OPA_COVER, 0);
-    lv_obj_set_style_bg_color(card, lv_color_hex(UI_SURFACE), 0);
-    lv_obj_set_style_pad_all(card, 20, 0);
-    lv_obj_set_flex_flow(card, LV_FLEX_FLOW_ROW);
-    lv_obj_set_flex_align(card, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_pad_column(card, 24, 0);
-
-    // white quiet zone around the code: phones read it more reliably
-    lv_obj_t *qr_box = ui_box(card);
-    lv_obj_set_size(qr_box, 264, 264);
-    lv_obj_set_style_radius(qr_box, 16, 0);
-    lv_obj_set_style_bg_opa(qr_box, LV_OPA_COVER, 0);
-    lv_obj_set_style_bg_color(qr_box, lv_color_white(), 0);
-    s_qr = lv_qrcode_create(qr_box);
-    lv_qrcode_set_size(s_qr, 232);
-    lv_qrcode_set_dark_color(s_qr, lv_color_black());
-    lv_qrcode_set_light_color(s_qr, lv_color_white());
-    lv_obj_center(s_qr);
+    qr_card(f.content, &s_qr);
     update_qr();
-
-    lv_obj_t *steps = ui_box(card);
-    lv_obj_set_size(steps, 0, LV_SIZE_CONTENT);
-    lv_obj_set_flex_grow(steps, 1);
-    lv_obj_set_flex_flow(steps, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_style_pad_row(steps, 18, 0);
-    qr_step(steps, "1", tr(TR_SETUP_QR_STEP1));
-    qr_step(steps, "2", tr(TR_SETUP_QR_STEP2));
-    qr_step(steps, "3", tr(TR_SETUP_QR_STEP3));
 
     s_message = setup_message(f.content, "", true);
     lv_obj_add_flag(s_message, LV_OBJ_FLAG_HIDDEN);
@@ -338,4 +331,30 @@ void initialization_render(lv_obj_t *parent)
     } else {
         show_network(true);
     }
+}
+
+/* Developer builds: the login step's QR card over everything, without
+ * touching the configuration (Settings > General). Scanning it opens the
+ * panel's /ha, which only answers while the setup's web server runs. */
+static void qr_preview_close_cb(lv_event_t *e)
+{
+    lv_obj_delete(lv_event_get_user_data(e));
+}
+
+void initialization_qr_preview(void)
+{
+    lv_obj_t *overlay = ui_box(lv_layer_top());
+    lv_obj_set_size(overlay, LV_PCT(100), LV_PCT(100));
+    lv_obj_set_style_bg_color(overlay, lv_color_hex(UI_BG), 0);
+    lv_obj_set_style_bg_opa(overlay, LV_OPA_COVER, 0);
+    lv_obj_add_flag(overlay, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(overlay, LV_OBJ_FLAG_EVENT_BUBBLE);
+    setup_frame_t f = setup_frame_create(overlay, SETUP_STEP_HOME_ASSISTANT, tr(TR_SETUP_HA_TITLE),
+                                         tr(TR_SETUP_HA_HINT), NULL);
+    lv_obj_t *qr;
+    qr_card(f.content, &qr);
+    char url[64];
+    snprintf(url, sizeof(url), "http://%s:8989/ha", getLocalIp());
+    ui_qr_set(qr, url);
+    setup_button(f.footer, LI_X, tr(TR_SETUP_PREVIEW_CLOSE), true, qr_preview_close_cb, overlay);
 }

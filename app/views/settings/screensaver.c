@@ -97,7 +97,7 @@ static void fill_off_dropdown(void)
     }
     if (off > 0 && sel == 0 && s_off_shown_count > 1) sel = (uint32_t)s_off_shown_count - 1;
     lv_dropdown_set_options(s_off_dd, opts);
-    lv_dropdown_set_selected(s_off_dd, sel, LV_ANIM_OFF);
+    lv_dropdown_set_selected(s_off_dd, sel);
 }
 
 static void after_changed_cb(lv_event_t *e)
@@ -231,7 +231,7 @@ static void pictures_loaded_cb(void *user, bool ok)
     }
     lv_dropdown_set_options(s_picture_dd, opts);
     free(opts);
-    lv_dropdown_set_selected(s_picture_dd, sel, LV_ANIM_OFF);
+    lv_dropdown_set_selected(s_picture_dd, sel);
     lv_obj_remove_state(s_picture_dd, LV_STATE_DISABLED);
     settings_dropdown_show_cut(s_picture_dd, s_picture_shown, sizeof(s_picture_shown));
     /* no folder "Homepane" yet: offer to create it */
@@ -330,10 +330,29 @@ static lv_obj_t *row_with_texts(lv_obj_t *page, const char *icon, const char *ti
     return row;
 }
 
+static void brightness_cb(lv_event_t *e)
+{
+    char v[8];
+    snprintf(v, sizeof(v), "%d", (int)lv_slider_get_value(lv_event_get_target(e)));
+    updateConfig("display_brightness", v);
+    app_cpp_display_brightness_apply();
+    if (lv_event_get_code(e) == LV_EVENT_RELEASED) saveConfig();
+}
+
 static lv_obj_t *create_screensaver_page(lv_obj_t *menu)
 {
     lv_obj_t *page = settings_page_create(menu);
     lv_obj_add_event_cb(page, page_deleted_cb, LV_EVENT_DELETE, NULL);
+
+    /* the backlight: live while dragging, saved on release */
+    lv_obj_t *bright = row_with_texts(page, LI_SUN, tr(TR_SETTINGS_DISPLAY_BRIGHTNESS), NULL, NULL);
+    lv_obj_t *slider = lv_slider_create(bright);
+    lv_obj_set_width(slider, 240);
+    lv_slider_set_range(slider, 5, 100);
+    const char *b = getConfig("display_brightness");
+    lv_slider_set_value(slider, b && b[0] ? atoi(b) : 50, LV_ANIM_OFF);
+    lv_obj_add_event_cb(slider, brightness_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_add_event_cb(slider, brightness_cb, LV_EVENT_RELEASED, NULL);
 
     /* when */
     lv_obj_t *row = row_with_texts(page, LI_TIMER, tr(TR_SETTINGS_SCREENSAVER_AFTER), NULL, NULL);
@@ -346,7 +365,7 @@ static lv_obj_t *create_screensaver_page(lv_obj_t *menu)
     for (uint32_t i = 6; i-- > 0;) {
         if (AFTER_S[i] >= a && (a > 0 || i == 0)) sel = i;
     }
-    lv_dropdown_set_selected(dd, sel, LV_ANIM_OFF);
+    lv_dropdown_set_selected(dd, sel);
     lv_obj_add_event_cb(dd, after_changed_cb, LV_EVENT_VALUE_CHANGED, NULL);
 
     /* screen off (not before the screensaver) */
@@ -403,11 +422,11 @@ static lv_obj_t *create_screensaver_page(lv_obj_t *menu)
 }
 
 static const settings_tab_t screensaver_tab = {
-    .name = "Screensaver",
+    .name = "Display",
     .create_page = create_screensaver_page,
-    .name_key = TR_SETTINGS_SCREENSAVER,
-    .summary_key = TR_SETTINGS_SCREENSAVER_SUMMARY,
-    .line_icon = LI_SPARKLES,
+    .name_key = TR_SETTINGS_DISPLAY,
+    .summary_key = TR_SETTINGS_DISPLAY_SUMMARY,
+    .line_icon = LI_SUN,
 };
 
 void settings_screensaver_init(void)

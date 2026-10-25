@@ -63,6 +63,13 @@ lv_obj_t *settings_page_create(lv_obj_t *parent);
  */
 lv_obj_t *settings_row_create(lv_obj_t *page);
 
+/* A row with an icon and a name; its control goes after them. */
+lv_obj_t *settings_icon_row(lv_obj_t *page, const char *icon, const char *text);
+/* A dropdown in a row, in the settings' look. */
+lv_obj_t *settings_dropdown(lv_obj_t *row, const char *options);
+/* A row that opens something (a chevron at its end); `cb` on a tap. */
+lv_obj_t *settings_link_row(lv_obj_t *page, const char *icon, const char *text, lv_event_cb_t cb);
+
 /**
  * @brief Show a dropdown's selected option cut with "…" to fit next to its
  *        arrow (LVGL draws long text under it). Call after a selection

@@ -70,6 +70,12 @@ public:
     // the dashboard editor). A no-op until connected.
     void reload();
 
+    // How long HA's dashboard changes wait (ms, read on every change): 0
+    // rebuilds at each one. HA's editor saves every card edit and every
+    // move at once, there is no "done" to wait for; with a delay the
+    // dashboard is rebuilt once no change came for that long (editing ended).
+    void set_change_delay(std::function<uint32_t()> delay_ms) { change_delay_ = std::move(delay_ms); }
+
     // "Token" consumer support (C++ migration phase 10's
     // Setup/Token/Dashboard/Music-Consumer split): the settings screen's
     // "Reset Connection" button needs to stop the *live* HA connection
@@ -118,6 +124,8 @@ private:
     std::function<void()> on_error_;
     bool dashboard_built_ = false;
     uint32_t lovelace_subscription_ = 0; // id of the lovelace_updated subscription, 0: none
+    std::function<uint32_t()> change_delay_;
+    uint64_t reload_at_ = 0; // a waiting rebuild after HA's changes (monotonic ms), 0: none
 
     std::unique_ptr<app::home_assistant::HaClient> client_;
     app::home_assistant::EntityStore store_;

@@ -149,11 +149,21 @@ void LwsTransport::handle_callback(struct lws* wsi, int reason_int, void* in, si
         case LWS_CALLBACK_CLIENT_ESTABLISHED:
             if (sink_) sink_->on_transport_open();
             break;
+        // lws frees the wsi after these: forget it first, so a send that
+        // follows (a reconnect, a command) never writes to freed memory
+        // (lws_write() asserts on it).
         case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
+            if (wsi == wsi_) wsi_ = nullptr;
             if (sink_) sink_->on_transport_error(in ? static_cast<const char*>(in) : "connection error");
             break;
         case LWS_CALLBACK_CLOSED:
+        case LWS_CALLBACK_CLIENT_CLOSED: // the one a client gets; reported once
+            if (wsi != wsi_) break;
+            wsi_ = nullptr;
             if (sink_) sink_->on_transport_closed("closed");
+            break;
+        case LWS_CALLBACK_WSI_DESTROY:
+            if (wsi == wsi_) wsi_ = nullptr;
             break;
         case LWS_CALLBACK_CLIENT_RECEIVE: {
             bool is_final = lws_is_final_fragment(wsi);

@@ -3,6 +3,7 @@
 
 #include "../../app/cpp/mqtt/HaDiscovery.h"
 #include "../../app/cpp/mqtt/MqttController.h"
+#include "../../app/cpp/sensors/NullSensors.h"
 #include "../../app/cpp/sensors/SimulatedSensors.h"
 
 #include <cjson/cJSON.h>
@@ -12,6 +13,7 @@
 #include <vector>
 
 using namespace app::mqtt;
+using app::sensors::NullSensors;
 using app::sensors::SimulatedSensors;
 
 namespace {
@@ -59,6 +61,15 @@ public:
         size_t n = 0;
         for (const auto& p : published) n += p.topic.rfind(prefix, 0) == 0;
         return n;
+    }
+    // The last discovery config of an entity: "" = removed, "-" = none sent.
+    std::string discovery(const std::string& component, const std::string& id) const
+    {
+        std::string v = "-";
+        for (const auto& p : published) {
+            if (p.topic == "homeassistant/" + component + "/homepane_a1b2c3/" + id + "/config") v = p.payload;
+        }
+        return v;
     }
     IMqttSink* sink = nullptr;
     MqttConfig config;
@@ -136,6 +147,10 @@ void test_connect_and_announce()
            "last will marks the device offline when the connection drops");
     fx.transport.sink->on_mqtt_connected();
     expect(fx.transport.count("homeassistant/") == fx.mqtt.entities().size(), "one retained discovery config per entity");
+    expect(fx.transport.discovery("sensor", "temperature").size() > 1 &&
+               fx.transport.discovery("binary_sensor", "presence").size() > 1,
+           "the simulated hardware's sensors are announced");
+    expect(fx.transport.discovery("sensor", "illuminance").empty(), "no light sensor yet: illuminance is removed");
     bool online = false;
     for (const auto& p : fx.transport.published) online |= p.topic == "homepane/homepane_a1b2c3/status" && p.payload == "online" && p.retain;
     expect(online, "availability: online (retained)");
@@ -244,6 +259,84 @@ void test_commands_and_disable()
     expect(fx.transport.disconnects == 1, "disabling MQTT disconnects");
 }
 
+struct EmptyFixture {
+    FakeClock clock;
+    FakeTransport transport;
+    NullSensors sensors;
+    MqttSettings settings;
+    MqttController mqtt{transport, clock, sensors, device(), [this] { return settings; },
+                        [] { return Diagnostics{-55, 3600, 512}; }};
+    EmptyFixture()
+    {
+        settings.enabled = true;
+        settings.host = "192.0.2.20";
+        mqtt.apply_settings();
+        transport.sink->on_mqtt_connected();
+    }
+};
+
+void test_without_extra_hardware()
+{
+    EmptyFixture fx;
+    for (const char* id : {"temperature", "humidity", "illuminance", "press_force", "target_count", "distance"}) {
+        expect(fx.transport.discovery("sensor", id).empty(), std::string("no hardware: ") + id + " is removed from HA");
+    }
+    expect(fx.transport.discovery("binary_sensor", "presence").empty() &&
+               fx.transport.discovery("event", "press").empty() && fx.transport.discovery("button", "haptic_test").empty(),
+           "no hardware: presence, press events and the haptic test are removed");
+    expect(fx.transport.discovery("binary_sensor", "simulated_data").empty(), "real data: no 'simulated' flag");
+    expect(fx.transport.discovery("button", "restart").size() > 1 && fx.transport.discovery("sensor", "uptime").size() > 1,
+           "the panel's own entities stay");
+    fx.transport.published.clear();
+    fx.mqtt.poll(fx.clock.now);
+    expect(fx.transport.count("homepane/homepane_a1b2c3/temperature") == 0 &&
+               fx.transport.count("homepane/homepane_a1b2c3/simulated_data") == 0,
+           "no sensor values are sent");
+}
+
+void test_hardware_found_after_connect()
+{
+    Fixture fx;
+    app::hardware::Capabilities probing; // still probing: nothing yet
+    fx.sensors.set_capabilities(probing);
+    fx.mqtt.apply_settings();
+    fx.transport.sink->on_mqtt_connected();
+    expect(fx.transport.discovery("sensor", "temperature").empty(), "while probing, temperature is not announced");
+
+    // probing found an SHTC3 and an LD2410
+    app::hardware::Capabilities found;
+    found.detected = true;
+    found.temperature = found.humidity = true;
+    found.presence = true;
+    found.parts = "SHTC3, LD2410";
+    fx.sensors.set_capabilities(found);
+    fx.transport.published.clear();
+    fx.mqtt.poll(fx.clock.now);
+    expect(fx.transport.discovery("sensor", "temperature").size() > 1 &&
+               fx.transport.discovery("binary_sensor", "presence").size() > 1 &&
+               fx.transport.discovery("sensor", "distance").size() > 1,
+           "after probing: announced again with temperature, presence and distance");
+    expect(fx.transport.discovery("sensor", "target_count").empty() && fx.transport.discovery("sensor", "target_1_x").empty(),
+           "LD2410: no target count, no positions");
+    expect(fx.transport.discovery("button", "haptic_test").empty(), "no BOS1921: no haptic test");
+    fx.transport.published.clear();
+    fx.mqtt.poll(fx.clock.now + 100);
+    expect(fx.transport.count("homeassistant/") == 0, "announced only once per change");
+}
+
+void test_capability_override()
+{
+    using app::hardware::apply_override;
+    const auto all = SimulatedSensors::planned_hardware();
+    const auto none = apply_override(all, "none");
+    expect(none.detected && !none.haptics && !none.temperature && !none.presence && none.parts.empty(),
+           "HOMEPANE_HW=none: probing done, nothing found");
+    const auto c = apply_override(all, "no-haptics,ld2410");
+    expect(!c.haptics && !c.force && c.temperature && c.presence && !c.target_count && !c.target_position,
+           "no-haptics,ld2410: climate and presence stay, haptics and targets go");
+    expect(apply_override(all, nullptr) == all && apply_override(all, "") == all, "no override: unchanged");
+}
+
 void test_simulated_sensors()
 {
     SimulatedSensors s(3);
@@ -278,6 +371,9 @@ int main()
     test_simulated_sensors();
     test_internal_ram_diagnostics();
     test_display_switch();
+    test_without_extra_hardware();
+    test_hardware_found_after_connect();
+    test_capability_override();
     if (g_failures == 0) {
         std::printf("All MQTT tests passed.\n");
         return 0;

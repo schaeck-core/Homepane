@@ -209,6 +209,6 @@ direct_dependencies:
 - joltwallet/littlefs
 - lvgl/lvgl
 - waveshare/esp_lcd_st7703
-manifest_hash: c1688d0e8b0e822681e04ebc1189683eb34aece51927f2652b0baf57a5d8871e
+manifest_hash: 7bc115eb9c6861edf60f3a5e9086007f563e95205df0325f125584d1728972f5
 target: esp32p4
 version: 2.0.0

@@ -24,13 +24,14 @@ A wall-mounted touch panel for [Home Assistant](https://www.home-assistant.io/),
 - **Doorbell:** a full-screen overlay with the live camera and *hold to open*.
 - **Easy setup:** Wi-Fi setup and Home Assistant pairing through its login page, right on the panel. No token typing.
 - **Signed over-the-air updates** with automatic rollback.
+- **Time without the internet:** the panel takes the time from your router or Home Assistant first, the internet last.
 - **English and German**, configurable date and time formats.
 
 ### Planned
 
 - Timer and alarm clock on the panel
 - Sound/EQ page for Music Assistant
-- Real on-board sensors (room temperature is currently simulated)
+- Sensors on an add-on board: temperature and humidity are read already when an SHTC3 or SHT4x is connected; presence, air quality and haptics are planned
 - More ESP32-P4 boards, non-square screens and portrait/landscape ([findings](docs/plans/DISPLAY_SIZES.md))
 - A Linux port for Linux-based panels
 - A Home Assistant integration / add-on: firmware updates through Home Assistant (also for panels without internet access), optional custom firmware with its own key, and an AI chat that builds custom widgets into it and designs dashboards for the panel ([plan](docs/plans/HA_FIRMWARE_BUILDER.md))

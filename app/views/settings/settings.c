@@ -22,9 +22,9 @@
 #include "../views.h"
 #include "settings_tab.h"
 #include "general.h"
-#include "clock.h"
 #include "screensaver.h"
 #include "homeassistant.h"
+#include "voice.h"
 #include "wifi.h"
 #include "update.h"
 #include "../../config.h"
@@ -62,17 +62,19 @@ void settings_init(void)
     // Clear any previously registered tabs
     settings_clear_tabs();
 
-    // Register built-in tabs
-    settings_general_init();
-    settings_clock_init();
-    settings_screensaver_init();
+    // The tiles in this order: connection first, then what the panel shows
+    // and does, then the device itself
     settings_wifi_init();
     settings_homeassistant_init();
-    settings_update_init();
-
-    // Addons (started with the dashboard, or now) and their settings tabs
+    settings_dashboard_init();
+    settings_screensaver_init(); /* "Display": brightness and screensaver */
+    settings_voice_init();
+    // Addons (started with the dashboard, or now) and their settings tabs:
+    // music, doorbell
     addons_init();
     addons_register_settings();
+    settings_general_init();
+    settings_update_init(); /* "System": versions, updates, reset */
 
     is_initialized = true;
     printf("[Settings] Initialized with tabs\n");
@@ -173,6 +175,42 @@ lv_obj_t *settings_row_create(lv_obj_t *page)
     return row;
 }
 
+lv_obj_t *settings_icon_row(lv_obj_t *page, const char *icon, const char *text)
+{
+    lv_obj_t *row = settings_row_create(page);
+    lv_obj_t *i = lv_label_create(row);
+    lv_label_set_text(i, icon);
+    lv_obj_set_style_text_font(i, UI_ICON_BUTTON, 0);
+    lv_obj_set_style_text_color(i, lv_color_hex(UI_TEXT), 0);
+    lv_obj_t *l = lv_label_create(row);
+    lv_label_set_text(l, text);
+    lv_obj_set_style_text_font(l, font_manrope_600_22, 0);
+    lv_obj_set_style_text_color(l, lv_color_hex(UI_TEXT), 0);
+    lv_obj_set_flex_grow(l, 1);
+    return row;
+}
+
+lv_obj_t *settings_dropdown(lv_obj_t *row, const char *options)
+{
+    lv_obj_t *dd = lv_dropdown_create(row);
+    lv_dropdown_set_options(dd, options);
+    lv_obj_set_width(dd, 280);
+    lv_obj_set_style_text_font(dd, font_manrope_500_18, 0);
+    return dd;
+}
+
+lv_obj_t *settings_link_row(lv_obj_t *page, const char *icon, const char *text, lv_event_cb_t cb)
+{
+    lv_obj_t *row = settings_icon_row(page, icon, text);
+    lv_obj_add_flag(row, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_t *arrow = lv_label_create(row);
+    lv_label_set_text(arrow, LI_CHEVRON_RIGHT);
+    lv_obj_set_style_text_font(arrow, UI_ICON_S, 0);
+    lv_obj_set_style_text_color(arrow, lv_color_hex(UI_TEXT2), 0);
+    lv_obj_add_event_cb(row, cb, LV_EVENT_CLICKED, NULL);
+    return row;
+}
+
 static bool is_icon_font(const lv_font_t *f)
 {
     return f && (f == font_lucide_18 || f == font_lucide_24 || f == font_lucide_28 || f == font_lucide_36 ||
@@ -197,6 +235,26 @@ static void style_hint_row(lv_obj_t *row)
     lv_obj_set_width(only, LV_PCT(100));
 }
 
+// LVGL hangs an opened list on the screen, left-aligned to the dropdown: an
+// option wider than the dropdown pushes it past the right edge and makes the
+// screen scroll sideways. End it flush with the dropdown's right edge instead.
+// Runs after the class handler, which opens the list on RELEASED.
+static void dropdown_fit_list_cb(lv_event_t *e)
+{
+    lv_obj_t *dd = lv_event_get_target(e);
+    lv_obj_t *list = lv_dropdown_get_list(dd);
+    if (!list || lv_obj_has_flag(list, LV_OBJ_FLAG_HIDDEN)) return;
+    lv_area_t dd_area, list_area; // screen coordinates, as the list's position
+    lv_obj_get_coords(dd, &dd_area);
+    lv_obj_get_coords(list, &list_area);
+    if (list_area.x2 <= dd_area.x2) return;
+    // no wider than from the screen edge on: a longer option is cut off
+    int32_t w = lv_area_get_width(&list_area);
+    if (w > dd_area.x2 + 1 - UI_EDGE) w = dd_area.x2 + 1 - UI_EDGE;
+    lv_obj_set_width(list, w);
+    lv_obj_set_x(list, dd_area.x2 + 1 - w);
+}
+
 // Enlarges and restyles stock widgets inside a tab page for touch use, so
 // every tab gets consistent, finger-sized controls without each having to
 // style them itself.
@@ -216,6 +274,12 @@ static void apply_touch_style(lv_obj_t *obj)
         lv_obj_set_style_shadow_width(obj, 0, LV_PART_KNOB);
         lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN);
         lv_obj_set_ext_click_area(obj, 12);
+        if (lv_obj_has_flag(obj, LV_OBJ_FLAG_USER_2)) {
+            // its hardware is missing (general.c hw_row_missing()): greyed out
+            lv_obj_set_style_bg_color(obj, lv_color_hex(UI_SURFACE2), LV_PART_MAIN);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(UI_SURFACE2), LV_PART_INDICATOR);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(UI_INACTIVE), LV_PART_KNOB);
+        }
     } else if (lv_obj_check_type(obj, &lv_dropdown_class)) {
         // A row's value + chevron (design guide list row); the list opens below.
         // the width the tab asked for (the layout has not run yet: get_width() would be 0)
@@ -249,7 +313,9 @@ static void apply_touch_style(lv_obj_t *obj)
             lv_obj_set_style_bg_color(list, lv_color_hex(UI_ACTIVE), LV_PART_SELECTED | LV_STATE_CHECKED);
             lv_obj_set_style_text_color(list, lv_color_hex(UI_TEXT), LV_PART_SELECTED | LV_STATE_CHECKED);
             lv_obj_set_style_max_height(list, 380, 0);
+            lv_obj_set_scroll_dir(list, LV_DIR_VER); // an option cut off by dropdown_fit_list_cb() stays put
         }
+        lv_obj_add_event_cb(obj, dropdown_fit_list_cb, LV_EVENT_RELEASED, NULL);
     } else if (lv_obj_check_type(obj, &lv_textarea_class)) {
         if (lv_obj_get_width(obj) < 260) lv_obj_set_width(obj, 260);
         lv_obj_set_height(obj, 56);

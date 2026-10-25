@@ -60,6 +60,8 @@ private:
     lv_obj_t* subtitle_ = nullptr;
     lv_obj_t* cover_ = nullptr;
     lv_obj_t* cover_icon_ = nullptr;
+    lv_obj_t* starting_ = nullptr; // over the cover while music asked for loads
+    bool starting_shown_ = false;
     lv_obj_t* track_ = nullptr;
     lv_obj_t* artist_ = nullptr;
     lv_obj_t* fav_ = nullptr;

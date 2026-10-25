@@ -111,6 +111,8 @@ Use these instead of styling raw LVGL objects. They give every widget the same r
 | `ui_segmented` | segmented control (64 high) |
 | `ui_slider_row` | a whole row as a slider: filled share in the "active" surface, label left, value right |
 | `ui_toast(text)` | short hint pill at the bottom (~2 s) |
+| `ui_logo(parent, pane, light_ground)` | the logo: 3 × 3 rounded panes, the top right one lit in sand (44 px panes on the start screen) |
+| `ui_qr(parent, size)`, `ui_qr_set(qr, text)` | a QR code in the house style: dots, rounded finder marks, the logo in the middle (high error correction); keep the text short |
 | `ui_gestures(obj, tap, hold, double_tap, user)` | tap, hold (480 ms) and optional double tap |
 
 Tile layouts in the mockups (`canvas/Widgets.dc.html`):

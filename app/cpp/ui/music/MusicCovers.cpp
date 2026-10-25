@@ -3,6 +3,7 @@
 #include "../../core/CancellationToken.h"
 #include "../../media/ImageDsc.h"
 #include "../../media/ImageLoader.h"
+#include "lvgl/src/misc/cache/instance/lv_image_cache.h" // lv_image_cache_drop(): private API since LVGL 9.4
 
 #include <memory>
 

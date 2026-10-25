@@ -85,15 +85,15 @@ void ClockWidget::update() {
         const lv_font_t* font = digits_font_;
         if (meridiem[0]) {
             lv_point_t d, m;
-            lv_text_get_size(&d, digits.c_str(), digits_font_, lv_obj_get_style_text_letter_space(time_label_, 0), 0,
+            lv_text_get_size(&d, digits.c_str(), digits_font_, lv_obj_get_style_text_letter_space(time_label_, LV_PART_MAIN), 0,
                              LV_COORD_MAX, LV_TEXT_FLAG_NONE);
-            lv_text_get_size(&m, meridiem, lv_obj_get_style_text_font(meridiem_label_, 0), 0, 0, LV_COORD_MAX,
+            lv_text_get_size(&m, meridiem, lv_obj_get_style_text_font(meridiem_label_, LV_PART_MAIN), 0, 0, LV_COORD_MAX,
                              LV_TEXT_FLAG_NONE);
             if (d.x + 8 + m.x > width_) font = smaller_font_;
         }
         // only on a change: setting the same text redraws it anyway (and
         // would keep the dashboard's swipe pictures from ever being current)
-        if (lv_obj_get_style_text_font(time_label_, 0) != font) lv_obj_set_style_text_font(time_label_, font, 0);
+        if (lv_obj_get_style_text_font(time_label_, LV_PART_MAIN) != font) lv_obj_set_style_text_font(time_label_, font, 0);
         if (digits != lv_label_get_text(time_label_)) lv_label_set_text(time_label_, digits.c_str());
         if (std::strcmp(meridiem, lv_label_get_text(meridiem_label_)) != 0) lv_label_set_text(meridiem_label_, meridiem);
     }

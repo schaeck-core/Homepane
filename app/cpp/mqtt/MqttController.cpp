@@ -165,17 +165,40 @@ void MqttController::apply_settings()
     log(LogLevel::Info, "connecting to " + s.host + ":" + std::to_string(s.port) + " as " + device_.node_id);
 }
 
+bool MqttController::available(const EntityDef& e) const
+{
+    const app::hardware::Capabilities c = source_.capabilities();
+    const std::string& id = e.object_id;
+    if (id == "presence" || id == "distance") return c.presence;
+    if (id == "target_count") return c.target_count;
+    if (id == "target_1_x" || id == "target_1_y" || id == "target_1_z" || id == "speed") return c.target_position;
+    if (id == "temperature") return c.temperature;
+    if (id == "humidity") return c.humidity;
+    if (id == "illuminance") return c.illuminance;
+    if (id == "press_force" || id == "press") return c.force;
+    if (id == "haptic_test") return c.haptics;
+    if (id == "simulated_data") return source_.simulated();
+    return true; // the panel's own: restart, display, diagnostics
+}
+
 void MqttController::announce()
 {
+    // Entities without hardware get an empty retained config: HA removes
+    // them (also ones announced by an older firmware or before the add-on
+    // board was taken off).
+    size_t count = 0;
     for (const auto& e : entities_) {
-        transport_.publish(discovery_topic(device_.node_id, e), discovery_payload(device_, e), true, 1);
+        const bool on = available(e);
+        transport_.publish(discovery_topic(device_.node_id, e), on ? discovery_payload(device_, e) : "", true, 1);
+        count += on;
     }
     transport_.publish(availability_topic(device_.node_id), "online", true, 1);
     // Fresh values for everything after (re)announcing.
     for (auto& [id, ch] : channels_) ch.has_last = false;
     last_diag_ms_ = 0;
     announced_ = true;
-    log(LogLevel::Info, "announced " + std::to_string(entities_.size()) + " entities");
+    announced_caps_ = source_.capabilities();
+    log(LogLevel::Info, "announced " + std::to_string(count) + " entities");
 }
 
 void MqttController::on_mqtt_connected()
@@ -200,7 +223,7 @@ void MqttController::on_mqtt_message(const std::string& topic, const std::string
     }
     if (topic == command_topic(device_.node_id, "haptic_test")) {
         log(LogLevel::Info, "haptic test");
-        source_.haptic(1); // DRV2605L effect 1: strong click
+        source_.haptic(1); // strong click
     } else if (topic == command_topic(device_.node_id, "display")) {
         const bool on = payload == "ON";
         log(LogLevel::Info, std::string("display ") + (on ? "on" : "off") + " from Home Assistant");
@@ -246,6 +269,7 @@ void MqttController::poll(uint64_t now_ms)
 {
     transport_.dispatch_pending();
     if (!connected_ || !announced_) return;
+    if (source_.capabilities() != announced_caps_) announce(); // probing finished: other entities
 
     const app::sensors::SensorReadings r = source_.read(now_ms);
     if (r.presence) publish_value("presence", *r.presence ? "ON" : "OFF", now_ms);
@@ -257,7 +281,9 @@ void MqttController::poll(uint64_t now_ms)
     if (r.speed_mps) publish_number("speed", *r.speed_mps, 2, now_ms);
     if (r.presence && !*r.presence) {
         // Nobody there: positions are unknown rather than the last value.
+        const bool positions = announced_caps_.target_position;
         for (const char* id : {"target_1_x", "target_1_y", "target_1_z", "distance"}) {
+            if (!positions && id[0] == 't') continue; // LD2410: only a distance
             Channel& ch = channels_[id];
             if (!ch.has_last || ch.last != "None") {
                 if (transport_.publish(state_topic(device_.node_id, id), "None", true)) {
@@ -277,7 +303,7 @@ void MqttController::poll(uint64_t now_ms)
         transport_.publish(state_topic(device_.node_id, "press"), std::string(R"({"event_type":")") + type + "\"}",
                            false);
     });
-    publish_value("simulated_data", source_.simulated() ? "ON" : "OFF", now_ms);
+    if (source_.simulated()) publish_value("simulated_data", "ON", now_ms);
     if (display_on_) publish_value("display", display_on_() ? "ON" : "OFF", now_ms);
 
     if (diagnostics_ && (last_diag_ms_ == 0 || now_ms - last_diag_ms_ >= 60000)) {

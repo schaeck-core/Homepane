@@ -20,6 +20,7 @@ lv_font_t *font_manrope_600_90 = NULL;
 lv_font_t *font_manrope_600_96 = NULL;
 lv_font_t *font_manrope_600_160 = NULL;
 lv_font_t *font_manrope_700_44 = NULL;
+lv_font_t *font_manrope_700_56 = NULL;
 
 
 // Lucide line icons
@@ -88,6 +89,9 @@ void fonts_init(void) {
 
     extern const lv_font_t font_manrope_700_44_c;
     font_manrope_700_44 = (lv_font_t *)&font_manrope_700_44_c;
+
+    extern const lv_font_t font_manrope_700_56_c;
+    font_manrope_700_56 = (lv_font_t *)&font_manrope_700_56_c;
 
     fonts_inited = true;
 }

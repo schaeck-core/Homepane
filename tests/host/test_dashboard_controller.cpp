@@ -328,11 +328,40 @@ void test_dashboard_change_in_ha_reloads_it() {
            "reload() fetches the config again");
 }
 
+void test_dashboard_changes_wait_until_editing_ends() {
+    auto fx = make_fixture();
+    lv_obj_t* screen = make_headless_screen();
+    fx->controller->set_change_delay([] { return 60000u; });
+    fx->controller->render(screen, "ws://ha.local:8123/api/websocket", "token", "main", [] {}, [] {});
+    reach_ready(*fx);
+    const std::string config = extract_result_object(load_file("tests/fixtures/ha/lovelace_config_result.json"));
+    reply_lovelace_config(*fx, 1, config);
+    const char* change =
+        R"({"id":2,"type":"event","event":{"event_type":"lovelace_updated","data":{"url_path":"main","mode":"storage"}}})";
+    auto fetches = [&] { return count_occurrences(fx->transport->sent_messages, "\"type\":\"lovelace/config\""); };
+
+    fx->transport->simulate_fragment(change, true);
+    fx->controller->poll(fx->clock.now_ms());
+    expect(fetches() == 1, "with a delay, a change in HA's editor does not rebuild at once");
+    fx->clock.advance(40000);
+    fx->transport->simulate_fragment(change, true); // the next card edit
+    fx->clock.advance(40000);
+    fx->controller->poll(fx->clock.now_ms());
+    expect(fetches() == 1, "each further change starts the wait again");
+    fx->clock.advance(20000);
+    fx->controller->poll(fx->clock.now_ms());
+    expect(fetches() == 2, "a minute without changes: rebuilt once");
+    fx->clock.advance(120000);
+    fx->controller->poll(fx->clock.now_ms());
+    expect(fetches() == 2, "and only once");
+}
+
 int main() {
     lv_init();
     fonts_init(); // widgets now use app/fonts.h's shared fonts; nothing else in a bare test binary calls this.
 
     test_connects_and_authenticates_with_the_given_url_and_token();
+    test_dashboard_changes_wait_until_editing_ends();
     test_ready_fetches_lovelace_config_for_the_given_dashboard();
     test_real_captured_dashboard_builds_a_real_session_and_fires_on_ready();
     test_auth_failure_before_first_render_calls_on_error();

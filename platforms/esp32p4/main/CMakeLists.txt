@@ -27,6 +27,7 @@ idf_component_register(
         "../../../app/cpp/mqtt/MqttController.cpp"
         "../../../app/cpp/sensors/SimulatedSensors.cpp"
         "EspMqttTransport.cpp"
+        "EspSensors.cpp"
         "EspVoiceAudio.cpp"
         "WakeWordDetector.cpp"
         "../../../app/cpp/update/UpdateManifest.cpp"
@@ -35,6 +36,7 @@ idf_component_register(
         "../../../app/cpp/core/UiDispatcher.cpp"
         "../../../app/cpp/net/WebSocketConnection.cpp"
         "../../../app/cpp/net/ImprovSerial.cpp"
+        "../../../app/cpp/net/TimeSync.cpp"
         "../../../app/cpp/home_assistant/HaProtocolDecoder.cpp"
         "../../../app/cpp/home_assistant/HaClient.cpp"
         "../../../app/cpp/home_assistant/EntityStore.cpp"
@@ -95,6 +97,7 @@ idf_component_register(
         "EspWebSocketTransport.cpp"
         "EspWifiAdapter.cpp"
         "EspImprovSerial.cpp"
+        "EspTimeSync.cpp"
         "EspUpdateAdapter.cpp"
         "EspHttpFetcher.cpp"
         "PsramNew.cpp"
@@ -113,6 +116,7 @@ idf_component_register(
         "../../../app/i18n.c"
         "../../../app/utils.c"
         "../../../app/views/initialization.c"
+        "../../../app/views/boot_screen.c"
         "../../../app/views/network_setup.c"
         "../../../app/views/setup_frame.c"
         "../../../app/views/wifi_picker.c"
@@ -120,6 +124,8 @@ idf_component_register(
         "../../../app/components/loading_spinner.c"
         # Settings subsystem
         "../../../app/views/settings/settings.c"
+        "../../../app/views/settings/factory_reset.c"
+        "../../../app/views/settings/voice.c"
         "../../../app/views/settings/settings_tab.c"
         "../../../app/views/settings/general.c"
         "../../../app/views/settings/clock.c"
@@ -185,6 +191,7 @@ idf_component_register(
             esp_driver_gpio
             esp_driver_ledc
             esp_driver_uart
+            esp_driver_i2c
             esp_driver_i2s
             mqtt
             espressif__esp-tflite-micro

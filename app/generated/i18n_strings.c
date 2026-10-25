@@ -272,17 +272,13 @@ static const char *const s_de[TR__COUNT] = {
     "Version {0}", /* settings.version */
     "Update {0} verfügbar", /* settings.update_available */
     "Allgemein", /* settings.general */
-    "Sprache, Sensoren", /* settings.general.summary */
-    "Uhr & Datum", /* settings.clock */
-    "Zeit- und Datumsformat", /* settings.clock.summary */
+    "Gerät, Raum, Sprache, Uhrzeit", /* settings.general.summary */
     "WLAN", /* settings.wifi */
     "Home Assistant", /* settings.homeassistant */
-    "Update", /* settings.update */
     "Türklingel", /* settings.doorbell */
     "Auslöser, Kamera, Türöffner", /* settings.doorbell.summary */
     "Music Assistant", /* settings.musicassistant */
     "Player, Server", /* settings.musicassistant.summary */
-    "Der Sprachassistent wurde ebenfalls ausgeschaltet.", /* settings.general.voice_off_too */
     "Systeminformation", /* settings.general.system_info */
     "Gerätename", /* settings.general.device_name */
     "Name eingeben …", /* settings.general.enter_name */
@@ -290,15 +286,22 @@ static const char *const s_de[TR__COUNT] = {
     "Kachelreihen", /* settings.general.tile_rows */
     "Spalten − 1", /* settings.general.rows_cols_minus_1 */
     "Wie Spalten", /* settings.general.rows_cols */
-    "Mikrofon", /* settings.general.microphone */
     "Haptisches Feedback", /* settings.general.haptic */
     "Präsenzsensor (mmWave)", /* settings.general.mmwave */
+    "Nicht erkannt", /* settings.general.not_detected */
+    "keine", /* settings.general.no_hardware */
     "24-Stunden-Format", /* settings.clock.24h */
     "Datumsformat", /* settings.clock.date_format */
     "Europäisch\nAmerikanisch\nAsiatisch", /* settings.clock.date_orders */
     "So sieht es aus: {0}", /* settings.clock.example */
+    "Uhrzeit von", /* settings.clock.source */
+    "Lokal, sonst Internet\nNur lokal", /* settings.clock.source_options */
+    "Lokal: zuerst der Router, dann Home Assistant.\n{0}", /* settings.clock.source_hint */
+    "Noch nicht gestellt.", /* settings.clock.source_none */
+    "Gerade vom Router ({0}).", /* settings.clock.source_router */
+    "Gerade von Home Assistant.", /* settings.clock.source_ha */
+    "Gerade aus dem Internet ({0}).", /* settings.clock.source_internet */
     "Keine Verbindung zu Home Assistant: Die Assistenten können nicht aufgelistet werden.", /* settings.ha.voice_not_connected */
-    "Das Mikrofon wurde ebenfalls eingeschaltet (Einstellungen > Allgemein).", /* settings.ha.mic_enabled_too */
     "MQTT-Gerät", /* settings.ha.mqtt */
     "Broker", /* settings.ha.broker */
     "HA-Host (Standard)", /* settings.ha.broker_default */
@@ -315,12 +318,11 @@ static const char *const s_de[TR__COUNT] = {
     "Signalton", /* settings.ha.sound */
     "Lautstärke", /* settings.ha.volume */
     "Token", /* settings.ha.token */
-    "Verbindung zurückgesetzt", /* settings.ha.reset_done_title */
     "URL", /* settings.url */
     "Status: verbunden", /* settings.ha.status_connected */
     "Status: nicht verbunden", /* settings.ha.status_disconnected */
-    "Verbindung zurücksetzen", /* settings.ha.reset */
-    "Danach ist eine neue Anmeldung nötig.", /* settings.ha.reset_hint */
+    "Panel zurücksetzen", /* settings.ha.reset */
+    "Löscht alle Einstellungen; das Panel startet neu und wird neu eingerichtet.", /* settings.ha.reset_hint */
     "Noch nicht geprüft.", /* settings.update.not_checked */
     "Suche nach Updates …", /* settings.update.checking */
     "Firmware", /* settings.update.firmware */
@@ -357,15 +359,13 @@ static const char *const s_de[TR__COUNT] = {
     "Einen Moment", /* voice.processing */
     "Antwort", /* voice.answer */
     "Erledigt", /* voice.done */
-    "Gerät: {0}\nVersion: {1}\nLVGL: {2}\nBuild: {3}", /* settings.general.sysinfo */
+    "Gerät: {0}\nVersion: {1}\nLVGL: {2}\nBuild: {3}\nHardware: {4}", /* settings.general.sysinfo */
     "In Home Assistant ist kein Sprachassistent eingerichtet (Einstellungen > Sprachassistenten). Ohne ihn lässt sich der Assistent nicht nutzen.", /* settings.ha.no_pipeline */
     "{0}  ·  {1}", /* settings.ha.mqtt_status */
     "Home Assistant hat das Setzen des Bereichs abgelehnt (der Panel-Benutzer ist kein Administrator). Lege den Bereich des Geräts „Homepane“ stattdessen in Home Assistant fest; das Panel übernimmt ihn.", /* settings.ha.area_denied */
     "Okay Nabu\nHey Jarvis\nNur Taste", /* settings.ha.wake_options */
     "Kreis\nAurora", /* settings.ha.ui_options */
     "Glocke\nSchimmer\nBlip\nSchalter\nAus", /* settings.ha.sound_options */
-    "Die Verbindung zu Home Assistant wurde zurückgesetzt.\n\nStarte das Panel neu, um dich wieder anzumelden.", /* settings.ha.reset_done */
-    "Die Verbindung zu Home Assistant wurde zurückgesetzt, Home Assistant war aber nicht erreichbar: Lösche das Token des Panels selbst (dein Profil in Home Assistant, Sicherheit, langlebige Zugangs-Tokens).\n\nStarte das Panel neu, um dich wieder anzumelden.", /* settings.ha.reset_token_kept */
     "Verbunden mit {0}", /* settings.wifi.connected_to */
     "IP-Adresse: {0}", /* settings.wifi.ip */
     "Verbinde mit {0} …", /* settings.wifi.connecting_to */
@@ -427,8 +427,6 @@ static const char *const s_de[TR__COUNT] = {
     "Öffnen hat nicht geklappt", /* doorbell.open_failed */
     "Symbolbild", /* screensaver.symbol_picture */
     "Innen {0}", /* screensaver.inside */
-    "Bildschirmschoner", /* settings.screensaver */
-    "Bild, Veranstaltungen, Zeiten", /* settings.screensaver.summary */
     "Anzeigen nach", /* settings.screensaver.after */
     "Aus\n30 s\n1 Min.\n2 Min.\n5 Min.\n10 Min.", /* settings.screensaver.after_options */
     "Bildschirm aus nach", /* settings.screensaver.off */
@@ -452,6 +450,7 @@ static const char *const s_de[TR__COUNT] = {
     "Pausiert", /* music.state.paused */
     "Bereit", /* music.state.idle */
     "Nicht verbunden", /* music.state.offline */
+    "Wird geladen …", /* music.state.starting */
     "Music Assistant · {0}", /* music.subtitle */
     "Nichts in der Warteschlange", /* music.nothing */
     "Über die Suche Musik auswählen", /* music.nothing_hint */
@@ -548,6 +547,34 @@ static const char *const s_de[TR__COUNT] = {
     "Music Assistant kann diesen Player mit keinem anderen Raum zusammen abspielen lassen.", /* music.no_group */
     "Mitspielen", /* music.tab_group */
     "Player wechseln", /* music.tab_switch */
+    "Verbinde mit WLAN …", /* boot.wifi */
+    "Verbinde mit Home Assistant …", /* boot.ha */
+    "Lade Dashboard …", /* boot.dashboard */
+    "Bereit", /* boot.ready */
+    "Version {0}", /* boot.version */
+    "Die WLAN-Verbindung ist fehlgeschlagen.\nBitte die Netzwerkeinstellungen prüfen.", /* boot.wifi_failed */
+    "Einstellungen öffnen", /* boot.open_settings */
+    "Setup-QR-Code (Entwickler)", /* settings.general.qr_preview */
+    "Vorschau schließen", /* setup.preview_close */
+    "Panel zurücksetzen?", /* reset.ask_title */
+    "Alle Einstellungen werden gelöscht: Home Assistant, WLAN, Dashboard, Bildschirmschoner und alles Weitere. Das Panel startet danach neu und wird neu eingerichtet.", /* reset.ask_text */
+    "Abbrechen", /* reset.cancel */
+    "Zurücksetzen", /* reset.confirm */
+    "Melde bei Home Assistant ab …", /* reset.step_ha */
+    "Lösche Einstellungen …", /* reset.step_settings */
+    "Starte neu …", /* reset.step_restart */
+    "Dashboard-Änderungen", /* settings.ha.dashboard_updates */
+    "Sofort", /* settings.ha.updates_live */
+    "Nach dem Bearbeiten", /* settings.ha.updates_settled */
+    "Home Assistant speichert jede Änderung im Dashboard-Editor sofort. „Nach dem Bearbeiten“ übernimmt sie erst, wenn eine Minute lang keine weitere kam.", /* settings.ha.updates_hint */
+    "Dashboard", /* settings.dashboard */
+    "Auswahl, Modus, Kachelreihen", /* settings.dashboard.summary */
+    "Sprachassistent", /* settings.voice */
+    "Aktivierungswort, Assistent, Töne", /* settings.voice.summary */
+    "Anzeige", /* settings.display */
+    "Helligkeit, Bildschirmschoner", /* settings.display.summary */
+    "Helligkeit", /* settings.display.brightness */
+    "System", /* settings.system */
 };
 
 static const char *const s_en[TR__COUNT] = {
@@ -820,17 +847,13 @@ static const char *const s_en[TR__COUNT] = {
     "Version {0}", /* settings.version */
     "Update {0} available", /* settings.update_available */
     "General", /* settings.general */
-    "Language, sensors", /* settings.general.summary */
-    "Clock & date", /* settings.clock */
-    "Time and date format", /* settings.clock.summary */
+    "Device, room, language, time", /* settings.general.summary */
     "WiFi", /* settings.wifi */
     "Home Assistant", /* settings.homeassistant */
-    "Update", /* settings.update */
     "Doorbell", /* settings.doorbell */
     "Trigger, camera, door opener", /* settings.doorbell.summary */
     "Music Assistant", /* settings.musicassistant */
     "Players, server", /* settings.musicassistant.summary */
-    "The voice assistant was turned off as well.", /* settings.general.voice_off_too */
     "System information", /* settings.general.system_info */
     "Device name", /* settings.general.device_name */
     "Enter name …", /* settings.general.enter_name */
@@ -838,15 +861,22 @@ static const char *const s_en[TR__COUNT] = {
     "Tile rows", /* settings.general.tile_rows */
     "Columns − 1", /* settings.general.rows_cols_minus_1 */
     "Like columns", /* settings.general.rows_cols */
-    "Microphone", /* settings.general.microphone */
     "Haptic feedback", /* settings.general.haptic */
     "Presence sensor (mmWave)", /* settings.general.mmwave */
+    "Not detected", /* settings.general.not_detected */
+    "none", /* settings.general.no_hardware */
     "24-hour format", /* settings.clock.24h */
     "Date format", /* settings.clock.date_format */
     "European\nAmerican\nAsian", /* settings.clock.date_orders */
     "Looks like: {0}", /* settings.clock.example */
+    "Time from", /* settings.clock.source */
+    "Local, then internet\nLocal only", /* settings.clock.source_options */
+    "Local: the router first, then Home Assistant.\n{0}", /* settings.clock.source_hint */
+    "Not set yet.", /* settings.clock.source_none */
+    "Now from the router ({0}).", /* settings.clock.source_router */
+    "Now from Home Assistant.", /* settings.clock.source_ha */
+    "Now from the internet ({0}).", /* settings.clock.source_internet */
     "Not connected to Home Assistant: the assistants cannot be listed.", /* settings.ha.voice_not_connected */
-    "The microphone was enabled as well (Settings > General).", /* settings.ha.mic_enabled_too */
     "MQTT device", /* settings.ha.mqtt */
     "Broker", /* settings.ha.broker */
     "HA host (default)", /* settings.ha.broker_default */
@@ -863,12 +893,11 @@ static const char *const s_en[TR__COUNT] = {
     "Sound", /* settings.ha.sound */
     "Volume", /* settings.ha.volume */
     "Token", /* settings.ha.token */
-    "Connection reset", /* settings.ha.reset_done_title */
     "URL", /* settings.url */
     "Status: connected", /* settings.ha.status_connected */
     "Status: not connected", /* settings.ha.status_disconnected */
-    "Reset connection", /* settings.ha.reset */
-    "Resetting requires signing in again.", /* settings.ha.reset_hint */
+    "Reset the panel", /* settings.ha.reset */
+    "Deletes all settings; the panel restarts and is set up again.", /* settings.ha.reset_hint */
     "Not checked yet.", /* settings.update.not_checked */
     "Checking for updates …", /* settings.update.checking */
     "Firmware", /* settings.update.firmware */
@@ -905,15 +934,13 @@ static const char *const s_en[TR__COUNT] = {
     "One moment", /* voice.processing */
     "Answer", /* voice.answer */
     "Done", /* voice.done */
-    "Device: {0}\nVersion: {1}\nLVGL: {2}\nBuild: {3}", /* settings.general.sysinfo */
+    "Device: {0}\nVersion: {1}\nLVGL: {2}\nBuild: {3}\nHardware: {4}", /* settings.general.sysinfo */
     "No voice assistant is set up in Home Assistant (Settings > Voice assistants). The assistant cannot be used until one exists.", /* settings.ha.no_pipeline */
     "{0}  ·  {1}", /* settings.ha.mqtt_status */
     "Home Assistant refused to set the panel's area (the panel's user is no administrator). Set the area of the device \"Homepane\" in Home Assistant instead; the panel takes it over.", /* settings.ha.area_denied */
     "Okay Nabu\nHey Jarvis\nButton only", /* settings.ha.wake_options */
     "Circle\nAurora", /* settings.ha.ui_options */
     "Chime\nShimmer\nBlip\nSwitch\nOff", /* settings.ha.sound_options */
-    "The Home Assistant connection has been reset.\n\nRestart the panel to sign in again.", /* settings.ha.reset_done */
-    "The Home Assistant connection has been reset, but Home Assistant could not be reached: delete the panel's token yourself (your profile in Home Assistant, Security, long-lived access tokens).\n\nRestart the panel to sign in again.", /* settings.ha.reset_token_kept */
     "Connected to {0}", /* settings.wifi.connected_to */
     "IP address: {0}", /* settings.wifi.ip */
     "Connecting to {0} …", /* settings.wifi.connecting_to */
@@ -975,8 +1002,6 @@ static const char *const s_en[TR__COUNT] = {
     "Could not open the door", /* doorbell.open_failed */
     "Symbol picture", /* screensaver.symbol_picture */
     "Inside {0}", /* screensaver.inside */
-    "Screensaver", /* settings.screensaver */
-    "Picture, events, times", /* settings.screensaver.summary */
     "Show after", /* settings.screensaver.after */
     "Off\n30 s\n1 min\n2 min\n5 min\n10 min", /* settings.screensaver.after_options */
     "Screen off after", /* settings.screensaver.off */
@@ -1000,6 +1025,7 @@ static const char *const s_en[TR__COUNT] = {
     "Paused", /* music.state.paused */
     "Ready", /* music.state.idle */
     "Not connected", /* music.state.offline */
+    "Loading …", /* music.state.starting */
     "Music Assistant · {0}", /* music.subtitle */
     "Nothing in the queue", /* music.nothing */
     "Pick music with the search", /* music.nothing_hint */
@@ -1096,6 +1122,34 @@ static const char *const s_en[TR__COUNT] = {
     "Music Assistant cannot play this player together with another room.", /* music.no_group */
     "Play along", /* music.tab_group */
     "Switch player", /* music.tab_switch */
+    "Connecting to Wi-Fi …", /* boot.wifi */
+    "Connecting to Home Assistant …", /* boot.ha */
+    "Loading the dashboard …", /* boot.dashboard */
+    "Ready", /* boot.ready */
+    "Version {0}", /* boot.version */
+    "The Wi-Fi connection failed.\nPlease check the network settings.", /* boot.wifi_failed */
+    "Open settings", /* boot.open_settings */
+    "Setup QR code (developer)", /* settings.general.qr_preview */
+    "Close preview", /* setup.preview_close */
+    "Reset the panel?", /* reset.ask_title */
+    "All settings are deleted: Home Assistant, Wi-Fi, dashboard, screensaver and everything else. The panel then restarts and is set up again.", /* reset.ask_text */
+    "Cancel", /* reset.cancel */
+    "Reset", /* reset.confirm */
+    "Signing out of Home Assistant …", /* reset.step_ha */
+    "Deleting the settings …", /* reset.step_settings */
+    "Restarting …", /* reset.step_restart */
+    "Dashboard changes", /* settings.ha.dashboard_updates */
+    "At once", /* settings.ha.updates_live */
+    "After editing", /* settings.ha.updates_settled */
+    "Home Assistant saves every change in its dashboard editor right away. \"After editing\" applies them once no further change came for a minute.", /* settings.ha.updates_hint */
+    "Dashboard", /* settings.dashboard */
+    "Which one, mode, tile rows", /* settings.dashboard.summary */
+    "Voice assistant", /* settings.voice */
+    "Wake word, assistant, sounds", /* settings.voice.summary */
+    "Display", /* settings.display */
+    "Brightness, screensaver", /* settings.display.summary */
+    "Brightness", /* settings.display.brightness */
+    "System", /* settings.system */
 };
 
 const i18n_language_t i18n_languages[] = {

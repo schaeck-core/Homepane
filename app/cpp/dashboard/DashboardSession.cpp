@@ -2,6 +2,7 @@
 
 #include "DashboardLayout.h"
 #include "lvgl/lvgl.h"
+#include "lvgl/src/misc/cache/instance/lv_image_cache.h" // lv_image_cache_drop(): private API since LVGL 9.4
 #include "../../fonts.h"
 
 #include <algorithm>
@@ -413,6 +414,12 @@ bool DashboardSession::at_top() const {
     if (!root_) return false;
     lv_obj_t* page = lv_obj_get_child(root_, current_view());
     return page && lv_obj_get_scroll_y(page) <= 0;
+}
+
+void DashboardSession::settle_top() {
+    if (!root_) return;
+    lv_obj_t* page = lv_obj_get_child(root_, current_view());
+    if (page && lv_obj_get_scroll_y(page) < 0) lv_obj_scroll_to_y(page, 0, LV_ANIM_ON);
 }
 
 void DashboardSession::show_view(int index, bool animate) {

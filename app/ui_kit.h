@@ -86,6 +86,30 @@ lv_obj_t *ui_slider_row(lv_obj_t *parent, const char *icon, const char *label);
 void ui_slider_row_set(lv_obj_t *row, int value, const char *value_text);
 int ui_slider_row_value(lv_obj_t *row);
 
+/* A wide action button (88 high, radius 22, grows in a row): `look` gives
+ * the colours (UI_LOOK_INFO plain, UI_LOOK_WARN destructive, UI_LOOK_ON sand). */
+lv_obj_t *ui_action_button(lv_obj_t *parent, const char *text, ui_look_t look, lv_event_cb_t cb, void *user);
+
+/* The logo: 3 x 3 rounded panes, the top right one lit in sand (the design
+ * canvas's "A · Raster"). `pane` is one pane's size (44 on the start
+ * screen); the gap and radius scale with it. The panes are the box's
+ * children 0..8, row by row (the start screen animates them). */
+lv_obj_t *ui_logo(lv_obj_t *parent, int32_t pane, bool light_ground);
+
+/* The loader: the logo's panes breathe up in sand one after another (the
+ * design canvas's "Atmen · Regen", calm) for as long as it is shown; any
+ * size, down to inline (pane 8: 28 px). ui_logo_pulse() lets a logo's lit
+ * pane pulse instead (the start screen, once its intro is done). */
+lv_obj_t *ui_loader(lv_obj_t *parent, int32_t pane);
+void ui_logo_pulse(lv_obj_t *logo, uint32_t delay);
+
+/* A QR code drawn for the design: dark dots on a light ground, rounded
+ * finder marks and the logo in the middle (high error correction, so the
+ * modules under the logo can go). One canvas, drawn again only when the
+ * text changes. ui_qr_set() returns false if the text does not fit. */
+lv_obj_t *ui_qr(lv_obj_t *parent, int32_t size);
+bool ui_qr_set(lv_obj_t *qr, const char *text);
+
 /* Short hint at the bottom of the screen (pill, ~2 s). */
 void ui_toast(const char *text);
 

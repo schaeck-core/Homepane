@@ -26,6 +26,8 @@ void dashboard_render(lv_obj_t *parent);
 void dashboard_show_default(void);
 void setup_render(lv_obj_t *parent);
 void initialization_render(lv_obj_t *parent);
+/* Developer builds: the setup's QR card as a preview over everything. */
+void initialization_qr_preview(void);
 /* The QR login failed (pairing in webserver.c / webserver_esp32.c); UI thread. */
 void initialization_pairing_failed(const char *detail);
 void initialization_pairing_token_exists(const char *token_name);

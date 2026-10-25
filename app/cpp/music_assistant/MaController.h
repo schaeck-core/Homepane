@@ -85,6 +85,12 @@ public:
     enum class Enqueue { Play, Replace, Next, Add };
     void play_media(const MaQueueItem& item, Enqueue how);
     void play_shuffled(const MaQueueItem& item); // shuffle on, then it replaces the queue
+    // Music asked to play now (play, replace, shuffle) that is not playing
+    // yet: MA can take seconds (Spotify, YouTube). The item asked for; none
+    // once the queue plays another item than before, on an error, or after
+    // kStartTimeout. The player shows it with a loader meanwhile.
+    const MaQueueItem* starting() const;
+    static constexpr double kStartTimeout = 45; // seconds
 
     // a playlist's, album's or artist's page: the item itself (owner, year,
     // favorite), its tracks (an artist's: the top tracks) and an artist's albums.
@@ -109,6 +115,9 @@ public:
 private:
     void reload();
     void notify();
+    void begin_start(const MaQueueItem& item);
+    void start_failed(const MaResultMessage& r);
+    void check_start();
     void send(const std::string& command, const std::string& args_json);
     std::string queue_id() const;
 
@@ -124,6 +133,12 @@ private:
     bool providers_known_ = false;
     std::set<std::string> similar_;   // provider instances with similar tracks
     std::set<std::string> libraries_; // "artists", "albums", ... some music provider keeps
+    struct Start {
+        bool active = false;
+        MaQueueItem item;      // asked for
+        std::string from;      // the queue item playing when it was asked (queue_item_id)
+        double since = 0;      // epoch seconds
+    } start_;
 };
 
 } // namespace app::music_assistant

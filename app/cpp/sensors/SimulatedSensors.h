@@ -15,6 +15,9 @@ namespace app::sensors {
 // - temperature/humidity drift slowly around 21.5 C / 45 %;
 // - illuminance follows the time of day (seconds since midnight given);
 // - a press (sometimes a long press) every few minutes while present.
+// Pretends to have the planned hardware (SHTC3, BOS1921, LD6004; no light
+// sensor yet) unless set_capabilities() says otherwise; readings and
+// gestures follow the capabilities.
 class SimulatedSensors final : public ISensorSource {
 public:
     explicit SimulatedSensors(uint32_t seed = 1) : seed_(seed) {}
@@ -22,16 +25,24 @@ public:
     // Local time of day for the light curve; defaults to noon.
     void set_seconds_of_day(uint32_t s) { seconds_of_day_ = s; }
 
+    static app::hardware::Capabilities planned_hardware();
+    void set_capabilities(const app::hardware::Capabilities& c) { caps_ = c; }
+
     SensorReadings read(uint64_t now_ms) override;
     void take_gestures(const std::function<void(PressGesture)>& sink) override;
-    void haptic(int effect) override { last_haptic_ = effect; }
+    void haptic(int effect) override
+    {
+        if (caps_.haptics) last_haptic_ = effect;
+    }
     bool simulated() const override { return true; }
+    app::hardware::Capabilities capabilities() const override { return caps_; }
     int last_haptic() const { return last_haptic_; }
 
 private:
     float noise(uint64_t t_ms, uint32_t channel) const;
 
     uint32_t seed_;
+    app::hardware::Capabilities caps_ = planned_hardware();
     uint32_t seconds_of_day_ = 12 * 3600;
     std::vector<PressGesture> gestures_;
     uint64_t next_press_ms_ = 0;

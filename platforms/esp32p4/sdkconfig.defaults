@@ -103,12 +103,28 @@ CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC=y
 CONFIG_LV_USE_TJPGD=y
 
 # 24-bit colour: pictures without banding (RGB888 panel and LVGL)
-CONFIG_LV_COLOR_DEPTH_24=y
+CONFIG_LV_COLOR_FORMAT_RGB888=y
 CONFIG_BSP_LCD_COLOR_FORMAT_RGB888=y
 CONFIG_LV_DRAW_SW_CIRCLE_CACHE_SIZE=32
+# LVGL 9.6 keeps the blend code of every enabled color format in IRAM
+# (internal RAM): only the formats we draw with. Display RGB888, layers and
+# images ARGB8888/RGB888/RGB565 (pictures, voice overlay canvas), QR code I1,
+# masks A8.
+# CONFIG_LV_DRAW_SW_SUPPORT_RGB565_SWAPPED is not set
+# CONFIG_LV_DRAW_SW_SUPPORT_ARGB8888_PREMULTIPLIED is not set
+# CONFIG_LV_DRAW_SW_SUPPORT_L8 is not set
+# CONFIG_LV_DRAW_SW_SUPPORT_AL88 is not set
+# PPA (pixel accelerator) for opaque fills without radius and simple
+# images; it needs draw buffers aligned to the L2 cache line (128 bytes).
+CONFIG_LV_USE_PPA=y
+CONFIG_LV_USE_PPA_IMG=y
+CONFIG_LV_DRAW_BUF_ALIGN=128
 # internal RAM kept for stacks, DMA and drivers (plain malloc cannot take it)
 CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL=81920
 
 # The last crash is kept in flash (partition coredump) for /sys/coredump
 CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=y
 CONFIG_ESP_COREDUMP_DATA_FORMAT_ELF=y
+
+# Time from the router first: DHCP names its NTP server (EspTimeSync)
+CONFIG_LWIP_DHCP_GET_NTP_SRV=y

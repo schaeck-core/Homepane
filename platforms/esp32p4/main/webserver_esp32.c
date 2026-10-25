@@ -12,6 +12,7 @@
 #include "lvgl/lvgl.h"
 #include "esp_lvgl_port.h"
 #include "cpp/app_facade.h"
+#include "components/loading_spinner.h"
 #include "webserver_esp32.h"
 
 // Forward declare — avoid pulling in app/views/views.h just for this one
@@ -121,16 +122,7 @@ static esp_err_t oauth_handler(httpd_req_t *req) {
 
                 /* ── Create loading overlay (must hold LVGL mutex) ── */
                 if (lvgl_port_lock(0)) {
-                    loadingOverlay = lv_obj_create(lv_screen_active());
-                    lv_obj_remove_style_all(loadingOverlay);
-                    lv_obj_set_size(loadingOverlay, LV_PCT(100), LV_PCT(100));
-                    lv_obj_set_style_bg_color(loadingOverlay, lv_color_black(), 0);
-                    lv_obj_set_style_bg_opa(loadingOverlay, LV_OPA_70, 0);
-
-                    lv_obj_t *spinner = lv_spinner_create(loadingOverlay);
-                    lv_obj_set_size(spinner, 100, 100);
-                    lv_obj_center(spinner);
-                    lv_spinner_set_anim_params(spinner, 2000, 200);
+                    loadingOverlay = loading_spinner_create(lv_screen_active(), NULL);
                     lvgl_port_unlock();
                 }
 
@@ -239,6 +231,21 @@ static esp_err_t root_handler(httpd_req_t *req) {
     return ESP_OK;
 }
 
+/* /ha: the setup screen's QR code holds this short link; the panel sends
+ * the phone on to Home Assistant's login. */
+static esp_err_t ha_handler(httpd_req_t *req) {
+    char url[384];
+    const char *auth_base = getConfig("haas_url");
+    if (!auth_base || !auth_base[0]) auth_base = "http://homeassistant.local:8123";
+    snprintf(url, sizeof(url),
+        "%s/auth/authorize?client_id=http%%3A%%2F%%2F%s%%3A8989&redirect_uri=http%%3A%%2F%%2F%s%%3A8989%%2Foauth2callback",
+        auth_base, getLocalIp(), getLocalIp());
+    httpd_resp_set_status(req, "302 Found");
+    httpd_resp_set_hdr(req, "Location", url);
+    httpd_resp_send(req, NULL, 0);
+    return ESP_OK;
+}
+
 bool startServer(){
     if(s_server) return true;
 
@@ -272,6 +279,14 @@ bool startServer(){
         .user_ctx = NULL
     };
     httpd_register_uri_handler(s_server, &oauth);
+
+    httpd_uri_t ha = {
+        .uri = "/ha",
+        .method = HTTP_GET,
+        .handler = ha_handler,
+        .user_ctx = NULL
+    };
+    httpd_register_uri_handler(s_server, &ha);
 
 
     ESP_LOGI(TAG, "Server running on http://%s:%d", getLocalIp(), config.server_port);

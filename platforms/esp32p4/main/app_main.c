@@ -152,6 +152,14 @@ static uint32_t get_screen_timeout_ms(void)
     return (uint32_t)app_cpp_screen_off_after_s() * 1000;
 }
 
+/* The backlight's brightness in % (Settings > Display), 50 until set */
+static int display_brightness(void)
+{
+    const char *v = getConfig("display_brightness");
+    const int b = v && v[0] ? atoi(v) : 50;
+    return b < 5 ? 5 : b > 100 ? 100 : b;
+}
+
 static void power_save_enter(lv_display_t *disp)
 {
     if (s_low_power) return;
@@ -183,9 +191,15 @@ static void power_save_exit(lv_display_t *disp)
 
     /* 2. Turn backlight back on and restore active brightness */
     bsp_display_backlight_on();
-    bsp_display_brightness_set(50);
+    bsp_display_brightness_set(display_brightness());
 
-    ESP_LOGI(TAG, "Power save: exited (brightness 50, render restored)");
+    ESP_LOGI(TAG, "Power save: exited (brightness %d, render restored)", display_brightness());
+}
+
+/* Settings > Display > Brightness (display_brightness, %), 50 until set */
+void app_display_apply_brightness(void)
+{
+    if (!s_low_power) bsp_display_brightness_set(display_brightness());
 }
 
 void app_display_set_on(bool on)
@@ -212,7 +226,7 @@ static void wake_if_needed(lv_event_t *e)
         if (disp) lv_disp_trig_activity(disp);
         ESP_LOGI(TAG, "Woke from low power due to touch");
     } else {
-        bsp_display_brightness_set(50);
+        bsp_display_brightness_set(display_brightness());
     }
 }
 
@@ -352,7 +366,7 @@ void app_main(void)
 
     // Turn on the backlight now – the first frame (splash or dashboard) is ready.
     bsp_display_backlight_on();
-    bsp_display_brightness_set(50);
+    bsp_display_brightness_set(display_brightness());
 
     // Track U Phase U0 (docs/ARCHITECTURE.md §13.2): confirm this OTA
     // slot as valid, cancelling the bootloader's automatic-rollback timer.

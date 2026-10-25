@@ -64,6 +64,10 @@ public:
     void show_home();
     // the shown view is scrolled to its top (the music player's pull-down)
     bool at_top() const;
+    // The shown view, pulled down past its top, springs back. The music
+    // player's pull-down takes the press over, so LVGL's own spring back on
+    // release never comes.
+    void settle_top();
 
 private:
     void wire_requirements(app::ui::Widget& widget);

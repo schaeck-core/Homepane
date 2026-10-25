@@ -1,9 +1,10 @@
 /**
  * @file update.c
- * @brief Firmware update settings tab
+ * @brief System settings tab (firmware updates and the device itself)
  *
  * Installed versions (app + WiFi co-processor), automatic daily check,
- * co-processor updates on/off,
+ * co-processor updates on/off, then system information, resetting the
+ * panel and (developer builds) the setup's QR code;
  * tr(TR_SETTINGS_UPDATE_CHECK) / tr(TR_BUTTON_INSTALL). The update source is fixed at build
  * time (app/cpp/update/UpdateSource.h). The work is done by
  * UpdateController (app_cpp_update_* in app/cpp/app_facade.h): signed
@@ -25,6 +26,8 @@
 #include "../../config.h"
 #include "../../cpp/app_facade.h"
 #include "../../fonts.h"
+#include "../views.h"
+#include "factory_reset.h"
 
 /* Design guide tokens used here */
 #define DG_SAND        0xD6B98A
@@ -186,6 +189,8 @@ static lv_obj_t *button(lv_obj_t *parent, const char *text, bool primary, lv_eve
     return btn;
 }
 
+static void create_system_rows(lv_obj_t *page);
+
 static lv_obj_t *create_update_page(lv_obj_t *parent)
 {
     lv_obj_t *page = settings_page_create(parent);
@@ -248,6 +253,7 @@ static lv_obj_t *create_update_page(lv_obj_t *parent)
 
     app_cpp_update_set_listener(on_status_change, NULL);
     refresh();
+    create_system_rows(page);
     return page;
 }
 
@@ -266,11 +272,83 @@ static const char *update_status(bool *ok)
     return buf;
 }
 
+/* ── System: information, reset, developer rows ── */
+
+/* Developer builds (and the simulator): the setup's QR code without a reset */
+#if defined(HOMEPANE_AUDIO_DEBUG) || !defined(ESP_PLATFORM)
+#define HOMEPANE_DEVELOPER_ROWS 1
+static void qr_preview_cb(lv_event_t *e)
+{
+    (void)e;
+    initialization_qr_preview();
+}
+#endif
+
+static void close_msgbox_cb(lv_event_t *e)
+{
+    lv_obj_t *msgbox = lv_event_get_current_target(e);
+    lv_msgbox_close(msgbox);
+}
+
+static void show_system_info_cb(lv_event_t *e)
+{
+    LV_UNUSED(e);
+
+    app_cpp_update_status_t st;
+    app_cpp_update_get_status(&st);
+    const char *device = getConfig("device_name");
+    char lvgl_version[16], build[32];
+    snprintf(lvgl_version, sizeof(lvgl_version), "%d.%d.%d", LVGL_VERSION_MAJOR, LVGL_VERSION_MINOR, LVGL_VERSION_PATCH);
+    snprintf(build, sizeof(build), "%s %s", __DATE__, __TIME__);
+    const char *parts = app_cpp_hw_parts();
+    const char *args[] = {device && device[0] ? device : "Homepane",
+                          st.installed_version[0] ? st.installed_version : tr(TR_SETTINGS_UNKNOWN), lvgl_version, build,
+                          parts[0] ? parts : tr(TR_SETTINGS_GENERAL_NO_HARDWARE)};
+    char info_text[512];
+    tr_format(info_text, sizeof(info_text), TR_SETTINGS_GENERAL_SYSINFO, args, 5);
+
+    lv_obj_t *msgbox = lv_msgbox_create(NULL);
+    lv_obj_set_width(msgbox, 520);
+    /* the app's font: LVGL's default lacks umlauts */
+    lv_obj_set_style_text_font(lv_msgbox_add_title(msgbox, tr(TR_SETTINGS_GENERAL_SYSTEM_INFO)), UI_FONT_NAME, 0);
+    lv_obj_set_style_text_font(lv_msgbox_add_text(msgbox, info_text), UI_FONT_LABEL, 0);
+    lv_msgbox_add_close_button(msgbox);
+    lv_obj_add_event_cb(msgbox, close_msgbox_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_center(msgbox);
+}
+
+static void reset_panel_cb(lv_event_t *e)
+{
+    LV_UNUSED(e);
+    factory_reset_ask();
+}
+
+/* After the update rows: system information, resetting the panel and, in
+ * developer builds, the setup's QR code. */
+static void create_system_rows(lv_obj_t *page)
+{
+    settings_link_row(page, LI_INFO, tr(TR_SETTINGS_GENERAL_SYSTEM_INFO), show_system_info_cb);
+
+    lv_obj_t *reset = settings_icon_row(page, LI_REFRESH_CW, tr(TR_SETTINGS_HA_RESET));
+    lv_obj_add_flag(reset, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_style_bg_color(reset, lv_color_hex(UI_WARN_BG), 0); // destructive: warning colours
+    lv_obj_set_style_bg_opa(reset, LV_OPA_COVER, 0);
+    lv_obj_set_style_bg_color(reset, lv_color_hex(UI_ACTIVE), LV_STATE_PRESSED);
+    lv_obj_set_style_text_color(lv_obj_get_child(reset, 1), lv_color_hex(UI_WARN), 0);
+    lv_obj_add_event_cb(reset, reset_panel_cb, LV_EVENT_CLICKED, NULL);
+    lv_obj_t *hint = lv_label_create(settings_row_create(page)); /* a row with one label: a hint */
+    lv_label_set_text(hint, tr(TR_SETTINGS_HA_RESET_HINT));
+
+#ifdef HOMEPANE_DEVELOPER_ROWS
+    settings_link_row(page, LI_QR_CODE, tr(TR_SETTINGS_GENERAL_QR_PREVIEW), qr_preview_cb);
+#endif
+}
+
 static const settings_tab_t update_tab = {
-    .name = "Update",
+    .name = "System",
     .create_page = create_update_page,
-    .name_key = TR_SETTINGS_UPDATE,
-    .line_icon = LI_DOWNLOAD,
+    .name_key = TR_SETTINGS_SYSTEM,
+    .line_icon = LI_CPU,
     .status = update_status,
 };
 

@@ -36,7 +36,9 @@ struct Diagnostics {
 
 // The panel as an MQTT device in Home Assistant (docs/ARCHITECTURE.md
 // §13.4, Track U U2): connects, announces availability (+ last will),
-// publishes discovery for every entity (again whenever HA restarts), sends
+// publishes discovery for the entities the hardware supports and removes
+// the others (again whenever HA restarts or the detected hardware
+// changes, docs/plans/HARDWARE_CAPABILITIES.md), sends
 // sensor values when they change (thresholds and minimum intervals keep the
 // broker quiet) and handles commands (haptic test, restart). UI thread only.
 class MqttController final : public IMqttSink {
@@ -62,7 +64,10 @@ public:
     }
     bool connected() const { return connected_; }
     const DeviceInfo& device() const { return device_; }
+    // Every entity the panel can have; available() says which of them the
+    // hardware supports right now.
     const std::vector<EntityDef>& entities() const { return entities_; }
+    bool available(const EntityDef& e) const;
 
     // IMqttSink
     void on_mqtt_connected() override;
@@ -101,6 +106,7 @@ private:
     bool started_ = false;
     bool connected_ = false;
     bool announced_ = false;
+    app::hardware::Capabilities announced_caps_; // what the last announce was based on
     uint64_t last_diag_ms_ = 0;
 };
 

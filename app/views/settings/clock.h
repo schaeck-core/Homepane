@@ -8,10 +8,8 @@
 
 #include "settings_tab.h"
 
-/**
- * @brief Initialize and register the clock settings tab
- */
-void settings_clock_init(void);
+/* The time and date format rows, with an example (Settings > General). */
+void settings_clock_rows(lv_obj_t *page);
 
 /**
  * @brief Get the clock settings tab descriptor

@@ -71,6 +71,7 @@
 #define LI_LAMP_DESK "\U000F02DA" /* lamp-desk */
 #define LI_LANGUAGES "\U000F00FE" /* languages */
 #define LI_LAYOUT_DASHBOARD "\U000F01C1" /* layout-dashboard */
+#define LI_LAYOUT_GRID "\U000F00FF" /* layout-grid */
 #define LI_LEAF "\U000F02DE" /* leaf */
 #define LI_LIBRARY "\U000F0100" /* library */
 #define LI_LIGHTBULB "\U000F01C2" /* lightbulb */

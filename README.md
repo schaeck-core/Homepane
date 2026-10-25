@@ -6,7 +6,7 @@ A wall-mounted touch panel for [Home Assistant](https://www.home-assistant.io/),
 > **Work in progress.** Expect rough edges and breaking changes. Do not rely on it for anything safety-relevant (alarm systems, locks) yet.
 
 > [!CAUTION]
-> **Homepane updates the firmware of the board's ESP32-C6 (Wi-Fi/Bluetooth co-processor).** During development my board already ran an updated C6 firmware, so I could not test two things: how Homepane works with the factory C6 firmware (which reports version 0.0.0), and the C6 update itself starting from that factory firmware. The update path is only tested from my own 2.7 firmware onwards. Testing this fully needs a new, untouched board, which I have not bought yet. Please proceed with caution: if the C6 ends up with a broken image, recovering it needs a USB-UART connection to the C6. If you prefer to wait, choose *Keep the current Wi-Fi firmware* in the web flasher.
+> **The first install of the Homepane Wi-Fi firmware is untested.** The board's ESP32-C6 (Wi-Fi/Bluetooth) can get Homepane's own firmware, which rolls back by itself when a later update fails. The very first install, starting from the factory firmware, has no such rollback yet, and I could not test it: my board no longer runs the factory firmware and new boards are out of stock. If that first install fails, the C6 has to be reflashed over its UART pads with a USB-UART adapter. If you do not want that risk, choose *Keep the current Wi-Fi firmware* in the web flasher. Want to help? See [Help wanted: testing the Wi-Fi firmware](#help-wanted-testing-the-wi-fi-firmware).
 
 | | | |
 |:---:|:---:|:---:|
@@ -40,6 +40,8 @@ A wall-mounted touch panel for [Home Assistant](https://www.home-assistant.io/),
 
 [Waveshare ESP32-P4-WIFI6-Touch-LCD-4B](https://www.waveshare.com/): 4" 720 × 720 touch display, ESP32-P4 with an ESP32-C6 for Wi-Fi. A microSD card is optional (cover cache, `config.ini` import).
 
+Homepane is developed and tested on this board. Other ESP32-P4 boards may follow; the P4 is likely to stay the minimum, so it will not run on an ESP32-S3.
+
 ## Installing
 
 1. Open the **[Homepane Web Flasher](https://schaeck-core.github.io/Homepane/)** in Chrome or Edge on a desktop computer.
@@ -49,6 +51,24 @@ A wall-mounted touch panel for [Home Assistant](https://www.home-assistant.io/),
 5. On the panel: enter your Home Assistant URL, confirm the login, then choose the default dashboard and the dashboard mode (see below).
 
 The panel then loads your default dashboard. New releases arrive over the air (*Settings → Update*).
+
+## Help wanted: testing the Wi-Fi firmware
+
+Homepane runs fine with the board's factory Wi-Fi firmware, possibly with a few Wi-Fi quirks (for example, the panel may not list the available networks; enter your Wi-Fi in the web flasher instead). Its own Wi-Fi firmware adds a rollback for all later updates, but the first install from the factory firmware is untested.
+
+I am looking for one or two people with an **untouched board** to test that first install. You would fit if:
+
+- your board still runs its factory firmware;
+- you own a USB-UART adapter (3.3 V) and would connect it to the C6's UART pads if needed;
+- you are fine with sending me a log from the panel.
+
+The test takes about 30 to 60 minutes:
+
+1. Save the factory Wi-Fi firmware over UART first, so it can always be restored.
+2. Install Homepane with *Keep the current Wi-Fi firmware* and check that everything works.
+3. Turn on the Wi-Fi firmware in *Settings → Update*, let it install and send me the log.
+
+I will walk you through every step and provide the commands and files. If the Wi-Fi chip does need a manual reflash, we do it together over UART. Interested? Open an [issue](https://github.com/schaeck-core/Homepane/issues) or reply in the Home Assistant community thread.
 
 ## Setting up dashboards
 
